@@ -4643,33 +4643,42 @@ function renderClFormItems() {
     el.innerHTML = '<div style="color:var(--text-light);font-size:0.82rem;text-align:center;padding:8px 0;">尚無項目，點下方按鈕新增</div>';
     return;
   }
+  // 用 DOM 操作避免字串引號衝突
   el.innerHTML = '';
   _clItems.forEach(function(it, i) {
     var row = document.createElement('div');
     row.style.cssText = 'display:flex;gap:8px;margin-bottom:10px;align-items:flex-start;';
+
     var col = document.createElement('div');
     col.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:6px;';
+
     var inp = document.createElement('input');
     inp.type = 'text';
     inp.placeholder = '小標題（例：Firebase 整合）';
     inp.value = it.subtitle || '';
     inp.style.cssText = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;';
-    inp.addEventListener('input', (function(idx){ return function(){ _clItems[idx].subtitle = this.value; }; })(i));
+    inp.addEventListener('input', function() { _clItems[i].subtitle = this.value; });
+
     var ta = document.createElement('textarea');
-    ta.rows = 2;
     ta.placeholder = '詳細說明...';
+    ta.rows = 2;
     ta.textContent = it.detail || '';
     ta.style.cssText = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;resize:vertical;';
-    ta.addEventListener('input', (function(idx){ return function(){ _clItems[idx].detail = this.value; }; })(i));
-    var btn = document.createElement('button');
-    btn.textContent = '✕';
-    btn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:6px;padding:5px 9px;color:#b94a3a;cursor:pointer;font-size:0.8rem;min-height:unset;flex-shrink:0;margin-top:2px;';
-    btn.addEventListener('click', (function(idx){ return function(){ removeClItem(idx); }; })(i));
-    col.appendChild(inp); col.appendChild(ta);
-    row.appendChild(col); row.appendChild(btn);
+    ta.addEventListener('input', function() { _clItems[i].detail = this.value; });
+
+    var delBtn = document.createElement('button');
+    delBtn.textContent = '✕';
+    delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:6px;padding:5px 9px;color:#b94a3a;cursor:pointer;font-size:0.8rem;min-height:unset;flex-shrink:0;margin-top:2px;';
+    delBtn.addEventListener('click', function() { removeClItem(i); });
+
+    col.appendChild(inp);
+    col.appendChild(ta);
+    row.appendChild(col);
+    row.appendChild(delBtn);
     el.appendChild(row);
   });
 }
+
 
 async function saveChangelog() {
   var id       = document.getElementById('clFormId').value;
