@@ -4549,28 +4549,53 @@ async function loadChangelog() {
       el.innerHTML = '<div class="query-empty"><span class="empty-icon">📝</span>尚無版本紀錄</div>';
       return;
     }
+    // 小標題自動配 icon
+    const ICONS = {
+      'Firebase':'🔥','整合':'🔥','資料':'📊','報表':'📑','後台':'⚙️','管理員':'⚙️',
+      '分隊':'🏢','意見':'💬','角色':'👤','權限':'🔐','公告':'📢','UI':'🎨','介面':'🎨',
+      '樣式':'🎨','修復':'🐛','Bug':'🐛','新增':'✨','功能':'✨','待領':'📦','物品':'📦',
+      '簽到':'✍','簽退':'✍','出勤':'🚑','查詢':'🔍','補簽':'🕐','類別':'🏷',
+      '顯示':'👁','排序':'📋','統計':'📈','安全':'🔒','其他':'💡',
+    };
+    function getIcon(subtitle) {
+      for (const [k, v] of Object.entries(ICONS)) {
+        if (subtitle.includes(k)) return v;
+      }
+      return '▸';
+    }
     var html = '';
-    docs.forEach(function(d) {
+    docs.forEach(function(d, idx) {
       var isLatest = !!d.isLatest;
       var itemsHtml = (d.items||[]).map(function(it) {
-        return '<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--warm);">'
-          + '<span style="flex-shrink:0;font-size:0.72rem;background:var(--red);color:white;border-radius:10px;padding:2px 9px;white-space:nowrap;align-self:flex-start;margin-top:1px;">'
-          + (it.subtitle||'') + '</span>'
+        var icon = getIcon(it.subtitle||'');
+        return '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--warm);">'
+          + '<span style="flex-shrink:0;font-size:0.68rem;background:' + (isLatest?'var(--red)':'#6c757d') + ';color:white;border-radius:10px;padding:2px 9px;white-space:nowrap;align-self:flex-start;margin-top:2px;display:flex;align-items:center;gap:3px;">'
+          + icon + ' ' + (it.subtitle||'')
+          + '</span>'
           + '<span style="font-size:0.83rem;color:var(--text);line-height:1.7;">' + (it.detail||'') + '</span>'
           + '</div>';
       }).join('');
-      html += '<div class="result-card" style="margin-bottom:14px;' + (isLatest ? 'border:2px solid var(--red);' : '') + '">'
-        + '<div class="result-head" style="background:' + (isLatest ? 'var(--red-faint)' : 'var(--warm)') + ';">'
+
+      // 版本 emoji
+      var verEmoji = isLatest ? '🆕 ' : (idx === 1 ? '📌 ' : '📋 ');
+
+      html += '<div class="result-card" style="margin-bottom:16px;' + (isLatest ? 'border:2px solid var(--red);box-shadow:0 4px 16px rgba(185,74,58,0.12);' : '') + '">'
+        // 版本標頭
+        + '<div style="background:' + (isLatest ? 'linear-gradient(135deg,var(--red),#c0392b)' : 'var(--warm)') + ';padding:14px 16px;border-radius:6px 6px 0 0;">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">'
         + '<div>'
-        + '<h3 style="color:' + (isLatest ? 'var(--red)' : 'var(--text)') + ';font-size:0.95rem;">'
-        + (d.version||'')
-        + (isLatest ? ' <span style="font-size:0.68rem;background:var(--red);color:white;border-radius:3px;padding:1px 6px;margin-left:4px;">最新</span>' : '')
-        + '</h3>'
-        + '<div style="font-size:0.8rem;color:var(--text-light);margin-top:2px;">' + (d.date||'') + '　' + (d.title||'') + '</div>'
+        + '<div style="display:flex;align-items:center;gap:8px;">'
+        + '<span style="font-size:1.1rem;font-weight:800;color:' + (isLatest?'white':'var(--text)') + ';font-family:monospace;">' + verEmoji + (d.version||'') + '</span>'
+        + (isLatest ? '<span style="font-size:0.65rem;background:white;color:var(--red);border-radius:10px;padding:2px 8px;font-weight:700;">LATEST</span>' : '')
+        + '</div>'
+        + '<div style="font-size:0.78rem;color:' + (isLatest?'rgba(255,255,255,0.8)':'var(--text-light)') + ';margin-top:3px;">📅 ' + (d.date||'') + '</div>'
+        + '</div>'
+        + '<div style="font-size:0.85rem;font-weight:600;color:' + (isLatest?'rgba(255,255,255,0.9)':'var(--text-mid)') + ';text-align:right;">' + (d.title||'') + '</div>'
         + '</div>'
         + '</div>'
-        + '<div style="padding:12px 16px;">'
-        + (itemsHtml || '<div style="color:var(--text-light);font-size:0.83rem;padding:4px 0;">（無內容）</div>')
+        // 內容
+        + '<div style="padding:4px 16px 12px;">'
+        + (itemsHtml || '<div style="color:var(--text-light);font-size:0.83rem;padding:12px 0;">（無內容）</div>')
         + '</div>'
         + '</div>';
     });
