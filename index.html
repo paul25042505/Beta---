@@ -509,14 +509,14 @@ tr:hover td { background: #fdfcfb; }
   </div>
   <nav>
     <button id="nav-dashboard" class="active-nav" onclick="navTo('dashboardPage')"><span class="icon">🏠</span>首頁</button>
+    <button id="nav-items" onclick="navTo('itemsPage')"><span class="icon">📦</span>待領物品</button>
     <button id="nav-members" onclick="navTo('membersPage')"><span class="icon">👥</span>成員管理</button>
+    <button id="nav-attendance" onclick="navTo('attendancePage')"><span class="icon">✍</span>簽到簽退登錄</button>
+    <button id="nav-attquery" onclick="navTo('attQueryPage')"><span class="icon">📊</span>簽到簽退查詢</button>
     <button id="nav-form" onclick="navTo('formPage')"><span class="icon">📋</span>協勤案件登錄</button>
     <button id="nav-query" onclick="navTo('queryPage')"><span class="icon">🔍</span>協勤紀錄查詢</button>
-    <button id="nav-attendance" onclick="navTo('attendancePage')"><span class="icon">✍</span>簽到簽退登錄</button>
-    <button id="nav-attquery" onclick="navTo('attQueryPage')"><span class="icon">📊</span>簽到簽退記錄查詢</button>
     <button id="nav-report" onclick="navTo('reportPage')"><span class="icon">📑</span>報表匯出</button>
     <button id="nav-stats" onclick="navTo('statsPage')"><span class="icon">📈</span>協勤統計</button>
-    <button id="nav-items" onclick="navTo('itemsPage')"><span class="icon">📦</span>待領物品</button>
     <button id="nav-feedback" onclick="navTo('feedbackPage')"><span class="icon">💬</span>意見回饋</button>
     <button id="nav-changelog" onclick="navTo('changelogPage')"><span class="icon">📝</span>版本修改紀錄</button>
     <button id="nav-admin" onclick="navTo('adminPage')" style="display:none;border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:12px;"><span class="icon">⚙️</span>管理員後台</button>
@@ -616,39 +616,35 @@ tr:hover td { background: #fdfcfb; }
         <div class="section-line"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <button onclick="navTo('itemsPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">📦</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">待領物品</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">領取簽名</div>
+        </button>
         <button onclick="navTo('membersPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">👥</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">成員管理</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">新增／刪除成員</div>
-        </button>
-        <button onclick="navTo('itemsPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="position:relative;display:inline-block;font-size:1.6rem;margin-bottom:8px;">
-            📦
-            <span id="itemsBadge" style="display:none;position:absolute;top:-6px;right:-10px;background:#e74c3c;color:white;border-radius:50%;min-width:18px;height:18px;font-size:0.65rem;font-weight:700;line-height:18px;text-align:center;padding:0 4px;font-family:sans-serif;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
-          </div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">待領物品</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">領取物品、簽名確認</div>
-        </button>
-        
-        <button onclick="navTo('formPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="font-size:1.6rem;margin-bottom:8px;">📋</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤案件登錄</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">填寫協勤資料</div>
-        </button>
-        <button onclick="navTo('queryPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="font-size:1.6rem;margin-bottom:8px;">🔍</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤紀錄查詢</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">查詢歷史協勤</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">分隊成員查詢</div>
         </button>
         <button onclick="navTo('attendancePage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">✍</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退登錄</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">現場簽到使用</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">出勤簽到</div>
         </button>
         <button onclick="navTo('attQueryPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📊</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退記錄查詢</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">查詢簽到紀錄</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退查詢</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">出勤記錄查詢</div>
+        </button>
+        <button onclick="navTo('formPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">📋</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤案件登錄</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">出勤案件記錄</div>
+        </button>
+        <button onclick="navTo('queryPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">🔍</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤紀錄查詢</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">出勤記錄查詢</div>
         </button>
         <button onclick="navTo('reportPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📑</div>
@@ -658,7 +654,7 @@ tr:hover td { background: #fdfcfb; }
         <button onclick="navTo('statsPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📈</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤統計</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤排行榜</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">出勤排行榜</div>
         </button>
         <button onclick="navTo('feedbackPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">💬</div>
@@ -821,15 +817,12 @@ tr:hover td { background: #fdfcfb; }
       </div>
     </div>
     <!-- 分隊篩選 -->
-    <div class="filter-card">
-      <div class="filter-grid">
-        <div class="field">
-          <label>分隊別</label>
-          <select id="memberFilterUnit" onchange="filterMemberList()" style="width:100%;">
-            <option value="">全部分隊</option>
-          </select>
-        </div>
-      </div>
+    <div class="filter-card" style="padding:16px 20px;">
+      <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:8px;letter-spacing:0.04em;">分隊別</label>
+      <select id="memberFilterUnit" onchange="filterMemberList()"
+        style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:0.92rem;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:white;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%23999%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;background-size:12px;">
+        <option value="">請選擇分隊</option>
+      </select>
     </div>
     <div id="memberListContainer" style="margin-top:12px;"></div>
     <div class="site-footer-placeholder"></div>
@@ -3731,13 +3724,15 @@ async function initItemsPage() {
     // 清空成員列表（等選分隊後才顯示）
     const recipients = document.getElementById('itemRecipients');
     if (recipients) recipients.innerHTML = '<div style="color:var(--text-light);font-size:0.85rem;grid-column:1/-1;">請先選擇分隊</div>';
+    // 清空待領清單，等選分隊
+    if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>請先選擇分隊</div>';
     // 自動帶入登入者分隊
     const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
     if (usr.unit && unitSel) {
       unitSel.value = usr.unit;
       filterMembersByUnit();
+      await loadItems(usr.unit);
     }
-    await loadItems();
   } catch(e) {
     if (container) container.innerHTML = `<div class="query-empty"><span class="empty-icon">⚠️</span>初始化失敗：${e.message}</div>`;
   }
@@ -3763,20 +3758,26 @@ function renderItemRecipients() {
   });
 }
 
-async function loadItems() {
+async function loadItems(filterUnit) {
   const container = document.getElementById('itemsList');
   if (!container) return;
+  // 沒選分隊就顯示提示
+  const unit = filterUnit || document.getElementById('itemUnit')?.value || '';
+  if (!unit) {
+    container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>請先選擇分隊</div>';
+    return;
+  }
   container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>載入中...</div>';
   try {
     const docs = await fbList(COL_ITEMS);
     allItems = docs.map(d=>({
       itemId:d.id, itemName:d.itemName||'', note:d.note||'',
-      createTime:d.createTime||'',
+      unit:d.unit||'', createTime:d.createTime||'',
       recipients:Array.isArray(d.recipients)?d.recipients:[],
-    })).sort((a,b)=>a.createTime>b.createTime?1:-1);
+    })).filter(d => d.unit === unit)
+       .sort((a,b)=>a.createTime>b.createTime?1:-1);
   } catch(e) {
-    try { allItems=await jsonpFetch(BASE_URL+'?action=getItems','getItemsCb'); if(!Array.isArray(allItems))allItems=[]; }
-    catch(e2){ container.innerHTML='<div class="query-empty"><span class="empty-icon">⚠️</span>載入失敗</div>'; return; }
+    container.innerHTML='<div class="query-empty"><span class="empty-icon">⚠️</span>載入失敗</div>'; return;
   }
   renderItemsList();
   updateItemsBadge();
@@ -3899,7 +3900,8 @@ async function addItem() {
   const recipients=checked.map(cb=>cb.value).map(n=>({name:n,claimed:false,claimTime:'',sig:''}));
   const timeStr=new Date().toLocaleString('sv').replace('T',' ');
   try {
-    await fbAdd(COL_ITEMS,{itemName:name,note,recipients,createTime:timeStr});
+    const itemUnit = document.getElementById('itemUnit')?.value || '';
+    await fbAdd(COL_ITEMS,{itemName:name,note,recipients,unit:itemUnit,createTime:timeStr});
     document.getElementById('itemName').value='';
     document.getElementById('itemNote').value='';
     document.querySelectorAll('#itemRecipients input').forEach(cb=>{
@@ -4573,6 +4575,8 @@ function filterMembersByUnit() {
       el.classList.toggle('checked', this.checked);
     });
   });
+  // 同步載入該分隊的待領清單
+  loadItems(unit);
 }
 
 
