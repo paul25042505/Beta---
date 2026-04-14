@@ -1429,54 +1429,82 @@ tr:hover td { background: #fdfcfb; }
 <!-- ══════ PAGE：意見回饋 ══════ -->
 <div class="page" id="feedbackPage">
   <div class="query-wrap">
-    <div class="section">
-      <div class="section-head">
-        <div class="section-num">💬</div>
-        <div class="section-title">意見回饋</div>
-        <div class="section-line"></div>
+
+    <!-- 分隊選單 -->
+    <div class="filter-card" style="padding:16px 20px;margin-bottom:16px;">
+      <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:8px;letter-spacing:0.04em;">分隊別 <span class="req">*</span></label>
+      <select id="fbUnit" onchange="onFbUnitChange()"
+        style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:0.92rem;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:white;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%23999%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;background-size:12px;">
+        <option value="">請選擇分隊</option>
+      </select>
+    </div>
+
+    <!-- 留言者：大卡片選擇 -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:10px;letter-spacing:0.04em;">留言者</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <label id="fbAnonLabel" onclick="selectFbSender('anon')"
+          style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px 12px;border:2px solid var(--red);border-radius:12px;cursor:pointer;background:var(--red-faint);transition:all 0.15s;">
+          <input type="radio" name="fbSender" id="fbAnon" value="anon" checked style="display:none;">
+          <span style="font-size:2rem;">🎭</span>
+          <span style="font-weight:700;font-size:0.95rem;color:var(--red);">匿名</span>
+          <span style="font-size:0.72rem;color:var(--text-light);text-align:center;">不顯示姓名</span>
+        </label>
+        <label id="fbNamedLabel" onclick="selectFbSender('named')"
+          style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px 12px;border:2px solid var(--border);border-radius:12px;cursor:pointer;background:white;transition:all 0.15s;">
+          <input type="radio" name="fbSender" id="fbNamed" value="named" style="display:none;">
+          <span style="font-size:2rem;">👤</span>
+          <span style="font-weight:600;font-size:0.95rem;color:var(--text-mid);">具名</span>
+          <span style="font-size:0.72rem;color:var(--text-light);text-align:center;">顯示成員姓名</span>
+        </label>
       </div>
     </div>
-    <div class="card">
+
+    <!-- 具名時的成員選單 -->
+    <div id="fbNameField" class="filter-card" style="padding:16px 20px;margin-bottom:16px;display:none;">
+      <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:8px;letter-spacing:0.04em;">成員姓名</label>
+      <select id="fbName"
+        style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:0.92rem;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:white;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%23999%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;background-size:12px;">
+        <option value="">請先選分隊</option>
+      </select>
+    </div>
+
+    <!-- 類別 + 內容 -->
+    <div class="card" style="margin-bottom:16px;">
+
       <div class="field">
-        <label>分隊別 <span class="req">*</span></label>
-        <select id="fbUnit" onchange="onFbUnitChange()" style="width:100%;">
-          <option value="">請選擇分隊</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>留言者</label>
-        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;">
-            <input type="radio" name="fbSender" id="fbAnon" value="anon" checked onchange="toggleFbSender()"> 匿名
+        <label style="font-size:0.78rem;font-weight:600;color:var(--text-mid);letter-spacing:0.04em;">類別</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+          <label class="fb-cat-btn" data-val="建議" onclick="selectFbCat(this)"
+            style="display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:white;font-size:0.88rem;font-weight:500;color:var(--text-mid);transition:all 0.15s;">
+            <input type="radio" name="fbCat" value="建議" style="display:none;">💡 建議
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-weight:400;cursor:pointer;">
-            <input type="radio" name="fbSender" id="fbNamed" value="named" onchange="toggleFbSender()"> 選擇成員
+          <label class="fb-cat-btn" data-val="問題回報" onclick="selectFbCat(this)"
+            style="display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:white;font-size:0.88rem;font-weight:500;color:var(--text-mid);transition:all 0.15s;">
+            <input type="radio" name="fbCat" value="問題回報" style="display:none;">🐛 問題回報
+          </label>
+          <label class="fb-cat-btn" data-val="功能請求" onclick="selectFbCat(this)"
+            style="display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:white;font-size:0.88rem;font-weight:500;color:var(--text-mid);transition:all 0.15s;">
+            <input type="radio" name="fbCat" value="功能請求" style="display:none;">✨ 功能請求
+          </label>
+          <label class="fb-cat-btn" data-val="其他" onclick="selectFbCat(this)"
+            style="display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:white;font-size:0.88rem;font-weight:500;color:var(--text-mid);transition:all 0.15s;">
+            <input type="radio" name="fbCat" value="其他" style="display:none;">💭 其他
           </label>
         </div>
       </div>
-      <div id="fbNameField" class="field" style="display:none;">
-        <label>成員姓名</label>
-        <select id="fbName" style="width:100%;">
-          <option value="">請先選分隊</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>類別</label>
-        <select id="fbCategory" style="width:100%;">
-          <option value="建議">💡 建議</option>
-          <option value="問題回報">🐛 問題回報</option>
-          <option value="功能請求">✨ 功能請求</option>
-          <option value="其他">💭 其他</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>內容 <span class="req">*</span></label>
+
+      <div class="field" style="margin-top:16px;">
+        <label style="font-size:0.78rem;font-weight:600;color:var(--text-mid);letter-spacing:0.04em;">內容 <span class="req">*</span></label>
         <textarea id="fbContent" placeholder="請填寫您的意見或建議..." rows="5"
-          style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;font-family:'Noto Sans TC',sans-serif;font-size:0.9rem;resize:vertical;outline:none;color:var(--text);background:white;"></textarea>
+          style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans TC',sans-serif;font-size:0.9rem;resize:vertical;outline:none;color:var(--text);background:white;margin-top:8px;box-sizing:border-box;"
+          onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'"></textarea>
       </div>
-      <button onclick="submitFeedback()" class="btn-submit" style="width:100%;letter-spacing:0.1em;">送出意見</button>
+
+      <button onclick="submitFeedback()" class="btn-submit" style="width:100%;letter-spacing:0.1em;margin-top:4px;">送出意見</button>
       <div id="fbStatus" style="margin-top:12px;font-size:0.85rem;text-align:center;display:none;padding:10px;border-radius:6px;"></div>
     </div>
+
     <div class="site-footer-placeholder"></div>
   </div>
 </div>
@@ -2174,6 +2202,8 @@ function navTo(pageId, fromHistory) {
     attQueryPage:   ['簽到/退記錄查詢', 'Attendance Log', 'nav-attquery'],
     itemsPage:      ['物品領用', 'Item Pickup', 'nav-items'],
     changelogPage:  ['版本修改紀錄', 'Version History', 'nav-changelog'],
+    feedbackPage:   ['意見回饋', 'Feedback', 'nav-feedback'],
+    adminPage:      ['管理員後台', 'Admin Panel', 'nav-admin'],
   };
   const t = titles[pageId];
   if (t) {
@@ -4471,10 +4501,40 @@ async function onFbUnitChange() {
     filtered.map(m=>`<option value="${m.name}">${m.name}（${m.title||''}）</option>`).join('');
 }
 
-function toggleFbSender() {
-  const named = document.getElementById('fbNamed').checked;
+function selectFbSender(val) {
+  document.getElementById(val === 'anon' ? 'fbAnon' : 'fbNamed').checked = true;
+  const named = val === 'named';
   const f = document.getElementById('fbNameField');
   if (f) f.style.display = named ? '' : 'none';
+  // 卡片樣式
+  const anonL  = document.getElementById('fbAnonLabel');
+  const namedL = document.getElementById('fbNamedLabel');
+  if (anonL) {
+    anonL.style.border  = !named ? '2px solid var(--red)' : '2px solid var(--border)';
+    anonL.style.background = !named ? 'var(--red-faint)' : 'white';
+    anonL.querySelector('span:nth-child(2)').style.color = !named ? 'var(--red)' : 'var(--text-mid)';
+  }
+  if (namedL) {
+    namedL.style.border  = named ? '2px solid #2980b9' : '2px solid var(--border)';
+    namedL.style.background = named ? '#eaf4fb' : 'white';
+    namedL.querySelector('span:nth-child(2)').style.color = named ? '#1a5a8a' : 'var(--text-mid)';
+  }
+}
+
+function toggleFbSender() { selectFbSender(document.getElementById('fbNamed').checked ? 'named' : 'anon'); }
+
+function selectFbCat(el) {
+  document.querySelectorAll('.fb-cat-btn').forEach(b => {
+    b.style.border = '1.5px solid var(--border)';
+    b.style.background = 'white';
+    b.style.color = 'var(--text-mid)';
+    b.style.fontWeight = '500';
+  });
+  el.style.border = '1.5px solid var(--red)';
+  el.style.background = 'var(--red-faint)';
+  el.style.color = 'var(--red)';
+  el.style.fontWeight = '600';
+  el.querySelector('input').checked = true;
 }
 
 async function submitFeedback() {
