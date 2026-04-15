@@ -518,12 +518,12 @@ tr:hover td { background: #fdfcfb; }
   <nav>
     <button id="nav-dashboard" class="active-nav" onclick="navTo('dashboardPage')"><span class="icon">🏠</span>首頁</button>
     <button id="nav-members" onclick="navTo('membersPage')"><span class="icon">👥</span>成員管理</button>
-    <button id="nav-form" onclick="navTo('formPage')"><span class="icon">📋</span>出勤案件登錄</button>
-    <button id="nav-query" onclick="navTo('queryPage')"><span class="icon">🔍</span>出勤紀錄查詢</button>
+    <button id="nav-form" onclick="navTo('formPage')"><span class="icon">📋</span>協勤案件登錄</button>
+    <button id="nav-query" onclick="navTo('queryPage')"><span class="icon">🔍</span>協勤紀錄查詢</button>
     <button id="nav-attendance" onclick="navTo('attendancePage')"><span class="icon">✍</span>簽到簽退登錄</button>
     <button id="nav-attquery" onclick="navTo('attQueryPage')"><span class="icon">📊</span>簽到簽退記錄查詢</button>
     <button id="nav-report" onclick="navTo('reportPage')"><span class="icon">📑</span>報表匯出</button>
-    <button id="nav-stats" onclick="navTo('statsPage')"><span class="icon">📈</span>出勤統計</button>
+    <button id="nav-stats" onclick="navTo('statsPage')"><span class="icon">📈</span>協勤統計</button>
     <button id="nav-items" onclick="navTo('itemsPage')"><span class="icon">📦</span>待領物品</button>
     <button id="nav-feedback" onclick="navTo('feedbackPage')"><span class="icon">💬</span>意見回饋</button>
     <button id="nav-changelog" onclick="navTo('changelogPage')"><span class="icon">📝</span>版本修改紀錄</button>
@@ -586,7 +586,7 @@ tr:hover td { background: #fdfcfb; }
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr);">
         <div class="stat-card">
           <div class="stat-num" id="dashTodayAtt">—</div>
-          <div class="stat-label">今日出勤筆數</div>
+          <div class="stat-label">今日協勤筆數</div>
         </div>
         <div class="stat-card">
           <div class="stat-num" id="dashTodayMembers">—</div>
@@ -608,7 +608,7 @@ tr:hover td { background: #fdfcfb; }
       <div class="stats-row" style="grid-template-columns:repeat(2,1fr);">
         <div class="stat-card">
           <div class="stat-num" id="dashMonthAtt">—</div>
-          <div class="stat-label">出勤總筆數</div>
+          <div class="stat-label">協勤總筆數</div>
         </div>
         <div class="stat-card">
           <div class="stat-num" id="dashMonthHours">—</div>
@@ -627,46 +627,37 @@ tr:hover td { background: #fdfcfb; }
         <button onclick="navTo('membersPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">👥</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">成員管理</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">新增／刪除成員</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">分隊成員查詢</div>
         </button>
         <button onclick="navTo('itemsPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="position:relative;display:inline-block;font-size:1.6rem;margin-bottom:8px;">
-            📦
-            <span id="itemsBadge" style="display:none;position:absolute;top:-6px;right:-10px;background:#e74c3c;color:white;border-radius:50%;min-width:18px;height:18px;font-size:0.65rem;font-weight:700;line-height:18px;text-align:center;padding:0 4px;font-family:sans-serif;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>
-          </div>
+          <div style="font-size:1.6rem;margin-bottom:8px;">📦</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">待領物品</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">領取物品、簽名確認</div>
-        </button>
-        
-        <button onclick="navTo('formPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="font-size:1.6rem;margin-bottom:8px;">📋</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">出勤案件登錄</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">填寫出勤資料</div>
-        </button>
-        <button onclick="navTo('queryPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="font-size:1.6rem;margin-bottom:8px;">🔍</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">出勤紀錄查詢</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">查詢歷史出勤</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">領取簽名</div>
         </button>
         <button onclick="navTo('attendancePage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">✍</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退登錄</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">現場簽到使用</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤簽到</div>
         </button>
         <button onclick="navTo('attQueryPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📊</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退記錄查詢</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">查詢簽到紀錄</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退查詢</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤紀錄查詢</div>
         </button>
-        <button onclick="navTo('reportPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
-          <div style="font-size:1.6rem;margin-bottom:8px;">📑</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">報表匯出</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">產生 Word 報表</div>
+        <button onclick="navTo('formPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">📋</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤案件登錄</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤案件記錄</div>
+        </button>
+        <button onclick="navTo('queryPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">🔍</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤紀錄查詢</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤記錄查詢</div>
         </button>
         <button onclick="navTo('statsPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📈</div>
-          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">出勤統計</div>
-          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">出勤排行榜</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤統計</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤排行榜</div>
         </button>
         <button onclick="navTo('feedbackPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">💬</div>
@@ -674,12 +665,80 @@ tr:hover td { background: #fdfcfb; }
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">建議與問題回報</div>
         </button>
       </div>
+      </div>
+      <div class="site-footer-placeholder"></div>
     </div>
-    <div class="site-footer-placeholder"></div>
+
+    <!-- ── 簽退畫面 ── -->
+    <div id="attCheckoutView" style="display:none;">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num" style="font-size:0.9rem;">←</div>
+          <div class="section-title" id="attCheckoutName">成員姓名</div>
+          <div class="section-line"></div>
+          <button type="button" onclick="attBackToMain()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.78rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;min-height:unset;">← 返回</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">✓</div>
+          <div class="section-title">簽退</div>
+          <div class="section-line"></div>
+        </div>
+        <div class="card">
+          <div class="field" style="background:var(--warm);border-radius:4px;padding:10px 14px;margin-bottom:16px;">
+            <span style="font-size:0.78rem;color:var(--text-mid);">簽到時間：</span>
+            <span class="time-badge" id="attCheckinTimeRef"></span>
+          </div>
+          <div class="field">
+            <label>簽退時間 <span class="req">*</span></label>
+            <!-- 修復4：onchange 立即計算時數 -->
+            <select id="attCheckoutTime" style="width:100%;" onchange="autoCalcHours()"></select>
+          </div>
+          <div class="field">
+            <label>簽退簽名 <span class="req">*</span></label>
+            <div class="sig-wrap">
+              <canvas id="attCheckoutCanvas"></canvas>
+              <div class="sig-footer">
+                <span>請用滑鼠或手指於上方簽名</span>
+                <button type="button" class="btn-clear" onclick="clearAttCanvas('checkout')">清除重簽</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="field">
+            <label>協勤時數</label>
+            <input type="number" id="attHours" min="0" step="0.5" placeholder="選擇簽退時間後自動計算" style="width:100%;color:var(--text);" readonly>
+          </div>
+          <div class="field">
+            <label>協勤次數</label>
+            <input type="number" id="attCount" min="0" step="1" placeholder="0" style="width:100%;color:var(--text-light);" readonly>
+          </div>
+          <div class="field">
+            <label>服務人次</label>
+            <input type="number" id="attService" min="0" step="1" placeholder="0" style="width:100%;background:white;">
+          </div>
+          <div class="submit-section" style="margin-top:16px;">
+            <button type="button" class="btn-checkout" onclick="doCheckout()">確認簽退送出</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="success-msg" id="attSuccessMsg">
+        <div class="success-icon">✓</div>
+        <h3>簽退完成</h3>
+        <p id="attSuccessDetail">紀錄已成功儲存。</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
+          <button type="button" onclick="goToAttQuery()" style="background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看簽到紀錄 →</button>
+        </div>
+      </div>
+      <div class="site-footer-placeholder"></div>
+    </div>
   </div>
 </div>
 
-<!-- ══════ PAGE 1：出勤案件登錄 ══════ -->
+<!-- ══════ PAGE 1：協勤案件登錄 ══════ -->
 <div class="page" id="formPage">
   <div class="form-wrap">
     <form id="recordForm" novalidate>
@@ -691,12 +750,12 @@ tr:hover td { background: #fdfcfb; }
         </div>
         <div class="card">
           <div class="field">
-            <label for="date">出勤日期 <span class="req">*</span></label>
+            <label for="date">協勤日期 <span class="req">*</span></label>
             <input type="date" id="date" required>
           </div>
           <div class="card-divider"></div>
           <div class="field">
-            <label>出勤時間 <span class="req">*</span><span style="font-size:0.72rem;color:var(--text-light);margin-left:6px;">（24小時制）</span></label>
+            <label>協勤時間 <span class="req">*</span><span style="font-size:0.72rem;color:var(--text-light);margin-left:6px;">（24小時制）</span></label>
             <div class="time-row">
               <input type="time" id="timeOut" required>
               <div class="time-dash">—</div>
@@ -709,7 +768,7 @@ tr:hover td { background: #fdfcfb; }
       <div class="section">
         <div class="section-head">
           <div class="section-num">2</div>
-          <div class="section-title">出勤地點</div>
+          <div class="section-title">協勤地點</div>
           <div class="section-line"></div>
         </div>
         <div class="card">
@@ -777,7 +836,7 @@ tr:hover td { background: #fdfcfb; }
       <div class="section">
         <div class="section-head">
           <div class="section-num">4</div>
-          <div class="section-title">出勤義消簽名</div>
+          <div class="section-title">協勤義消簽名</div>
           <div class="section-line"></div>
         </div>
         <div class="card">
@@ -788,10 +847,13 @@ tr:hover td { background: #fdfcfb; }
             </select>
           </div>
           <div class="field">
-            <label for="memberSelect">出勤義消姓名 <span class="req">*</span></label>
+            <label for="memberSelect">協勤義消姓名 <span class="req">*</span></label>
             <select id="memberSelect" required>
               <option value="">— 請先選擇分隊 —</option>
             </select>
+            <button type="button" class="member-shortcut" onclick="navTo('membersPage')">
+              ＋ 找不到姓名？前往成員管理新增
+            </button>
           </div>
           <div class="card-divider"></div>
           <div class="field">
@@ -813,8 +875,8 @@ tr:hover td { background: #fdfcfb; }
       <div class="success-msg" id="successMsg">
         <div class="success-icon">✓</div>
         <h3>紀錄已成功送出</h3>
-        <p>感謝您的服務，出勤資料已記錄完成。</p>
-        <button type="button" onclick="goToQuery()" style="margin-top:12px;background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看出勤紀錄 →</button>
+        <p>感謝您的服務，協勤資料已記錄完成。</p>
+        <button type="button" onclick="goToQuery()" style="margin-top:12px;background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看協勤紀錄 →</button>
       </div>
       <div class="site-footer-placeholder"></div>
     </form>
@@ -837,7 +899,7 @@ tr:hover td { background: #fdfcfb; }
   </div>
 </div>
 
-<!-- ══════ PAGE 3：出勤查詢 ══════ -->
+<!-- ══════ PAGE 3：協勤查詢 ══════ -->
 <div class="page" id="queryPage">
   <div class="query-wrap">
     <div class="section">
@@ -904,9 +966,9 @@ tr:hover td { background: #fdfcfb; }
     </div>
 
     <div class="stats-row" id="statsRow" style="display:none;">
-      <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">出勤總筆數</div></div>
-      <div class="stat-card"><div class="stat-num" id="statMembers">0</div><div class="stat-label">出勤人數</div></div>
-      <div class="stat-card"><div class="stat-num" id="statDays">0</div><div class="stat-label">出勤天數</div></div>
+      <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">協勤總筆數</div></div>
+      <div class="stat-card"><div class="stat-num" id="statMembers">0</div><div class="stat-label">協勤人數</div></div>
+      <div class="stat-card"><div class="stat-num" id="statDays">0</div><div class="stat-label">協勤天數</div></div>
     </div>
 
     <div class="result-card" id="resultCard" style="display:none;">
@@ -920,7 +982,7 @@ tr:hover td { background: #fdfcfb; }
             <tr>
               <th>#</th>
               <th>日期</th>
-              <th>出勤時間</th>
+              <th>協勤時間</th>
               <th>行政區</th>
               <th>地址</th>
               <th>服務項目</th>
@@ -947,7 +1009,7 @@ tr:hover td { background: #fdfcfb; }
 <!-- ══════ PAGE 4：簽到簽退 ══════ -->
 <div class="page" id="attendancePage">
   <div class="attendance-wrap">
-    <div id="attMain">
+    <div id="attMain" style="display:block;">
       <div class="section">
         <div class="section-head">
           <div class="section-num">✍</div>
@@ -1060,7 +1122,7 @@ tr:hover td { background: #fdfcfb; }
             <input type="number" id="attHours" min="0" step="0.5" placeholder="選擇簽退時間後自動計算" style="width:100%;color:var(--text);" readonly>
           </div>
           <div class="field">
-            <label>出勤次數</label>
+            <label>協勤次數</label>
             <input type="number" id="attCount" min="0" step="1" placeholder="0" style="width:100%;color:var(--text-light);" readonly>
           </div>
           <div class="field">
@@ -1130,7 +1192,7 @@ tr:hover td { background: #fdfcfb; }
             <tr>
               <th>#</th><th>日期</th><th>類別</th><th>姓名</th><th>職稱</th>
               <th>簽到</th><th>簽退</th><th>協勤時數</th>
-              <th>出勤次數</th><th>服務人次</th><th>操作</th>
+              <th>協勤次數</th><th>服務人次</th><th>操作</th>
             </tr>
           </thead>
           <tbody id="aqResultBody"></tbody>
@@ -1170,7 +1232,7 @@ tr:hover td { background: #fdfcfb; }
       <div class="field"><label>簽退時間</label><select id="aqEditCheckout" style="width:100%;" onchange="autoCalcEditHours()"></select></div>
     </div>
     <div class="field"><label>協勤時數</label><input type="number" id="aqEditHours" style="width:100%;color:var(--text-light);" min="0" step="0.5" readonly></div>
-    <div class="field"><label>出勤次數</label><input type="number" id="aqEditCount" style="width:100%;color:var(--text-light);" min="0" step="1" readonly></div>
+    <div class="field"><label>協勤次數</label><input type="number" id="aqEditCount" style="width:100%;color:var(--text-light);" min="0" step="1" readonly></div>
     <div class="field"><label>服務人次</label><input type="number" id="aqEditService" style="width:100%;background:white;" min="0" step="1"></div>
     <div style="display:flex;gap:10px;margin-top:8px;">
       <button onclick="saveAttEdit()" class="btn-search" style="flex:1;">儲存</button>
@@ -1255,7 +1317,7 @@ tr:hover td { background: #fdfcfb; }
         <div style="margin-bottom:20px;">
           <div style="font-weight:700;font-size:0.9rem;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
             <span style="display:inline-block;width:20px;height:20px;background:var(--red);border-radius:4px;color:white;font-size:0.7rem;line-height:20px;text-align:center;">3</span>
-            救護出勤紀錄表
+            救護協勤紀錄表
           </div>
           <div class="filter-grid">
             <div class="field" style="grid-column:1/-1;">
@@ -1291,7 +1353,7 @@ tr:hover td { background: #fdfcfb; }
     <div class="section">
       <div class="section-head">
         <div class="section-num">📈</div>
-        <div class="section-title">月出勤統計</div>
+        <div class="section-title">月協勤統計</div>
         <div class="section-line"></div>
       </div>
       <div class="filter-card" style="margin-bottom:16px;">
@@ -1315,15 +1377,15 @@ tr:hover td { background: #fdfcfb; }
         </div>
       </div>
       <div class="stats-row" id="statsOverview" style="display:none;margin-bottom:16px;">
-        <div class="stat-card"><div class="stat-num" id="statsTotal">0</div><div class="stat-label">出勤總筆數</div></div>
-        <div class="stat-card"><div class="stat-num" id="statsMemCount">0</div><div class="stat-label">出勤人數</div></div>
+        <div class="stat-card"><div class="stat-num" id="statsTotal">0</div><div class="stat-label">協勤總筆數</div></div>
+        <div class="stat-card"><div class="stat-num" id="statsMemCount">0</div><div class="stat-label">協勤人數</div></div>
         <div class="stat-card"><div class="stat-num" id="statsTotalHours">0</div><div class="stat-label">協勤總時數</div></div>
       </div>
       <div class="result-card" id="statsTableCard" style="display:none;">
-        <div class="result-head"><h3 id="statsTableTitle">出勤排行榜</h3></div>
+        <div class="result-head"><h3 id="statsTableTitle">協勤排行榜</h3></div>
         <div class="result-table-wrap">
           <table class="stats-table">
-            <thead><tr><th>排名</th><th>姓名</th><th>分隊別</th><th>出勤次數</th><th>協勤時數</th><th>服務人次</th><th>出勤佔比</th></tr></thead>
+            <thead><tr><th>排名</th><th>姓名</th><th>分隊別</th><th>協勤次數</th><th>協勤時數</th><th>服務人次</th><th>協勤佔比</th></tr></thead>
             <tbody id="statsTableBody"></tbody>
           </table>
         </div>
@@ -1594,7 +1656,7 @@ tr:hover td { background: #fdfcfb; }
       <div id="adminAttList" style="margin-top:12px;"></div>
     </div>
     <div class="section">
-      <div class="section-head"><div class="section-num">📋</div><div class="section-title">出勤紀錄管理</div><div class="section-line"></div></div>
+      <div class="section-head"><div class="section-num">📋</div><div class="section-title">協勤紀錄管理</div><div class="section-line"></div></div>
       <div class="filter-card">
         <div class="filter-grid">
           <div class="field"><label>日期（起）</label><input type="date" id="adminOutFrom"></div>
@@ -1775,7 +1837,7 @@ function ensureFirebase() {
         _fbDB = firebase.firestore();
         _fbReady = true;
         resolve();
-      } catch(e) { reject(e); }
+      } catch(e) { console.warn('Firebase init failed:', e); resolve(); }
     }
     tryInit();
   });
@@ -2224,11 +2286,11 @@ function navTo(pageId, fromHistory) {
 
   const titles = {
     dashboardPage:  ['救護義消系統', 'Emergency Volunteer System', 'nav-dashboard'],
-    formPage:       ['出勤案件登錄', 'Outing Record', 'nav-form'],
+    formPage:       ['協勤案件登錄', 'Outing Record', 'nav-form'],
     membersPage:    ['成員管理', 'Member Management', 'nav-members'],
-    queryPage:      ['出勤紀錄查詢', 'Attendance Query', 'nav-query'],
+    queryPage:      ['協勤紀錄查詢', 'Attendance Query', 'nav-query'],
     attendancePage: ['簽到簽退登錄', 'Sign In / Sign Out', 'nav-attendance'],
-    statsPage:      ['出勤統計', 'Attendance Statistics', 'nav-stats'],
+    statsPage:      ['協勤統計', 'Attendance Statistics', 'nav-stats'],
     reportPage:     ['報表匯出', 'Reports', 'nav-report'],
     attQueryPage:   ['簽到/退記錄查詢', 'Attendance Log', 'nav-attquery'],
     itemsPage:      ['物品領用', 'Item Pickup', 'nav-items'],
@@ -2245,15 +2307,34 @@ function navTo(pageId, fromHistory) {
 
   if (pageId === 'dashboardPage') loadDashboard();
   else if (pageId === 'formPage') { initFormPage(); setTimeout(() => resizeCanvas(), 50); }
-  else if (pageId === 'membersPage') loadMembers();
+  else if (pageId === 'membersPage') initMembersPage();
   else if (pageId === 'queryPage') updateQueryMemberSelect();
-  else if (pageId === 'attendancePage') initAttendancePage();
+  else if (pageId === 'attendancePage') {
+    // 先立即重置，再呼叫 initAttendancePage
+    var _am = document.getElementById('attMain');
+    var _acv = document.getElementById('attCheckoutView');
+    if (_am)  _am.style.display  = 'block';
+    if (_acv) _acv.style.display = 'none';
+    initAttendancePage();
+    // 300ms / 1000ms 雙重保險
+    setTimeout(function() {
+      var m = document.getElementById('attMain');
+      var c = document.getElementById('attCheckoutView');
+      if (m)  m.style.display  = 'block';
+      if (c)  c.style.display  = 'none';
+    }, 300);
+    setTimeout(function() {
+      var m = document.getElementById('attMain');
+      var c = document.getElementById('attCheckoutView');
+      if (m)  m.style.display  = 'block';
+      if (c)  c.style.display  = 'none';
+    }, 1000);
+  }
   else if (pageId === 'statsPage') initStatsPage();
   else if (pageId === 'reportPage') initReportPage();
   else if (pageId === 'itemsPage')  initItemsPage();
   else if (pageId === 'attQueryPage') initAttQuery();
   else if (pageId === 'adminPage')    initAdminPage();
-  else if (pageId === 'membersPage')  initMembersPage();
   else if (pageId === 'feedbackPage') initFeedbackPage();
 
   closeDrawer();
@@ -2496,7 +2577,7 @@ document.getElementById('newMemberName')?.addEventListener('keydown', e => {
 });
 
 // ════════════════════════════════════════
-// 出勤記錄表單
+// 協勤記錄表單
 // ════════════════════════════════════════
 document.getElementById('date')?.setAttribute('value', new Date().toLocaleDateString('sv'));
 setDuty('協勤');
@@ -2540,7 +2621,7 @@ function getPos(e) {
 }
 
 function setDuty(type) {
-  // 出勤案件登錄已移除類別選項，此函式保留以防呼叫但不執行任何操作
+  // 協勤案件登錄已移除類別選項，此函式保留以防呼叫但不執行任何操作
   var el = document.getElementById('dutyType');
   if (el) el.value = type;
 }
@@ -2552,11 +2633,11 @@ function setAttDuty(type) {
 }
 function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; }
 
-document.getElementById('recordForm').addEventListener('submit', function(e) {
+document.getElementById('recordForm')?.addEventListener('submit', function(e) {
   e.preventDefault();
   const checked = [...document.querySelectorAll('#serviceGrid input:checked')];
   if (checked.length === 0) { alert('請至少選擇一項服務內容'); return; }
-  if (!document.getElementById('memberSelect').value) { alert('請選擇出勤義消姓名'); return; }
+  if (!document.getElementById('memberSelect').value) { alert('請選擇協勤義消姓名'); return; }
   if (!hasSig) { alert('請完成義消簽名'); return; }
 
   const data = {
@@ -2594,7 +2675,7 @@ document.getElementById('recordForm').addEventListener('submit', function(e) {
   .finally(() => { btn.textContent = '送　出　紀　錄'; btn.disabled = false; });
 });
 
-// 從出勤登錄跳到查詢頁並帶入今日條件
+// 從協勤登錄跳到查詢頁並帶入今日條件
 function goToQuery() {
   const today = new Date().toLocaleDateString('sv');
   navTo('queryPage');
@@ -2653,7 +2734,7 @@ function showPendingItemsAlert() {
 }
 
 // ════════════════════════════════════════
-// 出勤查詢
+// 協勤查詢
 // ════════════════════════════════════════
 let allRecords = [];
 let filteredRecords = [];
@@ -2684,7 +2765,10 @@ async function doQuery() {
         date:d.date||'',timeOut:d.timeOut||'',timeBack:d.timeBack||'',
         district:(d.district||'').replace(/^台中/,'臺中'),
         address:d.address||'',services:d.services||'',
-        note:d.note||'',memberName:d.memberName||'',signature:d.signature||'',
+        note:d.note||'',
+        memberName:d.memberName||'',
+        signature:d.signature||'',
+        dutyType:d.dutyType||'',
       }));
     } catch(e) {
       allRecords = [];
@@ -2701,19 +2785,6 @@ async function doQuery() {
   const district = document.getElementById('qDistrict')?.value || '';
   const service  = document.getElementById('qService')?.value || '';
   const duty     = document.getElementById('qDuty')?.value || '';
-
-  allRecords = allRecords.map(r => ({
-    date:       normDate(r['日期'] || r.date || ''),
-    timeOut:    fmtTime(r['出勤時間'] || r.timeOut || ''),
-    timeBack:   fmtTime(r['返勤時間'] || r.timeBack || ''),
-    district:   String(r['行政區'] || r.district || '').replace(/^台中/,'臺中'),
-    address:    r['詳細地址'] || r.address || '',
-    services:   r['服務內容'] || r.services || '',
-    note:       r['備註'] || r.note || '',
-    dutyType:   String(r['出勤類別'] || r.dutyType || ''),
-    memberName: String(r['姓名'] || ''),
-    signature:  String(r['簽名'] || ''),
-  }));
 
   filteredRecords = allRecords.filter(r => {
     if (dateFrom && r.date < dateFrom) return false;
@@ -2741,12 +2812,8 @@ function renderQueryResults(records) {
   if (records.length === 0) {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:30px;">查無符合條件的紀錄</td></tr>';
   } else {
-    // 修復3：每月序號重算
-    const monthCounters = {};
     tbody.innerHTML = records.map((r, i) => {
-      const m = (r.date || '').substring(0, 7);
-      monthCounters[m] = (monthCounters[m] || 0) + 1;
-      const seqNum = monthCounters[m];
+      const seqNum = i + 1;
       const tags = (r.services || '').split('、').filter(Boolean)
         .map(s => `<span class="tag">${s}</span>`).join('');
       const timeStr = r.timeOut && r.timeBack ? `${r.timeOut} — ${r.timeBack}` : (r.timeOut || '');
@@ -2792,7 +2859,7 @@ function resetQuery() {
 
 function exportCSV() {
   if (!filteredRecords.length) return;
-  const headers = ['日期','出勤類別','出勤時間','返勤時間','行政區','地址','服務項目','義消姓名','備註'];
+  const headers = ['日期','協勤類別','協勤時間','返勤時間','行政區','地址','服務項目','義消姓名','備註'];
   const rows = filteredRecords.map(r =>
     [r.date, r.dutyType, r.timeOut, r.timeBack, r.district, r.address, r.services, r.memberName, r.note]
     .map(v => `"${(String(v||'')).replace(/"/g,'""')}"`));
@@ -2800,7 +2867,7 @@ function exportCSV() {
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `出勤紀錄_${new Date().toLocaleDateString('sv')}.csv`;
+  a.download = `協勤紀錄_${new Date().toLocaleDateString('sv')}.csv`;
   a.click();
 }
 
@@ -2824,12 +2891,35 @@ function roundTo15(date) {
 }
 
 async function initAttendancePage() {
+  // 追蹤誰把 attMain 設成 none
+  const _attMain = document.getElementById('attMain');
+  const _attCoView = document.getElementById('attCheckoutView');
+  if (_attMain) { _attMain.style.display = 'block'; _attMain.style.visibility = 'visible'; }
+  if (_attCoView) _attCoView.style.display = 'none';
+  // 監控 display 變化
+  if (_attMain && !_attMain._watched) {
+    _attMain._watched = true;
+    var _origSet = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'display') && Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'display').set;
+    if (_origSet) {
+      var _style = _attMain.style;
+      Object.defineProperty(_style, 'display', {
+        get: function() { return _origSet ? '' : this._display || ''; },
+        set: function(v) {
+          if (v === 'none') { console.error('[attMain] display 被設成 none！呼叫堆疊:', new Error().stack); }
+          _origSet.call(this, v);
+        },
+        configurable: true
+      });
+    }
+  }
+  try {
+
   const now = new Date();
   document.getElementById('attDate').value = now.toLocaleDateString('sv');
   buildTimeOptions('attCheckinTime', roundTo15(now));
   buildTimeOptions('attCheckoutTime', roundTo15(now));
 
-  await Promise.all([loadMembers(), loadUnits()]);
+  try { await Promise.all([loadMembers(), loadUnits()]); } catch(e) { console.warn('loadMembers/Units:', e); }
   // 填分隊選單
   const unitSel = document.getElementById('attUnitSel');
   if (unitSel) {
@@ -2841,20 +2931,29 @@ async function initAttendancePage() {
   }
   loadItems();  // 預載物品清單，供簽到後提示用
   const sel = document.getElementById('attMemberSel');
-  sel.innerHTML = '<option value="">— 請選擇 —</option>';
-  members.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.name;
-    opt.textContent = m.title ? `${m.name}（${m.title}）` : m.name;
-    sel.appendChild(opt);
-  });
+  if (sel) {
+    sel.innerHTML = '<option value="">— 請先選擇分隊 —</option>';
+  }
 
   attCheckinHasSig = false;
-  document.getElementById('attSuccessMsg').classList.remove('show');
+  document.getElementById('attSuccessMsg')?.classList.remove('show');
   setTimeout(() => initAttCanvas('checkin'), 100);
 
   // 從 Sheets 讀取今日在線名單，還原 attSessions
   await loadTodayCheckins();
+  // loadTodayCheckins → renderCheckinList 完成後再次確保顯示狀態
+  const _m2 = document.getElementById('attMain');
+  const _c2 = document.getElementById('attCheckoutView');
+  if (_m2) _m2.style.display = 'block';
+  if (_c2) _c2.style.display = 'none';
+  } catch(e) {
+    console.error('initAttendancePage 失敗:', e);
+    // Firebase 失敗時也要確保頁面顯示
+    var m = document.getElementById('attMain');
+    var c = document.getElementById('attCheckoutView');
+    if (m)  m.style.display  = 'block';
+    if (c)  c.style.display  = 'none';
+  }
 }
 
 // ── 從 Sheets 讀取今日已簽到未簽退名單 ──
@@ -2918,7 +3017,7 @@ function renderCheckinList() {
       + '</div>'
       + '<span class="att-status-badge in">簽到 ' + s.checkinTime + '</span>'
       + '<div style="width:8px;"></div>'
-      + '<button class="att-member-btn" style="border-color:var(--red);color:var(--red);" onclick="openCheckout(\'' + key.replace(/'/g, String.fromCharCode(39)) + '\')">簽退</button>'
+      + '<button class="att-member-btn" style="border-color:var(--red);color:var(--red);" data-key="' + key.replace(/"/g, '&quot;') + '" onclick="openCheckout(this.dataset.key)">簽退</button>'
       + '</div>';
   }).join('');
 }
@@ -2926,16 +3025,21 @@ function renderCheckinList() {
 function openCheckout(key) {
   attCheckoutTarget = key;
   const session = attSessions[key];
-  const memberName = session.memberName || key;
+  // session 可能用 memberName 當 key（舊格式）或 docId（新格式）
+  const memberName = session ? (session.memberName || key) : key;
+  const resolvedSession = session || Object.values(attSessions).find(s => s.memberName === key) || {};
   document.getElementById('attCheckoutName').textContent    = memberName;
-  document.getElementById('attCheckinTimeRef').textContent  = session.checkinTime;
+  document.getElementById('attCheckinTimeRef').textContent  = resolvedSession.checkinTime || '';
   buildTimeOptions('attCheckoutTime', roundTo15(new Date()));
   document.getElementById('attHours').value   = '';
   document.getElementById('attCount').value   = '';
   document.getElementById('attService').value = '';
-  document.getElementById('attSuccessMsg').classList.remove('show');
-  document.getElementById('attMain').style.display         = 'none';
-  document.getElementById('attCheckoutView').style.display = 'block';
+  document.getElementById('attSuccessMsg')?.classList.remove('show');
+  // 只有在 attendancePage 顯示時才切換
+  if (document.getElementById('attendancePage').classList.contains('active')) {
+    document.getElementById('attMain').style.display         = 'none';
+    document.getElementById('attCheckoutView').style.display = 'block';
+  }
   attCheckoutHasSig = false;
   autoCalcHours();
   loadTodayCount(memberName);
@@ -2964,7 +3068,7 @@ function initAttCanvas(type) {
   setTimeout(() => {
     const ratio = window.devicePixelRatio || 1;
     const rect  = newCanvas.getBoundingClientRect();
-    const w     = rect.width || newCanvas.parentElement.getBoundingClientRect().width || 300;
+    const w     = rect.width || (newCanvas.parentElement ? newCanvas.parentElement.getBoundingClientRect().width : 0) || 300;
     newCanvas.width  = w * ratio;
     newCanvas.height = 160 * ratio;
     ctx.scale(ratio, ratio);
@@ -3089,10 +3193,12 @@ function autoCalcEditHours() {
   document.getElementById('aqEditHours').value = calcHours(inTime, outTime);
 }
 
-// 查當班時段出勤次數（簽到時間 ~ 簽退時間內）
+// 查當班時段協勤次數（簽到時間 ~ 簽退時間內）
 async function loadTodayCount(memberName) {
-  const date      = (attSessions[memberName] && attSessions[memberName].date) || document.getElementById('attDate').value;
-  const checkinT  = (attSessions[memberName] || {}).checkinTime || '';
+  // attCheckoutTarget 是 key（docId），不是 memberName
+  const session   = attSessions[attCheckoutTarget] || {};
+  const date      = session.date || document.getElementById('attDate').value;
+  const checkinT  = session.checkinTime || '';
   const checkoutT = document.getElementById('attCheckoutTime').value || '';
   document.getElementById('attCount').value = 0;
   if (!checkinT || !checkoutT) return;
@@ -3159,10 +3265,15 @@ async function doCheckout() {
   attSessions[attCheckoutTarget].checkoutTime = checkoutTime;
 
   document.getElementById('attSuccessDetail').textContent =
-    `${attCheckoutTarget} ${session.checkinTime}～${checkoutTime}，協勤 ${hours} 小時，已儲存。`;
+    `${memberName} ${session.checkinTime}～${checkoutTime}，協勤 ${hours} 小時，已儲存。`;
   document.getElementById('attSuccessMsg').classList.add('show');
   btn.textContent = '確認簽退送出'; btn.disabled = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // 簽退完成後回到主畫面並更新名單
+  setTimeout(() => {
+    attSessions[attCheckoutTarget].done        = true;
+    attSessions[attCheckoutTarget].checkoutTime = checkoutTime;
+    attBackToMain();
+  }, 1500);
 }
 
 
@@ -3251,7 +3362,7 @@ function renderAttQueryResults() {
       const cin   = r.checkinTime  || fmtAqTime(r['簽到時間'] || '');
       const cout  = r.checkoutTime || fmtAqTime(r['簽退時間'] || '');
       const hrs   = r.hours  !== undefined ? r.hours  : (r['協勤時數'] !== undefined ? r['協勤時數'] : 0);
-      const cnt   = r.count   !== undefined ? r.count   : (r['出勤次數'] !== undefined ? r['出勤次數'] : 0);
+      const cnt   = r.count   !== undefined ? r.count   : (r['協勤次數'] !== undefined ? r['協勤次數'] : 0);
       const svc   = r.service !== undefined ? r.service : (r['服務人次'] !== undefined ? r['服務人次'] : 0);
       return `<tr>
         <td style="text-align:center;color:var(--text-light);font-size:0.8rem;">${i+1}</td>
@@ -3287,7 +3398,7 @@ function openAttEdit(idx) {
   document.getElementById('aqEditCheckin').value  = r.checkinTime  || fmtAqTime(r['簽到時間']  || '') || '';
   document.getElementById('aqEditCheckout').value = r.checkoutTime || fmtAqTime(r['簽退時間'] || '') || '';
   document.getElementById('aqEditHours').value   = r.hours   !== undefined ? r.hours   : ((r['協勤時數'] !== undefined && r['協勤時數'] !== '') ? r['協勤時數'] : 0);
-  document.getElementById('aqEditCount').value   = r.count   !== undefined ? r.count   : ((r['出勤次數'] !== undefined && r['出勤次數'] !== '') ? r['出勤次數'] : 0);
+  document.getElementById('aqEditCount').value   = r.count   !== undefined ? r.count   : ((r['協勤次數'] !== undefined && r['協勤次數'] !== '') ? r['協勤次數'] : 0);
   document.getElementById('aqEditService').value = r.service !== undefined ? r.service : ((r['服務人次'] !== undefined && r['服務人次'] !== '') ? r['服務人次'] : 0);
   document.getElementById('aqEditModal').style.display = 'flex';
   autoCalcEditHours();
@@ -3337,7 +3448,7 @@ function resetAttQuery() {
 
 function exportAttCSV() {
   if (!aqFiltered.length) return;
-  const headers = ['日期','姓名','職稱','簽到時間','簽退時間','協勤時數','出勤次數','服務人次'];
+  const headers = ['日期','姓名','職稱','簽到時間','簽退時間','協勤時數','協勤次數','服務人次'];
   const rows = aqFiltered.map(r => headers.map(h => `"${String(r[h]||'').replace(/"/g,'""')}"`));
   const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -3523,7 +3634,7 @@ async function loadStats() {
     document.getElementById('statsTotal').textContent = monthOut.length;
     document.getElementById('statsOverview').style.display = 'grid';
 
-    // 統計每人出勤
+    // 統計每人協勤
     const map = {};
     monthAtt.forEach(r => {
       const nm = r.memberName||'';
@@ -3540,7 +3651,7 @@ async function loadStats() {
     const totalHours = rows.reduce((s,r)=>s+r.hours,0);
     document.getElementById('statsTotalHours').textContent = totalHours%1===0?totalHours:totalHours.toFixed(1);
 
-    document.getElementById('statsTableTitle').textContent = `${year} 年 ${month} 月出勤排行榜${filterUnit?' — '+filterUnit:''}`;
+    document.getElementById('statsTableTitle').textContent = `${year} 年 ${month} 月協勤排行榜${filterUnit?' — '+filterUnit:''}`;
     const tbody = document.getElementById('statsTableBody');
     tbody.innerHTML = rows.map((r,i) => {
       const pct = totalCount > 0 ? Math.round(r.count/totalCount*100) : 0;
@@ -4270,7 +4381,7 @@ async function adminEditAtt(id) {
     <div class="field"><label>簽到時間</label><input type="text" id="aeAIn" value="${doc.checkinTime||''}" placeholder="HH:MM" style="width:100%;"></div>
     <div class="field"><label>簽退時間</label><input type="text" id="aeAOut" value="${doc.checkoutTime||''}" placeholder="HH:MM" style="width:100%;"></div>
     <div class="field"><label>協勤時數</label><input type="number" id="aeAHours" value="${doc.hours||0}" step="0.5" style="width:100%;"></div>
-    <div class="field"><label>出勤次數</label><input type="number" id="aeACount" value="${doc.count||0}" style="width:100%;"></div>
+    <div class="field"><label>協勤次數</label><input type="number" id="aeACount" value="${doc.count||0}" style="width:100%;"></div>
     <div class="field"><label>服務人次</label><input type="number" id="aeASvc" value="${doc.service||0}" style="width:100%;"></div>`;
   adminEditSave=async()=>{
     try {
@@ -4309,17 +4420,17 @@ async function loadAdminOuting() {
         <td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.8rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.services||''}</td>
         <td style="padding:6px 8px;border-bottom:1px solid var(--border);">
           <button onclick="adminEditOut('${d.id}')" style="background:none;border:1px solid var(--border);border-radius:3px;padding:2px 8px;font-size:0.72rem;cursor:pointer;">編</button>
-          <button onclick="adminDel('${COL_OUTING}','${d.id}','出勤 ${d.memberName} ${d.date}',loadAdminOuting)" style="background:none;border:1px solid #f5c6c6;border-radius:3px;padding:2px 8px;font-size:0.72rem;color:#b94a3a;cursor:pointer;margin-left:4px;">刪</button>
+          <button onclick="adminDel('${COL_OUTING}','${d.id}','協勤 ${d.memberName} ${d.date}',loadAdminOuting)" style="background:none;border:1px solid #f5c6c6;border-radius:3px;padding:2px 8px;font-size:0.72rem;color:#b94a3a;cursor:pointer;margin-left:4px;">刪</button>
         </td></tr>`).join('')}</tbody></table></div>`;
   } catch(e){el.innerHTML='載入失敗：'+e.message;}
 }
 
 async function adminEditOut(id) {
   const doc=await fbGet(COL_OUTING,id); if(!doc){alert('找不到資料');return;}
-  document.getElementById('adminEditTitle').textContent='編輯出勤紀錄';
+  document.getElementById('adminEditTitle').textContent='編輯協勤紀錄';
   document.getElementById('adminEditFields').innerHTML=`
     <div class="field"><label>日期</label><input type="date" id="aeODate" value="${doc.date||''}" style="width:100%;"></div>
-    <div class="field"><label>出勤時間</label><input type="time" id="aeOOut" value="${doc.timeOut||''}" style="width:100%;"></div>
+    <div class="field"><label>協勤時間</label><input type="time" id="aeOOut" value="${doc.timeOut||''}" style="width:100%;"></div>
     <div class="field"><label>返勤時間</label><input type="time" id="aeOBack" value="${doc.timeBack||''}" style="width:100%;"></div>
     <div class="field"><label>行政區</label><input type="text" id="aeODist" value="${doc.district||''}" style="width:100%;"></div>
     <div class="field"><label>詳細地址</label><input type="text" id="aeOAddr" value="${doc.address||''}" style="width:100%;"></div>
@@ -4551,31 +4662,23 @@ async function initMembersPage() {
   const sel = document.getElementById('memberFilterUnit');
   if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>載入中...</div>';
 
-  var unitsErr = '', membersErr = '';
-  try { await loadUnits(); } catch(e) { unitsErr = e.message; }
-  try { await loadMembers(); } catch(e) { membersErr = e.message; }
-
-  var unitOptions = [];
-  if (_unitsList && _unitsList.length > 0) {
-    unitOptions = _unitsList;
-  } else if (members && members.length > 0) {
-    unitOptions = [...new Set(members.map(m => (m.unit||'').trim()).filter(Boolean))].sort();
+  var docs = [];
+  try {
+    docs = await fbList(COL_WHITELIST);
+  } catch(e) {
+    if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">⚠️</span>Firebase 連線失敗：' + e.message + '</div>';
+    return;
   }
 
+  members = docs.map(d => ({
+    id: d.id, name: d.memberName||'', title: d.title||'',
+    unit: (d.unit||'').trim(), cert: d.cert||'', certExp: d.certExp||'',
+    role: d.role||(d.isAdmin?'admin':'member'), email: d.email||'',
+  })).filter(m => m.name);
+
+  var unitOptions = [...new Set(members.map(m => m.unit).filter(Boolean))].sort();
+
   if (sel) {
-    if (unitOptions.length === 0) {
-      var errMsg = unitsErr || membersErr || 'Firebase 未回應';
-      sel.innerHTML = '<option value="">無法載入分隊</option>';
-      if (container) container.innerHTML =
-        '<div style="padding:16px;background:#fff5f5;border:1px solid #f5c6c6;border-radius:8px;font-size:0.83rem;line-height:2;color:var(--text-mid);">'
-        + '<b style="color:var(--red);">⚠️ 無法載入分隊資料</b><br>'
-        + '錯誤：' + errMsg + '<br>'
-        + 'Firebase：' + (_fbReady ? '已初始化' : '未初始化') + '　'
-        + '分隊：' + (_unitsList ? _unitsList.length : 0) + ' 筆　'
-        + '成員：' + (members ? members.length : 0) + ' 筆'
-        + '</div>';
-      return;
-    }
     sel.innerHTML = '<option value="">請選擇分隊</option>' +
       unitOptions.map(u => '<option value="' + u + '">' + u + '</option>').join('');
     sel.value = '';
@@ -4769,7 +4872,7 @@ async function loadChangelog() {
       'Firebase':'🔥','整合':'🔥','資料':'📊','報表':'📑','後台':'⚙️','管理員':'⚙️',
       '分隊':'🏢','意見':'💬','角色':'👤','權限':'🔐','公告':'📢','UI':'🎨','介面':'🎨',
       '樣式':'🎨','修復':'🐛','Bug':'🐛','新增':'✨','功能':'✨','待領':'📦','物品':'📦',
-      '簽到':'✍','簽退':'✍','出勤':'🚑','查詢':'🔍','補簽':'🕐','類別':'🏷',
+      '簽到':'✍','簽退':'✍','協勤':'🚑','查詢':'🔍','補簽':'🕐','類別':'🏷',
       '顯示':'👁','排序':'📋','統計':'📈','安全':'🔒','其他':'💡',
     };
     function getIcon(subtitle) {
@@ -5022,7 +5125,8 @@ function updateDutyStyle() {
   // localhost、127.0.0.1、或直接開啟本機檔案（file://）都顯示開發者登入
   var isLocalDev = location.hostname === 'localhost'
     || location.hostname === '127.0.0.1'
-    || location.protocol === 'file:';
+    || location.protocol === 'file:'
+    || location.hostname.endsWith('.github.io');  // GitHub Pages 測試用
   if (isLocalDev) {
     var area = document.getElementById('devLoginArea');
     if (area) area.style.display = '';
@@ -5051,6 +5155,38 @@ function filterAdminWlByUnit() {
   if (!el) return;
   // 重新呼叫 loadAdminWhitelist 時傳入篩選條件
   loadAdminWhitelist(unit);
+}
+
+
+async function reloadMembersUnit() {
+  const sel = document.getElementById('memberFilterUnit');
+  const container = document.getElementById('memberListContainer');
+  if (sel) sel.innerHTML = '<option value="">載入中...</option>';
+  if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>載入中...</div>';
+
+  try {
+    // 強制重新讀 whitelist
+    const docs = await fbList('whitelist');
+    const units = [...new Set(docs.map(d => (d.unit||'').trim()).filter(Boolean))].sort();
+    members = docs.map(d => ({
+      id: d.id, name: d.memberName||'', title: d.title||'',
+      unit: d.unit||'', cert: d.cert||'', certExp: d.certExp||'',
+      role: d.role||(d.isAdmin?'admin':'member'), email: d.email||'',
+    })).filter(m => m.name);
+
+    if (sel) {
+      if (units.length === 0) {
+        sel.innerHTML = '<option value="">whitelist 無 unit 資料（共 ' + docs.length + ' 筆）</option>';
+        if (container) container.innerHTML = '<div style="padding:16px;font-size:0.83rem;color:var(--text-mid);">whitelist 共 ' + docs.length + ' 筆，但沒有 unit 欄位。<br>請到後台「成員帳號管理」編輯成員並設定分隊別。</div>';
+      } else {
+        sel.innerHTML = '<option value="">請選擇分隊</option>' +
+          units.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+        if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>請先選擇分隊</div>';
+      }
+    }
+  } catch(e) {
+    if (sel) sel.innerHTML = '<option value="">錯誤：' + e.message + '</option>';
+  }
 }
 
 </script>
