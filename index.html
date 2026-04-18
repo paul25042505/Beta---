@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>救護義消系統</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2MwMzkyYiIvPgogIDxyZWN0IHg9IjEwOCIgeT0iMjA2IiB3aWR0aD0iMjk2IiBoZWlnaHQ9IjEwMCIgcng9IjE4IiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjIwNiIgeT0iMTA4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjI5NiIgcng9IjE4IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=">
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iI2MwMzkyYiIvPgogIDxyZWN0IHg9IjEwOCIgeT0iMjA2IiB3aWR0aD0iMjk2IiBoZWlnaHQ9IjEwMCIgcng9IjE4IiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjIwNiIgeT0iMTA4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjI5NiIgcng9IjE4IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=">
+<link rel="manifest" href="/Emergency-Volunteer-System/manifest.json">
+<link rel="apple-touch-icon" href="/Emergency-Volunteer-System/icon-192.png">
 <meta name="theme-color" content="#c0392b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -628,6 +629,7 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminNavTo('adminSec-items')"    class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📦</span>物品領用</button>
       <button id="adminSubNav-announce" onclick="adminNavTo('adminSec-announce')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📢</span>公告管理</button>
       <button onclick="adminNavTo('adminSec-feedback')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">💬</span>意見回饋</button>
+      <button onclick="adminNavTo('adminSec-schedule')" class="admin-subnav-btn" id="adminSubNav-schedule"><span class="icon" style="font-size:0.75rem;">📅</span>定訓行事曆</button>
       <button onclick="adminNavTo('adminSec-changelog')"class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📝</span>版本紀錄</button>
       <button id="adminSubNav-loginlog" onclick="adminNavTo('adminSec-loginlog')" class="admin-subnav-btn" style="display:none;"><span class="icon" style="font-size:0.75rem;">🔐</span>登入紀錄</button>
     </div>
@@ -1892,6 +1894,7 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminScrollTo('adminSec-items')"    class="admin-tab">📦 物品</button>
       <button id="adminTab-announce" onclick="adminScrollTo('adminSec-announce')" class="admin-tab">📢 公告</button>
       <button onclick="adminScrollTo('adminSec-feedback')" class="admin-tab">💬 回饋</button>
+      <button onclick="adminScrollTo('adminSec-schedule')" class="admin-tab" id="adminTab-schedule">📅 定訓</button>
       <button onclick="adminScrollTo('adminSec-changelog')"class="admin-tab">📝 版本</button>
       <button id="adminTab-loginlog" onclick="adminScrollTo('adminSec-loginlog')" class="admin-tab" style="display:none;">🔐 登入紀錄</button>
     </div>
@@ -2057,6 +2060,39 @@ tr:hover td { background: #fdfcfb; }
         <button onclick="loadAdminFeedback()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
       </div>
       <div id="adminFeedbackList"></div>
+    </div>
+
+    <div class="section" id="adminSec-schedule">
+      <div class="section-head">
+        <div class="section-num">📅</div>
+        <div class="section-title">定訓行事曆</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <div class="filter-grid">
+          <div class="field">
+            <label>定訓日期 <span class="req">*</span></label>
+            <input type="date" id="scheduleDate">
+          </div>
+          <div class="field">
+            <label>分隊 <span class="req">*</span></label>
+            <select id="scheduleUnit">
+              <option value="">請選擇分隊</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column:1/-1;">
+            <label>主題／備註</label>
+            <input type="text" id="scheduleTopic" placeholder="例：CPR 複訓、指導醫師出席">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;font-weight:400;color:var(--text-mid);">
+            <input type="checkbox" id="scheduleNotify" checked style="accent-color:var(--red);"> 定訓前一天推播提醒
+          </label>
+          <button onclick="addSchedule()" class="btn-search" style="margin-left:auto;min-height:unset;padding:8px 20px;font-size:0.85rem;">新增</button>
+        </div>
+      </div>
+      <div id="adminScheduleList" style="margin-top:4px;"></div>
     </div>
 
     <div class="section" id="adminSec-changelog">
@@ -2252,6 +2288,33 @@ tr:hover td { background: #fdfcfb; }
       </div>
     </div>
 
+    <!-- 裝置設定 -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">📱</div>
+        <div class="section-title">裝置設定</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>加入主畫面</label>
+          <div style="font-size:0.82rem;color:var(--text-mid);margin-bottom:10px;line-height:1.6;">安裝到手機桌面後可接收定訓推播通知</div>
+          <button onclick="resetAndShowPWA()" style="width:100%;background:var(--red);color:white;border:none;border-radius:8px;padding:11px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">
+            📲 顯示安裝引導
+          </button>
+        </div>
+        <div class="card-divider"></div>
+        <div class="field">
+          <label>推播通知</label>
+          <div style="font-size:0.82rem;color:var(--text-mid);margin-bottom:10px;line-height:1.6;">定訓前一天晚上 8 點自動通知</div>
+          <button onclick="showNotifPrompt()" style="width:100%;background:white;color:var(--red);border:1.5px solid var(--red);border-radius:8px;padding:11px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">
+            🔔 開啟推播通知
+          </button>
+          <div id="notifStatusMsg" style="font-size:0.78rem;margin-top:8px;text-align:center;"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="site-footer-placeholder"></div>
   </div>
 </div>
@@ -2276,6 +2339,7 @@ tr:hover td { background: #fdfcfb; }
         <label>日期 <span class="req">*</span></label>
         <input type="date" id="meetingDate">
       </div>
+
       <div class="field">
         <label>分隊 <span class="req">*</span></label>
         <select id="meetingUnit">
@@ -2614,6 +2678,7 @@ function showApp(name, email, isAdmin, isOfficer, role) {
   if (logoutBtn) logoutBtn.style.display = 'inline';
   startIdleTimer();
   setTimeout(checkCertExpiry, 1500);
+  setTimeout(checkPWAPrompts, 4000);
 
   // 顯示簡易模式切換按鈕（管理員/承辦人不顯示）
   if (!isAdmin && !isOfficer) {
@@ -5496,7 +5561,7 @@ async function initAdminPage() {
 
   await loadUnits();
   populateUnitSelects();
-  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog(),loadAdminCaseTypes()]);
+  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog(),loadAdminCaseTypes(),initScheduleSection()]);
 
   // 顯示並定位固定 tab bar
   _positionAdminTabBar();
@@ -5508,8 +5573,8 @@ async function initAdminPage() {
   // IntersectionObserver：滾動時自動高亮對應 tab
   if (_adminTabObserver) _adminTabObserver.disconnect();
   const secIds = isAdminOnly
-    ? ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog','adminSec-loginlog']
-    : ['adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-feedback'];
+    ? ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-schedule','adminSec-changelog','adminSec-loginlog']
+    : ['adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-feedback','adminSec-schedule'];
   const tabs = document.querySelectorAll('.admin-tab');
   _adminTabObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -7175,9 +7240,9 @@ function meetingShowForm(doc) {
   const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
 
   document.getElementById('meetingFormTitle').textContent = doc ? '編輯定訓與公告' : '新增定訓與公告';
-  document.getElementById('meetingTitle').value   = doc ? (doc.title   || '') : '';
-  document.getElementById('meetingDate').value    = doc ? (doc.date    || new Date().toLocaleDateString('sv')) : new Date().toLocaleDateString('sv');
-  document.getElementById('meetingContent').value = doc ? (doc.content || '') : '';
+  document.getElementById('meetingTitle').value      = doc ? (doc.title     || '') : '';
+  document.getElementById('meetingDate').value       = doc ? (doc.date      || new Date().toLocaleDateString('sv')) : new Date().toLocaleDateString('sv');
+  document.getElementById('meetingContent').value   = doc ? (doc.content   || '') : '';
 
   // 分隊：承辦人鎖定自己分隊
   const unitSel = document.getElementById('meetingUnit');
@@ -7202,13 +7267,13 @@ function meetingHideForm() {
 }
 
 async function meetingSave() {
-  const title   = document.getElementById('meetingTitle').value.trim();
-  const date    = document.getElementById('meetingDate').value;
-  const unit    = document.getElementById('meetingUnit').value;
-  const content = document.getElementById('meetingContent').value.trim();
+  const title     = document.getElementById('meetingTitle').value.trim();
+  const date      = document.getElementById('meetingDate').value;
+  const unit      = document.getElementById('meetingUnit').value;
+  const content   = document.getElementById('meetingContent').value.trim();
 
   if (!title)   { alert('請填入標題'); return; }
-  if (!date)    { alert('請選擇日期'); return; }
+  if (!date)    { alert('請選擇發布日期'); return; }
   if (!unit)    { alert('請選擇分隊'); return; }
   if (!content) { alert('請填入會議內容'); return; }
 
@@ -7728,6 +7793,111 @@ async function checkCertExpiry() {
 }
 
 
+
+// ════════════════════════════════════════
+// 定訓行事曆（後台）
+// ════════════════════════════════════════
+const COL_SCHEDULE = 'trainingSchedule';
+
+async function initScheduleSection() {
+  // 填分隊選單
+  await loadUnits();
+  const sel = document.getElementById('scheduleUnit');
+  if (sel && _unitsList.length) {
+    sel.innerHTML = '<option value="">請選擇分隊</option>' +
+      _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+    // 承辦人鎖定自己分隊
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    if (!usr.isAdmin && usr.unit) {
+      sel.value = usr.unit;
+      sel.disabled = true;
+    }
+  }
+  await loadAdminSchedule();
+}
+
+async function loadAdminSchedule() {
+  const el = document.getElementById('adminScheduleList');
+  if (!el) return;
+  el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">載入中...</div>';
+  try {
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    let docs = await fbList(COL_SCHEDULE, 'date', 'asc');
+    // 承辦人只看自己分隊
+    if (!usr.isAdmin) docs = docs.filter(d => d.unit === usr.unit);
+
+    if (!docs.length) {
+      el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">尚無定訓排程</div>';
+      return;
+    }
+
+    const today = new Date().toLocaleDateString('sv');
+    el.innerHTML = '';
+    docs.forEach(d => {
+      const isPast = d.date < today;
+      const row = document.createElement('div');
+      row.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);opacity:${isPast?'0.5':'1'};`;
+
+      const dateEl = document.createElement('div');
+      dateEl.style.cssText = 'font-weight:600;font-size:0.88rem;color:var(--text);white-space:nowrap;min-width:90px;';
+      dateEl.textContent = d.date;
+
+      const unitEl = document.createElement('div');
+      unitEl.style.cssText = 'font-size:0.78rem;color:var(--text-light);white-space:nowrap;';
+      unitEl.textContent = d.unit || '';
+
+      const topicEl = document.createElement('div');
+      topicEl.style.cssText = 'flex:1;font-size:0.85rem;color:var(--text-mid);';
+      topicEl.textContent = d.topic || '（未填主題）';
+
+      const notifyEl = document.createElement('div');
+      notifyEl.style.cssText = 'font-size:0.72rem;';
+      notifyEl.textContent = d.notify !== false ? '🔔' : '🔕';
+      notifyEl.title = d.notify !== false ? '會推播提醒' : '不推播';
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '刪除';
+      delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:4px;padding:3px 10px;font-size:0.75rem;color:#b94a3a;cursor:pointer;font-family:"Noto Sans TC",sans-serif;white-space:nowrap;';
+      delBtn.onclick = () => deleteSchedule(d.id, d.date);
+
+      row.appendChild(dateEl);
+      row.appendChild(unitEl);
+      row.appendChild(topicEl);
+      row.appendChild(notifyEl);
+      row.appendChild(delBtn);
+      el.appendChild(row);
+    });
+  } catch(e) {
+    el.innerHTML = '<div style="color:#b94a3a;padding:8px 0;">載入失敗：' + e.message + '</div>';
+  }
+}
+
+async function addSchedule() {
+  const date   = document.getElementById('scheduleDate').value;
+  const unit   = document.getElementById('scheduleUnit').value;
+  const topic  = document.getElementById('scheduleTopic').value.trim();
+  const notify = document.getElementById('scheduleNotify').checked;
+
+  if (!date) { alert('請選擇定訓日期'); return; }
+  if (!unit) { alert('請選擇分隊'); return; }
+
+  try {
+    await fbAdd(COL_SCHEDULE, { date, unit, topic, notify });
+    document.getElementById('scheduleDate').value  = '';
+    document.getElementById('scheduleTopic').value = '';
+    await loadAdminSchedule();
+  } catch(e) { alert('新增失敗：' + e.message); }
+}
+
+async function deleteSchedule(id, date) {
+  if (!confirm(`確定刪除 ${date} 的定訓排程？`)) return;
+  try {
+    await fbDelete(COL_SCHEDULE, id);
+    await loadAdminSchedule();
+  } catch(e) { alert('刪除失敗：' + e.message); }
+}
+
+
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
   const el = document.getElementById('adminWlList');
@@ -7770,5 +7940,231 @@ async function reloadMembersUnit() {
 
 </script>
 </div><!-- /appScroll -->
+<!-- ══════ PWA 安裝引導 ══════ -->
+<div id="pwaPrompt" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;padding:12px 16px;background:white;box-shadow:0 -4px 20px rgba(0,0,0,0.15);border-top:1px solid var(--border);">
+  <div style="max-width:480px;margin:0 auto;">
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+      <span style="font-size:1.8rem;flex-shrink:0;">📲</span>
+      <div>
+        <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:3px;">加入主畫面，接收定訓提醒</div>
+        <div style="font-size:0.78rem;color:var(--text-light);line-height:1.5;">安裝後即可在有定訓的前一天收到通知提醒</div>
+      </div>
+      <button onclick="document.getElementById('pwaPrompt').style.display='none';localStorage.setItem('pwaDismissed','1');"
+        style="margin-left:auto;background:none;border:none;font-size:1.2rem;color:var(--text-light);cursor:pointer;flex-shrink:0;padding:4px;">✕</button>
+    </div>
+    <!-- Android：直接安裝 -->
+    <button id="pwaInstallBtn" style="display:none;width:100%;background:var(--red);color:white;border:none;border-radius:8px;padding:12px;font-size:0.92rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;margin-bottom:8px;">
+      📥 加入主畫面
+    </button>
+    <!-- iOS：教學步驟 -->
+    <div id="pwaIOSGuide" style="display:none;background:var(--warm);border-radius:8px;padding:12px;">
+      <div style="font-size:0.8rem;font-weight:600;color:var(--text);margin-bottom:8px;">iOS 安裝步驟：</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:0.8rem;color:var(--text-mid);">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="background:var(--red);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0;">1</span>點擊 Safari 底部的 <strong>分享按鈕</strong> 📤</div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="background:var(--red);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0;">2</span>選擇「<strong>加入主畫面</strong>」</div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="background:var(--red);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0;">3</span>點擊右上角「<strong>新增</strong>」</div>
+      </div>
+      <button onclick="document.getElementById('pwaPrompt').style.display='none';localStorage.setItem('pwaDismissed','1');"
+        style="width:100%;margin-top:10px;background:var(--red);color:white;border:none;border-radius:6px;padding:10px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">
+        好，我知道了
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 通知訂閱提示 -->
+<div id="notifPrompt" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:499;padding:12px 16px;background:white;box-shadow:0 -4px 20px rgba(0,0,0,0.15);border-top:1px solid var(--border);">
+  <div style="max-width:480px;margin:0 auto;">
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+      <span style="font-size:1.8rem;flex-shrink:0;">🔔</span>
+      <div>
+        <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:3px;">開啟定訓提醒通知</div>
+        <div style="font-size:0.78rem;color:var(--text-light);line-height:1.5;">定訓前一天晚上會自動通知你</div>
+      </div>
+      <button onclick="document.getElementById('notifPrompt').style.display='none';localStorage.setItem('notifDismissed','1');"
+        style="margin-left:auto;background:none;border:none;font-size:1.2rem;color:var(--text-light);cursor:pointer;flex-shrink:0;padding:4px;">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="subscribePush()" style="flex:1;background:var(--red);color:white;border:none;border-radius:8px;padding:12px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">開啟通知</button>
+      <button onclick="document.getElementById('notifPrompt').style.display='none';localStorage.setItem('notifDismissed','1');"
+        style="flex:1;background:white;color:var(--text-mid);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:0.9rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">稍後再說</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// PWA & Push Notification
+// ══════════════════════════════════════════
+const VAPID_PUBLIC_KEY = 'BLt-Ma7FVRAYTqD9G8nAoE76gpu0fuYO9tSP_u9qgBzYteCx5tXYbwWna0cGZJJgqXx2sUTRXmLpi4z5spU4vRE';
+
+// urlBase64 轉 Uint8Array（VAPID 用）
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+// 註冊 Service Worker
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) return null;
+  // 只在 GitHub Pages 上註冊，避免開發環境報錯
+  if (!location.hostname.includes('github.io')) return null;
+  try {
+    const reg = await navigator.serviceWorker.register(
+      '/Emergency-Volunteer-System/service-worker.js',
+      { scope: '/Emergency-Volunteer-System/' }
+    );
+    return reg;
+  } catch(e) {
+    console.warn('SW 註冊失敗：', e);
+    return null;
+  }
+}
+
+// 訂閱推播
+async function subscribePush() {
+  document.getElementById('notifPrompt').style.display = 'none';
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      alert('請允許通知權限才能接收定訓提醒');
+      return;
+    }
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+    // 儲存訂閱到 Firestore
+    await savePushSubscription(sub);
+    localStorage.setItem('pushSubscribed', '1');
+    const statusEl = document.getElementById('notifStatusMsg');
+    if (statusEl) { statusEl.style.color='#1a6b35'; statusEl.textContent='✅ 已開啟推播通知'; }
+    alert('✅ 已開啟定訓提醒！定訓前一天晚上會通知你。');
+  } catch(e) {
+    console.warn('訂閱失敗：', e);
+    alert('訂閱失敗，請確認已安裝到主畫面並允許通知');
+  }
+}
+
+// 儲存訂閱到 Firestore
+async function savePushSubscription(sub) {
+  await ensureFirebase();
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const subJson = sub.toJSON();
+  await _fbDB.collection('pushSubscriptions').add({
+    endpoint:    subJson.endpoint,
+    p256dh:      subJson.keys.p256dh,
+    auth:        subJson.keys.auth,
+    memberName:  usr.memberName || usr.name || '',
+    unit:        usr.unit || '',
+    createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+  });
+}
+
+// 安裝引導邏輯
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('pwaPrompt').style.display = 'none';
+  if (outcome === 'accepted') localStorage.setItem('pwaInstalled', '1');
+});
+
+// 登入後顯示 PWA 安裝提示
+function resetAndShowPWA() {
+  // 清除之前的「不再顯示」記錄，強制重新顯示引導
+  localStorage.removeItem('pwaDismissed');
+  localStorage.removeItem('pwaInstalled');
+  const prompt   = document.getElementById('pwaPrompt');
+  const installBtn = document.getElementById('pwaInstallBtn');
+  const iosGuide   = document.getElementById('pwaIOSGuide');
+  const isIOS    = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  if (isStandalone) {
+    alert('✅ 已安裝到主畫面了！');
+    return;
+  }
+  if (isIOS) {
+    if (iosGuide)   iosGuide.style.display   = '';
+    if (installBtn) installBtn.style.display = 'none';
+  } else {
+    if (installBtn) installBtn.style.display = deferredPrompt ? '' : 'none';
+    if (iosGuide)   iosGuide.style.display   = 'none';
+    if (!deferredPrompt) {
+      alert('請使用手機瀏覽器開啟本網站，並點選「加入主畫面」');
+      return;
+    }
+  }
+  if (prompt) prompt.style.display = '';
+}
+
+function showNotifPrompt() {
+  const statusEl = document.getElementById('notifStatusMsg');
+  // 已訂閱
+  if (localStorage.getItem('pushSubscribed')) {
+    if (statusEl) { statusEl.style.color='#1a6b35'; statusEl.textContent='✅ 已開啟推播通知'; }
+    return;
+  }
+  // 未安裝 PWA
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (!isStandalone) {
+    if (statusEl) { statusEl.style.color='#856404'; statusEl.textContent='⚠️ 請先安裝到主畫面才能開啟通知'; }
+    return;
+  }
+  // 清除之前的拒絕記錄，重新顯示
+  localStorage.removeItem('notifDismissed');
+  const notifEl = document.getElementById('notifPrompt');
+  if (notifEl) notifEl.style.display = '';
+}
+
+function checkPWAPrompts() {
+  // 已經安裝就不顯示
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  if (isStandalone) {
+    // 已安裝 → 檢查是否需要訂閱通知
+    if (!localStorage.getItem('pushSubscribed') && !localStorage.getItem('notifDismissed')) {
+      setTimeout(() => {
+        document.getElementById('notifPrompt').style.display = '';
+      }, 2000);
+    }
+    return;
+  }
+
+  // 未安裝且未關閉過提示 → 顯示安裝引導
+  if (localStorage.getItem('pwaDismissed')) return;
+
+  const prompt = document.getElementById('pwaPrompt');
+  const installBtn = document.getElementById('pwaInstallBtn');
+  const iosGuide   = document.getElementById('pwaIOSGuide');
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isAndroid = /Android/.test(navigator.userAgent);
+
+  if (isIOS) {
+    if (iosGuide) iosGuide.style.display = '';
+  } else if (isAndroid || deferredPrompt) {
+    if (installBtn) installBtn.style.display = '';
+  }
+
+  setTimeout(() => { if (prompt) prompt.style.display = ''; }, 3000);
+}
+
+// 初始化
+(async function initPWA() {
+  await registerSW();
+})();
+</script>
+
 </body>
 </html>

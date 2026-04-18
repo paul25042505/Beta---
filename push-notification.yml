@@ -1,0 +1,30 @@
+name: 定訓前一天推播通知
+
+on:
+  schedule:
+    # 每天台灣時間晚上 8 點執行（UTC+8，所以 UTC 12:00）
+    - cron: '0 12 * * *'
+  workflow_dispatch: # 允許手動觸發測試
+
+jobs:
+  send-notification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install web-push firebase-admin
+
+      - name: 執行推播腳本
+        env:
+          VAPID_PUBLIC_KEY: "BLt-Ma7FVRAYTqD9G8nAoE76gpu0fuYO9tSP_u9qgBzYteCx5tXYbwWna0cGZJJgqXx2sUTRXmLpi4z5spU4vRE"
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node .github/scripts/send-push.js
