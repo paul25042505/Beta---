@@ -5874,8 +5874,7 @@ function updateDutyStyle() {
   // localhost、127.0.0.1、或直接開啟本機檔案（file://）都顯示開發者登入
   var isLocalDev = location.hostname === 'localhost'
     || location.hostname === '127.0.0.1'
-    || location.protocol === 'file:'
-    || location.hostname.endsWith('.github.io');  // GitHub Pages 測試用
+    || location.protocol === 'file:';
   if (isLocalDev) {
     var area = document.getElementById('devLoginArea');
     if (area) area.style.display = '';
