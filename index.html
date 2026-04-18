@@ -102,16 +102,7 @@ body {
   display: flex; flex-direction: column;
 }
 .drawer.open { transform: translateX(0); }
-.drawer-header {
-  background: var(--red-dark); padding: 20px 24px 16px; position: relative;
-}
-.drawer-header .cross { font-size: 2rem; color: rgba(255,255,255,0.3); display: block; }
-.drawer-close {
-  position: absolute; top: 16px; right: 16px;
-  background: none; border: none; color: rgba(255,255,255,0.7);
-  font-size: 1.4rem; cursor: pointer; padding: 4px 8px; border-radius: 3px; transition: color 0.15s;
-}
-.drawer-close:hover { color: white; }
+
 .drawer nav { padding: 16px 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
 .drawer nav button {
   display: flex; align-items: center; gap: 12px; padding: 14px 24px;
@@ -597,10 +588,7 @@ tr:hover td { background: #fdfcfb; }
 
 <!-- Drawer -->
 <div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <span class="cross">✚</span>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
-  </div>
+
   <nav>
     <button id="nav-dashboard" class="active-nav" onclick="navTo('dashboardPage')"><span class="icon">🏠</span>首頁</button>
     <button id="nav-profile" onclick="navTo('profilePage')"><span class="icon">👤</span>個人基本資料</button>
@@ -1880,7 +1868,7 @@ tr:hover td { background: #fdfcfb; }
   <div class="query-wrap">
 
     <!-- 後台導覽 Tab -->
-    <div id="adminTabBar" style="display:none;position:fixed;left:0;right:0;z-index:150;background:var(--cream);padding:6px 16px 8px;border-bottom:2px solid var(--border);gap:6px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div id="adminTabBar" style="display:none;position:sticky;top:0;left:0;right:0;z-index:150;background:var(--cream);padding:6px 16px 8px;border-bottom:2px solid var(--border);gap:6px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
       <button onclick="adminScrollTo('adminSec-units')"    class="admin-tab">🏢 分隊</button>
       <button onclick="adminScrollTo('adminSec-wl')"       class="admin-tab">👤 帳號</button>
       <button onclick="adminScrollTo('adminSec-att')"      class="admin-tab">✍ 簽到退</button>
@@ -5401,32 +5389,11 @@ function adminNavTo(sectionId) {
 }
 
 function _positionAdminTabBar() {
-  const header = document.querySelector('.header');
   const bar    = document.getElementById('adminTabBar');
   const spacer = document.getElementById('adminTabBarSpacer');
   if (!bar) return;
-  // 用 requestAnimationFrame 確保 DOM 已渲染完畢再抓高度
-  requestAnimationFrame(() => {
-    const headerH = header ? header.getBoundingClientRect().height : 56;
-    bar.style.top = headerH + 'px';
-    bar.style.display = 'flex';
-    if (spacer) {
-      spacer.style.display = '';
-      spacer.style.height = (bar.getBoundingClientRect().height + 4) + 'px';
-    }
-  });
-  // 視窗大小改變時重新定位
-  window._adminTabBarResizeHandler = function() {
-    if (document.getElementById('adminPage').classList.contains('active')) {
-      requestAnimationFrame(() => {
-        const h = header ? header.getBoundingClientRect().height : 56;
-        bar.style.top = h + 'px';
-        if (spacer) spacer.style.height = (bar.getBoundingClientRect().height + 4) + 'px';
-      });
-    }
-  };
-  window.removeEventListener('resize', window._adminTabBarResizeHandler);
-  window.addEventListener('resize', window._adminTabBarResizeHandler);
+  bar.style.display = 'flex';
+  if (spacer) spacer.style.display = 'none'; // sticky 不需要佔位
 }
 
 function adminScrollTo(sectionId) {
@@ -5435,7 +5402,7 @@ function adminScrollTo(sectionId) {
   const header = document.querySelector('.header');
   const bar    = document.getElementById('adminTabBar');
   const headerH = header ? header.getBoundingClientRect().height : 56;
-  const barH    = bar    ? bar.getBoundingClientRect().height    : 52;
+  const barH    = bar    ? bar.getBoundingClientRect().height    : 44;
   const top = el.getBoundingClientRect().top + window.scrollY - headerH - barH - 8;
   window.scrollTo({ top, behavior: 'smooth' });
   // 高亮 tab
