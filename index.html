@@ -29,12 +29,26 @@
   --section-gap: 24px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 body {
   background: var(--cream);
   font-family: 'Noto Sans TC', sans-serif;
   color: var(--text);
-  min-height: 100vh;
   color-scheme: light;
+  display: flex;
+  flex-direction: column;
+}
+/* 主捲動區 */
+#appScroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  padding-top: 56px;
 }
 
 /* ── Pages ── */
@@ -88,15 +102,15 @@ body {
 
 /* ── Overlay ── */
 .overlay {
-  display: none; position: fixed; inset: 0;
+  display: none; position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4); z-index: 190;
 }
 .overlay.open { display: block; }
 
 /* ── Drawer ── */
 .drawer {
-  position: fixed; top: 0; left: 0; height: 100%; width: 260px;
-  background: var(--text); z-index: 200;
+  position: fixed; top: 56px; left: 0; height: calc(100% - 56px); width: 260px;
+  background: var(--text); z-index: 199;
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
   display: flex; flex-direction: column;
@@ -119,7 +133,7 @@ body {
 
 /* ── Header ── */
 .header {
-  background: var(--red) !important; color: white !important; padding: 0; position: sticky; top: 0; z-index: 200; overflow: hidden;
+  background: var(--red) !important; color: white !important; padding: 0; position: fixed; top: 0; left: 0; right: 0; z-index: 200; overflow: hidden;
 }
 .header-inner {
   position: relative; z-index: 2; display: flex; align-items: center;
@@ -644,6 +658,7 @@ tr:hover td { background: #fdfcfb; }
   </div>
 </div>
 
+<div id="appScroll">
 
 <!-- ══════ 簡易模式切換按鈕（固定右下角）══════ -->
 <button id="easyModeToggle" onclick="toggleEasyMode()">👴 簡易模式</button>
@@ -5404,7 +5419,8 @@ function adminScrollTo(sectionId) {
   const headerH = header ? header.getBoundingClientRect().height : 56;
   const barH    = bar    ? bar.getBoundingClientRect().height    : 44;
   const top = el.getBoundingClientRect().top + window.scrollY - headerH - barH - 8;
-  window.scrollTo({ top, behavior: 'smooth' });
+  const scroller = document.getElementById('appScroll') || window;
+  scroller.scrollTo({ top, behavior: 'smooth' });
   // 高亮 tab
   const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog'];
   const idx = secIds.indexOf(sectionId);
@@ -7744,5 +7760,6 @@ async function reloadMembersUnit() {
 }
 
 </script>
+</div><!-- /appScroll -->
 </body>
 </html>
