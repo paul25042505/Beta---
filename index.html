@@ -132,7 +132,7 @@ body {
 }
 .header-inner {
   position: relative; z-index: 2; display: flex; align-items: center;
-  padding: 28px 24px 24px 70px;
+  padding: 14px 16px 14px 62px; min-height: 56px;
 }
 .header-deco { position: absolute; right: -20px; top: -20px; width: 180px; height: 180px; background: rgba(255,255,255,0.05); border-radius: 50%; z-index: 1; }
 .header-deco2 { position: absolute; right: 60px; bottom: -40px; width: 120px; height: 120px; background: rgba(255,255,255,0.04); border-radius: 50%; z-index: 1; }
@@ -146,8 +146,8 @@ body {
 }
 .menu-btn:hover { background: rgba(255,255,255,0.25); }
 .menu-btn span { display: block; width: 18px; height: 2px; background: white; border-radius: 2px; }
-.header-text h1 { font-family: 'Noto Serif TC', serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.1em; line-height: 1.2; }
-.header-text p { margin-top: 4px; font-size: 0.78rem; opacity: 0.75; letter-spacing: 0.12em; font-weight: 300; }
+.header-text h1 { font-family: 'Noto Serif TC', serif; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.2; white-space: nowrap; }
+.header-text p { margin-top: 2px; font-size: 0.68rem; opacity: 0.7; letter-spacing: 0.06em; font-weight: 300; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
 
 /* ── Form / Members wrap ── */
 .form-wrap, .members-wrap {
@@ -412,7 +412,8 @@ tr:hover td { background: #fdfcfb; }
 .att-member-btn.checkin-btn:hover { background: #eafaf1; }
 @media (max-width: 520px) {
   .row-2 { grid-template-columns: 1fr; }
-  .header-text h1 { font-size: 1.2rem; }
+  .header-text h1 { font-size: 1.1rem; }
+  .header-text p { max-width: 120px; }
   .checkbox-grid { grid-template-columns: 1fr 1fr; }
   .form-wrap, .members-wrap { padding: 20px 12px 48px; }
   .card { padding: 16px; }
@@ -448,7 +449,6 @@ tr:hover td { background: #fdfcfb; }
 .bar-wrap { display:flex; align-items:center; gap:8px; }
 .bar-bg { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; min-width:40px; }
 .bar-fill { height:100%; background:var(--red); border-radius:3px; transition:width 0.4s ease; }
-
 
 
 /* ── Profile Page ── */
@@ -603,6 +603,7 @@ tr:hover td { background: #fdfcfb; }
   </div>
   <nav>
     <button id="nav-dashboard" class="active-nav" onclick="navTo('dashboardPage')"><span class="icon">🏠</span>首頁</button>
+    <button id="nav-profile" onclick="navTo('profilePage')"><span class="icon">👤</span>個人基本資料</button>
     <button id="nav-members" onclick="navTo('membersPage')"><span class="icon">👥</span>成員管理</button>
     <button id="nav-items" onclick="navTo('itemsPage')"><span class="icon">📦</span>待領物品</button>
     <button id="nav-attendance" onclick="navTo('attendancePage')"><span class="icon">✍</span>簽到簽退登錄</button>
@@ -878,6 +879,11 @@ tr:hover td { background: #fdfcfb; }
         <div class="section-line"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <button onclick="navTo('profilePage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">👤</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">個人基本資料</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">聯絡資訊與證照</div>
+        </button>
         <button onclick="navTo('membersPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">👥</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">成員管理</div>
@@ -1217,7 +1223,6 @@ tr:hover td { background: #fdfcfb; }
         </table>
       </div>
     </div>
-
 
 
     <div id="queryInitMsg" class="query-empty">
@@ -2077,7 +2082,6 @@ tr:hover td { background: #fdfcfb; }
         </div>
         <div style="font-size:0.78rem;color:var(--text-mid);margin-bottom:6px;font-weight:600;">內容項目</div>
         <div id="clFormItems" style="margin-bottom:8px;"></div>
-        <button onclick="addChangelogItem()" style="background:none;border:1px dashed var(--border);border-radius:6px;padding:6px;font-size:0.78rem;cursor:pointer;width:100%;color:var(--text-mid);font-family:'Noto Sans TC',sans-serif;min-height:unset;">＋ 新增項目</button>
         <div style="display:flex;gap:8px;align-items:center;margin-top:12px;">
           <button onclick="saveChangelog()" class="btn-search" style="flex:1;">儲存</button>
           <button onclick="hideChangelogForm()" class="btn-reset">取消</button>
@@ -2126,6 +2130,126 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminEditSave()" class="btn-search" style="flex:1;">儲　存</button>
       <button onclick="document.getElementById('adminEditModal').style.display='none';" class="btn-reset">取消</button>
     </div>
+  </div>
+</div>
+
+<!-- ══════ PAGE：個人基本資料 ══════ -->
+<div class="page" id="profilePage">
+  <div class="form-wrap">
+
+    <!-- 證照到期警示（若效期不足6個月）-->
+    <div id="profileCertAlert" style="display:none;background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:14px 16px;margin-bottom:16px;display:none;">
+      <div style="font-weight:600;color:#856404;font-size:0.9rem;">🔔 證照效期即將到期</div>
+      <div id="profileCertAlertMsg" style="font-size:0.82rem;color:#856404;margin-top:4px;"></div>
+    </div>
+
+    <!-- 基本資訊 -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">1</div>
+        <div class="section-title">基本資訊</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>姓名</label>
+          <div id="profileName" style="padding:10px 0;font-size:0.95rem;font-weight:600;color:var(--text);">—</div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="field">
+          <label>分隊別</label>
+          <div id="profileUnit" style="padding:10px 0;font-size:0.92rem;color:var(--text);">—</div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="field">
+          <label>職稱／職別</label>
+          <div id="profileTitle" style="padding:10px 0;font-size:0.92rem;color:var(--text);">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 聯絡方式 -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">2</div>
+        <div class="section-title">聯絡方式</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>電子郵件</label>
+          <div id="profileEmail" style="padding:10px 0;font-size:0.88rem;color:var(--text-mid);word-break:break-all;">—</div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="field">
+          <label>手機號碼</label>
+          <div style="display:flex;align-items:center;gap:8px;padding:4px 0;">
+            <input type="tel" id="profilePhone" placeholder="請輸入手機號碼"
+              style="flex:1;width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:0.92rem;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:white;box-sizing:border-box;outline:none;"
+              onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'">
+            <button onclick="saveProfilePhone()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;flex-shrink:0;">儲存</button>
+          </div>
+          <div id="profilePhoneStatus" style="font-size:0.75rem;color:#1a6b35;display:none;margin-top:6px;">✓ 已儲存</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 證照狀態 -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">3</div>
+        <div class="section-title">證照狀態</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="card">
+        <!-- 檢視模式 -->
+        <div id="profileCertView">
+          <div class="field">
+            <label>證照等級</label>
+            <div id="profileCert" style="padding:10px 0;font-size:0.92rem;color:var(--text);">—</div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="field">
+            <label>效期至</label>
+            <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+              <div id="profileCertExpDisplay" style="font-size:0.92rem;color:var(--text);flex:1;">—</div>
+              <div id="profileCertStatus" style="font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;"></div>
+            </div>
+          </div>
+          <!-- 編輯按鈕（開放期間才顯示）-->
+          <div id="profileCertEditBtnWrap" style="display:none;margin-top:10px;">
+            <button onclick="profileShowCertEdit()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:8px 18px;font-size:0.82rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;width:100%;">
+              ✏️ 更新我的證照資訊
+            </button>
+          </div>
+        </div>
+
+        <!-- 編輯模式（預設隱藏）-->
+        <div id="profileCertEdit" style="display:none;">
+          <div class="field">
+            <label>證照等級 <span class="req">*</span></label>
+            <select id="profileCertSel" style="width:100%;">
+              <option value="">— 請選擇 —</option>
+              <option value="EMT-1">EMT-1</option>
+              <option value="EMT-2">EMT-2</option>
+              <option value="EMT-P">EMT-P（中級）</option>
+            </select>
+          </div>
+          <div class="card-divider"></div>
+          <div class="field">
+            <label>效期至 <span class="req">*</span></label>
+            <input type="date" id="profileCertExpInput" style="width:100%;">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;">
+            <button onclick="saveProfileCert()" style="flex:1;background:var(--red);color:white;border:none;border-radius:6px;padding:11px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">儲存</button>
+            <button onclick="profileHideCertEdit()" style="flex:1;background:white;color:var(--text-mid);border:1px solid var(--border);border-radius:6px;padding:11px;font-size:0.88rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">取消</button>
+          </div>
+          <div id="profileCertSaveStatus" style="font-size:0.75rem;color:#1a6b35;display:none;margin-top:8px;text-align:center;">✓ 證照資訊已儲存</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-footer-placeholder"></div>
   </div>
 </div>
 
@@ -2486,6 +2610,7 @@ function showApp(name, email, isAdmin, isOfficer, role) {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.style.display = 'inline';
   startIdleTimer();
+  setTimeout(checkCertExpiry, 1500);
 
   // 顯示簡易模式切換按鈕（管理員/承辦人不顯示）
   if (!isAdmin && !isOfficer) {
@@ -2749,6 +2874,7 @@ function navTo(pageId, fromHistory) {
   const titles = {
     dashboardPage:  ['救護義消系統', 'Emergency Volunteer System', 'nav-dashboard'],
     formPage:       ['協勤案件登錄', 'Outing Record', 'nav-form'],
+    profilePage:    ['個人基本資料', 'My Profile', 'nav-profile'],
     membersPage:    ['成員管理', 'Member Management', 'nav-members'],
     queryPage:      ['協勤紀錄查詢', 'Attendance Query', 'nav-query'],
     attendancePage: ['簽到簽退登錄', 'Sign In / Sign Out', 'nav-attendance'],
@@ -2784,6 +2910,7 @@ function navTo(pageId, fromHistory) {
   else if (pageId === 'attQueryPage') initAttQuery();
   else if (pageId === 'adminPage')    initAdminPage();
   else if (pageId === 'feedbackPage') initFeedbackPage();
+  else if (pageId === 'profilePage')   loadProfilePage();
   else if (pageId === 'meetingPage')   loadMeetingPage();
   else if (pageId === 'changelogPage') loadChangelog();
 
@@ -3386,7 +3513,6 @@ function resetQuery() {
   const qi = document.getElementById('queryInitMsg'); if (qi) qi.style.display = 'block';
   filteredRecords = [];
 }
-
 
 
 function exportCSV() {
@@ -6064,7 +6190,14 @@ async function loadChangelog() {
   if (!el) return;
   el.innerHTML = '<div class="query-empty"><span class="empty-icon">📝</span>載入中...</div>';
   try {
-    const docs = await fbList(COL_CHANGELOG, 'date', 'desc');
+    let docs = await fbList(COL_CHANGELOG);
+    // 跟後台一樣：先依 order 排，order 相同再依日期倒序
+    docs.sort(function(a,b){
+      var ao = a.order !== undefined ? a.order : 9999;
+      var bo = b.order !== undefined ? b.order : 9999;
+      if (ao !== bo) return ao - bo;
+      return (b.date||'') > (a.date||'') ? 1 : -1;
+    });
     if (!docs.length) {
       el.innerHTML = '<div class="query-empty"><span class="empty-icon">📝</span>尚無版本紀錄</div>';
       return;
@@ -6085,7 +6218,7 @@ async function loadChangelog() {
       }).join('');
 
       // 版本 emoji
-      var verEmoji = isLatest ? '🆕 ' : (idx === 1 ? '📌 ' : '📋 ');
+      var verEmoji = isLatest ? '🆕 ' : '📋 ';
 
       html += '<div class="result-card" style="margin-bottom:16px;' + (isLatest ? 'border:2px solid var(--red);box-shadow:0 4px 16px rgba(185,74,58,0.12);' : '') + '">'
         // 版本標頭
@@ -6443,10 +6576,8 @@ function hideChangelogForm() {
   _clItems = [];
 }
 // 以下舊函式不再使用，保留空函式避免其他地方呼叫出錯
-function addChangelogItem() {}
+
 function removeClItem(i) {}
-function renderClFormItems() {}
-async function saveChangelog() {}
 
 
 // ════════════════════════════════════════
@@ -6505,8 +6636,7 @@ function updateDutyStyle() {
   // localhost、127.0.0.1、或直接開啟本機檔案（file://）都顯示開發者登入
   var isLocalDev = location.hostname === 'localhost'
     || location.hostname === '127.0.0.1'
-    || location.protocol === 'file:'
-    || location.hostname.endsWith('.github.io');  // GitHub Pages 測試用
+    || location.protocol === 'file:';
   if (isLocalDev) {
     var area = document.getElementById('devLoginArea');
     if (area) area.style.display = '';
@@ -6541,7 +6671,6 @@ async function devLoadUnits() {
     }
   } catch(e) {}
 }
-
 
 
 // ════════════════════════════════════════
@@ -6793,7 +6922,6 @@ async function easyDoCheckout() {
 }
 
 
-
 // ── 簡易協勤登錄 ──
 let _easyOutingCtx = null;
 let _easyOutingHasSig = false;
@@ -6934,7 +7062,6 @@ async function easyDoOuting() {
     if (btn) { btn.textContent = '送出協勤紀錄'; btn.disabled = false; }
   }
 }
-
 
 
 // ════════════════════════════════════════
@@ -7125,7 +7252,6 @@ async function meetingDelete(id, title) {
 }
 
 
-
 // ════════════════════════════════════════
 // 案件類型
 // ════════════════════════════════════════
@@ -7241,7 +7367,6 @@ async function deleteCaseType(name) {
     await loadAdminCaseTypes();
   } catch(e) { alert('刪除失敗：' + e.message); }
 }
-
 
 
 // ════════════════════════════════════════
@@ -7421,6 +7546,195 @@ function renderCaseTypeStats(outDocs, filterUnit, memberUnitMap, year, month) {
     }).join('');
   }
 }
+
+
+// ════════════════════════════════════════
+// 個人基本資料
+// ════════════════════════════════════════
+async function loadProfilePage() {
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const email     = usr.email || '';
+  const memberName = usr.memberName || usr.name || '';
+
+  // 從 whitelist 讀取完整資料（含 phone、cert、certExp）
+  let profile = {};
+  try {
+    await ensureFirebase();
+    const snap = await _fbDB.collection(COL_WHITELIST).where('email','==',email.toLowerCase().trim()).get();
+    if (!snap.empty) profile = snap.docs[0].data();
+  } catch(e) {}
+
+  // 從 members 讀取分隊/職稱
+  try { await loadMembers(); } catch(e) {}
+  const member = members.find(m => m.name === memberName) || {};
+
+  // 填入基本資訊
+  document.getElementById('profileName').textContent  = memberName || '—';
+  document.getElementById('profileUnit').textContent  = member.unit  || profile.unit  || usr.unit || '—';
+  document.getElementById('profileTitle').textContent = member.title || profile.title || '—';
+  document.getElementById('profileEmail').textContent = email || '—';
+  document.getElementById('profilePhone').value       = profile.phone || '';
+
+  // 證照
+  const cert    = member.cert    || profile.cert    || '';
+  const certExp = member.certExp || profile.certExp || '';
+  document.getElementById('profileCert').textContent = cert || '（未設定）';
+
+  const certExpEl    = document.getElementById('profileCertExpDisplay');
+  const certStatusEl = document.getElementById('profileCertStatus');
+  const certAlertEl  = document.getElementById('profileCertAlert');
+  const certAlertMsg = document.getElementById('profileCertAlertMsg');
+
+  if (certExp) {
+    certExpEl.textContent = certExp;
+    const today    = new Date();
+    const expDate  = new Date(certExp);
+    const diffDays = Math.floor((expDate - today) / 86400000);
+    const diffMon  = diffDays / 30;
+
+    if (diffDays < 0) {
+      certStatusEl.textContent = '已過期';
+      certStatusEl.style.cssText = 'font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;background:#fde8e8;color:#b94a3a;';
+      certAlertEl.style.display = '';
+      certAlertMsg.textContent = `您的 ${cert} 證照已於 ${certExp} 過期，請盡速更新。`;
+    } else if (diffMon < 6) {
+      certStatusEl.textContent = `還有 ${diffDays} 天`;
+      certStatusEl.style.cssText = 'font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;background:#fff3cd;color:#856404;';
+      certAlertEl.style.display = '';
+      certAlertMsg.textContent = `您的 ${cert} 證照將於 ${certExp} 到期（剩餘 ${diffDays} 天），請提前安排展延。`;
+    } else {
+      certStatusEl.textContent = `有效（剩 ${Math.floor(diffMon)} 個月）`;
+      certStatusEl.style.cssText = 'font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;background:#d4edda;color:#1a6b35;';
+      certAlertEl.style.display = 'none';
+    }
+  } else {
+    certExpEl.textContent = '（未設定）';
+    certStatusEl.textContent = '';
+    certAlertEl.style.display = 'none';
+  }
+
+  // 帶入現有值到編輯欄位
+  const certSel = document.getElementById('profileCertSel');
+  const certExpInput = document.getElementById('profileCertExpInput');
+  if (certSel) certSel.value = cert || '';
+  if (certExpInput) certExpInput.value = certExp || '';
+
+  // 開關：從 Firestore settings 讀取 certEditOpen，開放時才顯示編輯按鈕
+  try {
+    await ensureFirebase();
+    const settingSnap = await _fbDB.collection('settings').doc('certEdit').get();
+    const certEditOpen = settingSnap.exists && settingSnap.data().open === true;
+    const editBtnWrap = document.getElementById('profileCertEditBtnWrap');
+    if (editBtnWrap) editBtnWrap.style.display = certEditOpen ? '' : 'none';
+  } catch(e) {}
+}
+
+
+function profileShowCertEdit() {
+  document.getElementById('profileCertView').style.display = 'none';
+  document.getElementById('profileCertEdit').style.display = '';
+}
+
+function profileHideCertEdit() {
+  document.getElementById('profileCertEdit').style.display = 'none';
+  document.getElementById('profileCertView').style.display = '';
+  document.getElementById('profileCertSaveStatus').style.display = 'none';
+}
+
+async function saveProfileCert() {
+  const cert    = document.getElementById('profileCertSel').value;
+  const certExp = document.getElementById('profileCertExpInput').value;
+  if (!cert)    { alert('請選擇證照等級'); return; }
+  if (!certExp) { alert('請填入效期'); return; }
+
+  const usr   = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const email = (usr.email || '').toLowerCase().trim();
+  const memberName = usr.memberName || usr.name || '';
+  const status = document.getElementById('profileCertSaveStatus');
+
+  try {
+    await ensureFirebase();
+    // 更新 whitelist
+    const wlSnap = await _fbDB.collection(COL_WHITELIST).where('email','==',email).get();
+    if (!wlSnap.empty) await wlSnap.docs[0].ref.update({ cert, certExp });
+
+    // 更新 members
+    const mSnap = await _fbDB.collection(COL_MEMBERS).where('name','==',memberName).get();
+    if (!mSnap.empty) await mSnap.docs[0].ref.update({ cert, certExp });
+
+    // 更新顯示
+    document.getElementById('profileCert').textContent = cert;
+    document.getElementById('profileCertExpDisplay').textContent = certExp;
+    const diffDays = Math.floor((new Date(certExp) - new Date()) / 86400000);
+    const certStatusEl = document.getElementById('profileCertStatus');
+    if (diffDays < 0) {
+      certStatusEl.textContent = '已過期';
+      certStatusEl.style.cssText = 'font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;background:#fde8e8;color:#b94a3a;';
+    } else if (diffDays < 180) {
+      certStatusEl.textContent = `還有 ${diffDays} 天`;
+      certStatusEl.style.cssText = 'font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;background:#fff3cd;color:#856404;';
+    } else {
+      certStatusEl.textContent = `有效（剩 ${Math.floor(diffDays/30)} 個月）`;
+      certStatusEl.style.cssText = 'font-size:0.78rem;border-radius:12px;padding:3px 10px;font-weight:600;background:#d4edda;color:#1a6b35;';
+    }
+
+    status.style.display = '';
+    setTimeout(() => profileHideCertEdit(), 1500);
+  } catch(e) { alert('儲存失敗：' + e.message); }
+}
+
+async function saveProfilePhone() {
+  const usr   = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const email = (usr.email || '').toLowerCase().trim();
+  const phone = document.getElementById('profilePhone').value.trim();
+  const status = document.getElementById('profilePhoneStatus');
+  try {
+    await ensureFirebase();
+    const snap = await _fbDB.collection(COL_WHITELIST).where('email','==',email).get();
+    if (!snap.empty) {
+      await snap.docs[0].ref.update({ phone });
+      status.style.display = '';
+      setTimeout(() => { status.style.display = 'none'; }, 2500);
+    }
+  } catch(e) { alert('儲存失敗：' + e.message); }
+}
+
+// ── 登入後檢查證照效期（不足6個月時顯示提醒）──
+async function checkCertExpiry() {
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const email = (usr.email || '').toLowerCase().trim();
+  if (!email) return;
+  try {
+    await ensureFirebase();
+    const snap = await _fbDB.collection(COL_WHITELIST).where('email','==',email).get();
+    if (snap.empty) return;
+    const data = snap.docs[0].data();
+    await loadMembers();
+    const member = members.find(m => m.name === (usr.memberName||usr.name||'')) || {};
+    const certExp = member.certExp || data.certExp || '';
+    const cert    = member.cert    || data.cert    || '';
+    if (!certExp) return;
+    const diffDays = Math.floor((new Date(certExp) - new Date()) / 86400000);
+    if (diffDays < 180) {
+      // 顯示在儀表板頂部的 banner
+      let banner = document.getElementById('certExpiryBanner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'certExpiryBanner';
+        banner.style.cssText = 'background:#fff3cd;border-bottom:1px solid #ffc107;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:0.82rem;color:#856404;cursor:pointer;';
+        banner.onclick = () => navTo('profilePage');
+        const page = document.getElementById('dashboardPage');
+        if (page) page.prepend(banner);
+      }
+      const msg = diffDays < 0
+        ? `🔔 您的 ${cert} 證照已過期（${certExp}），點此查看`
+        : `🔔 您的 ${cert} 證照將於 ${certExp} 到期（剩 ${diffDays} 天），點此查看`;
+      banner.textContent = msg;
+      banner.style.display = 'flex';
+    }
+  } catch(e) {}
+}
+
 
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
