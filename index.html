@@ -601,6 +601,15 @@ tr:hover td { background: #fdfcfb; }
   </div>
 </div>
 
+<!-- ══════ 簽到提示橫幅 ══════ -->
+<div id="checkinNoticeBanner" style="display:none;background:#fff8e1;border-bottom:2px solid #f9a825;padding:10px 16px;display:none;align-items:center;gap:10px;position:sticky;top:0;z-index:150;">
+  <span style="font-size:1.1rem;flex-shrink:0;">⚠️</span>
+  <span style="font-size:0.85rem;color:#5a3a00;font-weight:500;flex:1;line-height:1.5;">
+    提醒：協勤登錄前請先完成<strong>簽到簽退登錄</strong>，否則出勤紀錄將不完整。
+  </span>
+  <button onclick="dismissCheckinNotice()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:#a07800;flex-shrink:0;padding:0 4px;min-height:unset;">✕</button>
+</div>
+
 <!-- ══════ PAGE 0：儀表板 ══════ -->
 <div class="page active" id="dashboardPage">
   <div class="form-wrap">
@@ -2098,6 +2107,15 @@ function showApp(name, email, isAdmin, isOfficer, role) {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.style.display = 'inline';
   startIdleTimer();
+
+  // 顯示簽到提示橫幅（一般成員才顯示，管理員/承辦人不顯示）
+  if (!isAdmin && !isOfficer) {
+    var noticed = sessionStorage.getItem('checkinNoticeDismissed');
+    if (!noticed) {
+      var banner = document.getElementById('checkinNoticeBanner');
+      if (banner) banner.style.display = 'flex';
+    }
+  }
 
   // 登入後根據 hash 決定顯示哪個頁面
   const hashPage   = location.hash.replace('#', '');
@@ -5896,6 +5914,12 @@ function devLoginAs(role) {
   navTo('dashboardPage');
 }
 
+
+function dismissCheckinNotice() {
+  var banner = document.getElementById('checkinNoticeBanner');
+  if (banner) banner.style.display = 'none';
+  sessionStorage.setItem('checkinNoticeDismissed', '1');
+}
 
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
