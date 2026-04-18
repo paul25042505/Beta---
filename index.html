@@ -358,7 +358,7 @@ tr:hover td { background: #fdfcfb; }
 
 .admin-tab {
   background: var(--white); border: 1px solid var(--border); border-radius: 20px;
-  padding: 6px 14px; font-size: 0.78rem; font-family: 'Noto Sans TC', sans-serif;
+  padding: 5px 9px; font-size: 0.72rem; font-family: 'Noto Sans TC', sans-serif;
   color: var(--text-mid); cursor: pointer; white-space: nowrap;
   transition: all 0.15s; min-height: unset;
 }
@@ -1883,7 +1883,7 @@ tr:hover td { background: #fdfcfb; }
   <div class="query-wrap">
 
     <!-- 後台導覽 Tab -->
-    <div id="adminTabBar" style="display:none;position:sticky;top:0;left:0;right:0;z-index:150;background:var(--cream);padding:6px 16px 8px;border-bottom:2px solid var(--border);gap:6px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <div id="adminTabBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:150;background:var(--cream);padding:5px 10px 6px;border-bottom:2px solid var(--border);gap:4px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
       <button onclick="adminScrollTo('adminSec-units')"    class="admin-tab">🏢 分隊</button>
       <button onclick="adminScrollTo('adminSec-wl')"       class="admin-tab">👤 帳號</button>
       <button onclick="adminScrollTo('adminSec-att')"      class="admin-tab">✍ 簽到退</button>
@@ -2924,7 +2924,7 @@ function navTo(pageId, fromHistory) {
     const bar = document.getElementById('adminTabBar');
     const spacer = document.getElementById('adminTabBarSpacer');
     if (bar)    { bar.style.display = 'none'; }
-    if (spacer) { spacer.style.display = 'none'; }
+    if (spacer) { spacer.style.display = 'none'; spacer.style.height = '0'; }
     if (_adminTabObserver) { _adminTabObserver.disconnect(); _adminTabObserver = null; }
   }
 
@@ -5408,7 +5408,16 @@ function _positionAdminTabBar() {
   const spacer = document.getElementById('adminTabBarSpacer');
   if (!bar) return;
   bar.style.display = 'flex';
-  if (spacer) spacer.style.display = 'none'; // sticky 不需要佔位
+  requestAnimationFrame(() => {
+    // 動態抓 header 高度，確保 tab bar 緊貼 header 下方
+    const header = document.querySelector('.header');
+    const headerH = header ? header.getBoundingClientRect().height : 56;
+    bar.style.top = headerH + 'px';
+    if (spacer) {
+      spacer.style.display = 'block';
+      spacer.style.height = bar.getBoundingClientRect().height + 'px';
+    }
+  });
 }
 
 function adminScrollTo(sectionId) {
