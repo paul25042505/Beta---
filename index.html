@@ -206,6 +206,7 @@ textarea { resize: vertical; min-height: 82px; }
 }
 .cb-item:hover { border-color: var(--red); background: var(--red-faint); color: var(--text); }
 .cb-item input[type="checkbox"] { accent-color: var(--red); flex-shrink: 0; width: auto; border: none; padding: 0; background: none; box-shadow: none; min-height: unset; }
+.cb-item input[type="radio"] { accent-color: var(--red); flex-shrink: 0; width: auto; border: none; padding: 0; background: none; box-shadow: none; min-height: unset; }
 .cb-item.checked { border-color: var(--red); background: var(--red-faint); color: var(--text); box-shadow: 0 0 0 3px rgba(192,57,43,0.08); }
 
 /* ── Signature ── */
@@ -568,7 +569,7 @@ tr:hover td { background: #fdfcfb; }
     <!-- 開發者快速登入（僅 localhost 顯示）-->
     <div id="devLoginArea" style="display:none;margin-top:20px;border-top:1px dashed #e0d5c8;padding-top:16px;">
       <div style="font-size:0.72rem;color:var(--text-light);text-align:center;margin-bottom:10px;letter-spacing:0.06em;">🛠 開發者快速登入</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
         <button onclick="devLoginAs('admin')"
           style="padding:10px 4px;border:1.5px solid #ffc107;border-radius:8px;background:#fff3cd;color:#856404;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">
           ⚙️ 系統管理員
@@ -581,6 +582,12 @@ tr:hover td { background: #fdfcfb; }
           style="padding:10px 4px;border:1.5px solid #ced4da;border-radius:8px;background:#e9ecef;color:#495057;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">
           👤 一般成員
         </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <span style="font-size:0.72rem;color:var(--text-light);white-space:nowrap;">切換分隊（承辦/成員）：</span>
+        <select id="devUnitSel" style="flex:1;font-size:0.78rem;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:white;color:var(--text);">
+          <option value="潭子分隊">潭子分隊</option>
+        </select>
       </div>
     </div>
   </div>
@@ -605,7 +612,7 @@ tr:hover td { background: #fdfcfb; }
     <button id="nav-report" onclick="navTo('reportPage')"><span class="icon">📑</span>報表匯出</button>
     <button id="nav-stats" onclick="navTo('statsPage')"><span class="icon">📈</span>協勤統計</button>
     <button id="nav-feedback" onclick="navTo('feedbackPage')"><span class="icon">💬</span>意見回饋</button>
-    <button id="nav-meeting" onclick="navTo('meetingPage')"><span class="icon">📒</span>定訓記錄</button>
+    <button id="nav-meeting" onclick="navTo('meetingPage')"><span class="icon">📒</span>定訓與公告</button>
     <button id="nav-changelog" onclick="navTo('changelogPage')"><span class="icon">📝</span>版本修改紀錄</button>
     <button id="nav-admin" onclick="navTo('adminPage')" style="display:none;border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:12px;"><span class="icon">⚙️</span>管理員後台</button>
     <!-- 後台子導覽（管理員才顯示，進入 adminPage 後展開）-->
@@ -614,6 +621,7 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminNavTo('adminSec-wl')"       class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">👤</span>成員帳號</button>
       <button onclick="adminNavTo('adminSec-att')"      class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">✍</span>簽到退紀錄</button>
       <button onclick="adminNavTo('adminSec-outing')"   class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">🚑</span>協勤紀錄</button>
+      <button onclick="adminNavTo('adminSec-casetypes')" class="admin-subnav-btn" id="adminSubNav-casetypes"><span class="icon" style="font-size:0.75rem;">🏷</span>案件類型</button>
       <button onclick="adminNavTo('adminSec-items')"    class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📦</span>物品領用</button>
       <button id="adminSubNav-announce" onclick="adminNavTo('adminSec-announce')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📢</span>公告管理</button>
       <button onclick="adminNavTo('adminSec-feedback')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">💬</span>意見回饋</button>
@@ -910,6 +918,11 @@ tr:hover td { background: #fdfcfb; }
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">意見回饋</div>
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">建議與問題回報</div>
         </button>
+        <button onclick="navTo('meetingPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">📒</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">定訓與公告</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">定訓記錄與公告</div>
+        </button>
       </div>
     </div>
     <div class="site-footer-placeholder"></div>
@@ -971,6 +984,27 @@ tr:hover td { background: #fdfcfb; }
       <div class="section">
         <div class="section-head">
           <div class="section-num">3</div>
+          <div class="section-title">案件類型</div>
+          <div class="section-line"></div>
+        </div>
+        <div class="card">
+          <div class="field">
+            <label>案件類型 <span class="req">*</span>（單選）</label>
+            <div class="checkbox-grid" id="caseTypeGrid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr));">
+              <!-- 由 JS 動態載入 -->
+              <div style="color:var(--text-light);font-size:0.85rem;grid-column:1/-1;">載入中...</div>
+            </div>
+          </div>
+          <div class="field" id="caseTypeOtherField" style="display:none;">
+            <label for="caseTypeOther">其他（請說明）<span class="req">*</span></label>
+            <input type="text" id="caseTypeOther" placeholder="請輸入案件類型">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">4</div>
           <div class="section-title">服務內容</div>
           <div class="section-line"></div>
         </div>
@@ -1013,7 +1047,7 @@ tr:hover td { background: #fdfcfb; }
 
       <div class="section">
         <div class="section-head">
-          <div class="section-num">4</div>
+          <div class="section-num">5</div>
           <div class="section-title">協勤義消簽名</div>
           <div class="section-line"></div>
         </div>
@@ -1094,6 +1128,12 @@ tr:hover td { background: #fdfcfb; }
             <input type="date" id="qDateTo">
           </div>
           <div class="field">
+            <label for="qUnit">分隊別</label>
+            <select id="qUnit" onchange="filterQueryMembers()">
+              <option value="">— 全部分隊 —</option>
+            </select>
+          </div>
+          <div class="field">
             <label for="qMember">義消姓名</label>
             <select id="qMember">
               <option value="">— 全部成員 —</option>
@@ -1111,7 +1151,13 @@ tr:hover td { background: #fdfcfb; }
             </select>
           </div>
 
-          <div class="field" style="grid-column: 1 / -1;">
+          <div class="field">
+            <label for="qCaseType">案件類型</label>
+            <select id="qCaseType">
+              <option value="">— 全部類型 —</option>
+            </select>
+          </div>
+          <div class="field">
             <label for="qService">服務項目</label>
             <select id="qService">
               <option value="">— 全部項目 —</option>
@@ -1160,6 +1206,7 @@ tr:hover td { background: #fdfcfb; }
               <th>協勤時間</th>
               <th>行政區</th>
               <th>地址</th>
+              <th>案件類型</th>
               <th>服務項目</th>
               <th>義消姓名</th>
               <th>備註</th>
@@ -1574,6 +1621,64 @@ tr:hover td { background: #fdfcfb; }
       <div id="statsEmptyMsg" class="query-empty"><span class="empty-icon">📈</span>載入中...</div>
     </div>
 
+
+    <!-- 案件類型統計 -->
+    <div class="section" id="caseStatsSection" style="display:none;margin-top:8px;">
+      <div class="section-head">
+        <div class="section-num">🏷</div>
+        <div class="section-title">案件類型統計</div>
+        <div class="section-line"></div>
+      </div>
+
+      <!-- 數字摘要 -->
+      <div class="stats-row" id="caseStatsOverview" style="margin-bottom:16px;"></div>
+
+      <!-- 圖表區：圓餅 + 長條並排 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;" id="caseChartsGrid">
+        <!-- 圓餅圖 -->
+        <div class="result-card" style="padding:16px;">
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:0.05em;">
+            案件類型分布
+          </div>
+          <div id="caseTypePieChart" style="width:100%;"></div>
+          <div id="caseTypeLegend" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;font-size:0.75rem;"></div>
+        </div>
+        <!-- 長條圖 -->
+        <div class="result-card" style="padding:16px;">
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:0.05em;">
+            各類型案件數
+          </div>
+          <div id="caseTypeBarChart" style="width:100%;"></div>
+        </div>
+      </div>
+
+      <!-- 分隊比較長條圖（全部分隊時才顯示）-->
+      <div class="result-card" id="caseUnitCompareCard" style="padding:16px;margin-bottom:16px;display:none;">
+        <div style="font-family:'Noto Serif TC',serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:0.05em;">
+          各分隊案件類型比較
+        </div>
+        <canvas id="caseUnitChart" style="max-height:280px;"></canvas>
+      </div>
+
+      <!-- 明細表格 -->
+      <div class="result-card" style="padding:0;">
+        <div class="result-head"><h3>案件類型明細</h3></div>
+        <div class="result-table-wrap">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="padding:10px 12px;background:var(--warm);text-align:left;font-size:0.78rem;color:var(--text-mid);border-bottom:1px solid var(--border);">案件類型</th>
+                <th style="padding:10px 12px;background:var(--warm);text-align:center;font-size:0.78rem;color:var(--text-mid);border-bottom:1px solid var(--border);">案件數</th>
+                <th style="padding:10px 12px;background:var(--warm);text-align:center;font-size:0.78rem;color:var(--text-mid);border-bottom:1px solid var(--border);">佔比</th>
+                <th style="padding:10px 12px;background:var(--warm);text-align:left;font-size:0.78rem;color:var(--text-mid);border-bottom:1px solid var(--border);">佔比圖</th>
+              </tr>
+            </thead>
+            <tbody id="caseTypeTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="site-footer-placeholder"></div>
   </div>
 </div>
@@ -1775,6 +1880,7 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminScrollTo('adminSec-wl')"       class="admin-tab">👤 帳號</button>
       <button onclick="adminScrollTo('adminSec-att')"      class="admin-tab">✍ 簽到退</button>
       <button onclick="adminScrollTo('adminSec-outing')"   class="admin-tab">🚑 協勤</button>
+      <button onclick="adminScrollTo('adminSec-casetypes')" class="admin-tab" id="adminTab-casetypes">🏷 案件類型</button>
       <button onclick="adminScrollTo('adminSec-items')"    class="admin-tab">📦 物品</button>
       <button id="adminTab-announce" onclick="adminScrollTo('adminSec-announce')" class="admin-tab">📢 公告</button>
       <button onclick="adminScrollTo('adminSec-feedback')" class="admin-tab">💬 回饋</button>
@@ -1833,10 +1939,20 @@ tr:hover td { background: #fdfcfb; }
         <div class="filter-grid">
           <div class="field"><label>日期（起）</label><input type="date" id="adminAttFrom"></div>
           <div class="field"><label>日期（迄）</label><input type="date" id="adminAttTo"></div>
+          <div class="field"><label>分隊別</label>
+            <select id="adminAttUnit" onchange="adminAttUnitChange()">
+              <option value="">— 全部分隊 —</option>
+            </select>
+          </div>
+          <div class="field"><label>義消姓名</label>
+            <select id="adminAttMember">
+              <option value="">— 全部成員 —</option>
+            </select>
+          </div>
         </div>
         <div class="filter-actions" style="display:flex;gap:8px;">
           <button class="btn-search" onclick="loadAdminAttendance()" style="flex:1;">查　詢</button>
-          <button onclick="adminClearDate('adminAttFrom','adminAttTo');loadAdminAttendance();" class="btn-reset" style="white-space:nowrap;">全部</button>
+          <button onclick="adminClearDate('adminAttFrom','adminAttTo');document.getElementById('adminAttUnit').value='';document.getElementById('adminAttMember').value='';adminAttUnitChange();loadAdminAttendance();" class="btn-reset" style="white-space:nowrap;">全部</button>
         </div>
       </div>
       <div id="adminAttList" style="margin-top:12px;overflow-x:auto;"></div>
@@ -1847,14 +1963,35 @@ tr:hover td { background: #fdfcfb; }
         <div class="filter-grid">
           <div class="field"><label>日期（起）</label><input type="date" id="adminOutFrom"></div>
           <div class="field"><label>日期（迄）</label><input type="date" id="adminOutTo"></div>
+          <div class="field"><label>分隊別</label>
+            <select id="adminOutUnit" onchange="adminOutUnitChange()">
+              <option value="">— 全部分隊 —</option>
+            </select>
+          </div>
+          <div class="field"><label>義消姓名</label>
+            <select id="adminOutMember">
+              <option value="">— 全部成員 —</option>
+            </select>
+          </div>
         </div>
         <div class="filter-actions" style="display:flex;gap:8px;">
           <button class="btn-search" onclick="loadAdminOuting()" style="flex:1;">查　詢</button>
-          <button onclick="adminClearDate('adminOutFrom','adminOutTo');loadAdminOuting();" class="btn-reset" style="white-space:nowrap;">全部</button>
+          <button onclick="adminClearDate('adminOutFrom','adminOutTo');document.getElementById('adminOutUnit').value='';document.getElementById('adminOutMember').value='';adminOutUnitChange();loadAdminOuting();" class="btn-reset" style="white-space:nowrap;">全部</button>
         </div>
       </div>
       <div id="adminOutList" style="margin-top:12px;overflow-x:auto;"></div>
     </div>
+    <div class="section" id="adminSec-casetypes">
+      <div class="section-head"><div class="section-num">🏷</div><div class="section-title">案件類型管理</div><div class="section-line"></div>
+        <button onclick="loadAdminCaseTypes()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <input type="text" id="newCaseTypeInput" placeholder="輸入新案件類型" style="flex:1;">
+        <button onclick="addCaseType()" style="background:var(--red);color:white;border:none;border-radius:6px;padding:8px 18px;font-size:0.85rem;cursor:pointer;white-space:nowrap;font-family:'Noto Sans TC',sans-serif;">新增</button>
+      </div>
+      <div id="adminCaseTypeList"></div>
+    </div>
+
     <div class="section" id="adminSec-items">
       <div class="section-head"><div class="section-num">📦</div><div class="section-title">物品領用管理</div><div class="section-line"></div>
         <button onclick="loadAdminItems()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
@@ -1992,13 +2129,13 @@ tr:hover td { background: #fdfcfb; }
   </div>
 </div>
 
-<!-- ══════ PAGE：定訓記錄 ══════ -->
+<!-- ══════ PAGE：定訓與公告 ══════ -->
 <div class="page" id="meetingPage">
   <div class="form-wrap">
 
     <!-- 新增按鈕（承辦人/管理員才顯示） -->
     <div id="meetingAddWrap" style="display:none;margin-bottom:20px;">
-      <button onclick="meetingShowForm(null)" style="background:var(--red);color:white;border:none;border-radius:6px;padding:12px 24px;font-size:0.92rem;font-weight:600;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:0.05em;">＋ 新增定訓記錄</button>
+      <button onclick="meetingShowForm(null)" style="background:var(--red);color:white;border:none;border-radius:6px;padding:12px 24px;font-size:0.92rem;font-weight:600;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:0.05em;">＋ 新增定訓與公告</button>
     </div>
 
     <!-- 新增／編輯表單（預設隱藏） -->
@@ -2089,6 +2226,7 @@ var COL_OUTING = 'outingRecords', COL_ATTEND = 'attendance';
 var COL_ITEMS = 'items', COL_FEEDBACK = 'feedback', COL_UNITS = 'units', COL_CHANGELOG = 'changelogs';
 var COL_LOGINLOG = 'loginLogs';
 var COL_MEETING  = 'meetingRecords';
+var COL_CASETYPES = 'caseTypes';
 
 // Firebase 初始化（SDK 用 defer 載入，window.onload 後才 init）
 var _fbReady = false;
@@ -2618,7 +2756,7 @@ function navTo(pageId, fromHistory) {
     reportPage:     ['報表匯出', 'Reports', 'nav-report'],
     attQueryPage:   ['簽到/退記錄查詢', 'Attendance Log', 'nav-attquery'],
     itemsPage:      ['物品領用', 'Item Pickup', 'nav-items'],
-    meetingPage:    ['定訓記錄', 'Training Meeting Records', 'nav-meeting'],
+    meetingPage:    ['定訓與公告', 'Training & Announcements', 'nav-meeting'],
     changelogPage:  ['版本修改紀錄', 'Version History', 'nav-changelog'],
     feedbackPage:   ['意見回饋', 'Feedback', 'nav-feedback'],
     adminPage:      ['管理員後台', 'Admin Panel', 'nav-admin'],
@@ -2962,6 +3100,12 @@ function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig =
 document.getElementById('recordForm')?.addEventListener('submit', function(e) {
   e.preventDefault();
   const checked = [...document.querySelectorAll('#serviceGrid input:checked')];
+  const selectedCaseType = document.querySelector('#caseTypeGrid input[type="radio"]:checked');
+  const caseTypeOtherVal = document.getElementById('caseTypeOther')?.value.trim() || '';
+  const caseTypeVal = selectedCaseType
+    ? (selectedCaseType.value === '__other__' ? (caseTypeOtherVal || '其他') : selectedCaseType.value)
+    : '';
+  if (!caseTypeVal) { alert('請選擇案件類型'); return; }
   if (checked.length === 0) { alert('請至少選擇一項服務內容'); return; }
   if (!document.getElementById('memberSelect').value) { alert('請選擇協勤義消姓名'); return; }
   if (!hasSig) { alert('請完成義消簽名'); return; }
@@ -2969,7 +3113,7 @@ document.getElementById('recordForm')?.addEventListener('submit', function(e) {
   const data = {
     action:     'outing',
     date:       document.getElementById('date').value,
-
+    caseType:   caseTypeVal,
     timeOut:    document.getElementById('timeOut').value,
     timeBack:   document.getElementById('timeBack').value,
     district:   document.getElementById('district').value,
@@ -2984,7 +3128,7 @@ document.getElementById('recordForm')?.addEventListener('submit', function(e) {
   btn.textContent = '送出中，請稍候...'; btn.disabled = true;
 
   fbAdd(COL_OUTING,{
-    date:data.date,timeOut:data.timeOut,timeBack:data.timeBack,
+    date:data.date,caseType:data.caseType||'',timeOut:data.timeOut,timeBack:data.timeBack,
     district:data.district,address:data.address,services:data.services,
     note:data.note||'',memberName:data.memberName,signature:data.signature,
   }).then(()=>{
@@ -3065,11 +3209,49 @@ function showPendingItemsAlert() {
 let allRecords = [];
 let filteredRecords = [];
 
-function updateQueryMemberSelect() {
-  const sel = document.getElementById('qMember');
+async function updateQueryMemberSelect() {
+  try { await Promise.all([loadMembers(), loadUnits()]); } catch(e) {}
+
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const isAdmin   = usr.isAdmin   || false;
+  const isOfficer = usr.isOfficer || false;
+  const userUnit  = usr.unit || '';
+
+  // 填分隊選單（管理員可選全部，承辦人/一般成員鎖定自己分隊）
+  const unitSel = document.getElementById('qUnit');
+  if (unitSel) {
+    if (isAdmin) {
+      unitSel.innerHTML = '<option value="">— 全部分隊 —</option>' +
+        _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+      unitSel.disabled = false;
+    } else {
+      unitSel.innerHTML = '<option value="' + userUnit + '">' + userUnit + '</option>';
+      unitSel.disabled = true;
+    }
+  }
+
+  filterQueryMembers();
+  populateCaseTypeSelect();
+}
+
+function filterQueryMembers() {
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const isAdmin   = usr.isAdmin   || false;
+  const isOfficer = usr.isOfficer || false;
+  const userUnit  = usr.unit || '';
+
+  const unit = document.getElementById('qUnit')?.value || (!isAdmin ? userUnit : '');
+  const sel  = document.getElementById('qMember');
+  if (!sel) return;
   const cur = sel.value;
+
+  // 一般成員只顯示自己分隊
+  const filtered = isAdmin
+    ? (unit ? members.filter(m => (m.unit || '') === unit) : members)
+    : members.filter(m => (m.unit || '') === userUnit);
+
   sel.innerHTML = '<option value="">— 全部成員 —</option>';
-  members.forEach(m => {
+  filtered.forEach(m => {
     const opt = document.createElement('option');
     opt.value = m.name; opt.textContent = m.name;
     if (m.name === cur) opt.selected = true;
@@ -3090,7 +3272,7 @@ async function doQuery() {
       allRecords=docs.map(d=>({
         date:d.date||'',timeOut:d.timeOut||'',timeBack:d.timeBack||'',
         district:(d.district||'').replace(/^台中/,'臺中'),
-        address:d.address||'',services:d.services||'',
+        address:d.address||'',caseType:d.caseType||'',services:d.services||'',
         note:d.note||'',
         memberName:d.memberName||'',
         signature:d.signature||'',
@@ -3107,12 +3289,35 @@ async function doQuery() {
 
   const dateFrom = document.getElementById('qDateFrom')?.value || '';
   const dateTo   = document.getElementById('qDateTo')?.value || '';
+  const qUnit    = document.getElementById('qUnit')?.value || '';
+  const qCaseType = document.getElementById('qCaseType')?.value || '';
   const member   = document.getElementById('qMember')?.value || '';
   const district = document.getElementById('qDistrict')?.value || '';
   const service  = document.getElementById('qService')?.value || '';
   const duty     = document.getElementById('qDuty')?.value || '';
 
+  // 取得登入者資訊
+  const _usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const _isAdmin   = _usr.isAdmin   || false;
+  const _isOfficer = _usr.isOfficer || false;
+  const _userUnit  = _usr.unit || '';
+
+  // 先取得自己分隊的成員名單（一般成員限制用）
+  const _unitMembers = members
+    .filter(m => (m.unit || '') === _userUnit)
+    .map(m => m.name);
+
   filteredRecords = allRecords.filter(r => {
+    // 管理員以外只能看自己分隊的協勤紀錄
+    if (!_isAdmin) {
+      if (!_unitMembers.includes(r.memberName)) return false;
+    }
+    // 管理員/承辦人可依分隊篩選
+    if (qUnit) {
+      const unitMemberNames = members.filter(m => (m.unit||'') === qUnit).map(m => m.name);
+      if (!unitMemberNames.includes(r.memberName)) return false;
+    }
+    if (qCaseType && r.caseType !== qCaseType) return false;
     if (dateFrom && r.date < dateFrom) return false;
     if (dateTo   && r.date > dateTo)   return false;
     if (member   && r.memberName !== member) return false;
@@ -3152,6 +3357,7 @@ function renderQueryResults(records) {
         <td style="white-space:nowrap;">${timeStr}</td>
         <td style="white-space:nowrap;">${r.district || ''}</td>
         <td style="min-width:10em;">${r.address || ''}</td>
+        <td style="white-space:nowrap;">${r.caseType || '—'}</td>
         <td>${tags}</td>
         <td style="white-space:nowrap;">${r.memberName || ''}</td>
         <td>${r.note || ''}</td>
@@ -3172,7 +3378,7 @@ function renderQueryResults(records) {
 }
 
 function resetQuery() {
-  ['qDateFrom','qDateTo','qMember','qDistrict','qService','qDuty'].forEach(id => {
+  ['qDateFrom','qDateTo','qUnit','qCaseType','qMember','qDistrict','qService','qDuty'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('statsRow')?.style && (document.getElementById('statsRow').style.display = 'none');
@@ -3232,13 +3438,25 @@ async function initAttendancePage() {
   // 填分隊選單
   const unitSel = document.getElementById('attUnitSel');
   if (unitSel) {
-    unitSel.innerHTML = '<option value="">請選擇分隊</option>' +
-      _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
+    const _u = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    const _isAdmin   = _u.isAdmin   || false;
+    const _isOfficer = _u.isOfficer || false;
+    const _userUnit  = _u.unit || '';
+
+    if (_isAdmin) {
+      // 管理員可選所有分隊
+      unitSel.innerHTML = '<option value="">請選擇分隊</option>' +
+        _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
+      unitSel.disabled = false;
+    } else {
+      // 承辦人和一般成員只能選自己分隊，且鎖定
+      unitSel.innerHTML = `<option value="${_userUnit}">${_userUnit}</option>`;
+      unitSel.disabled = true;
+    }
+
     const sel = document.getElementById('attMemberSel');
     if (sel) sel.innerHTML = '<option value="">— 請先選擇分隊 —</option>';
-    // 自動帶入登入者分隊，帶入後立刻填成員清單
-    const u = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
-    if (u.unit) { unitSel.value = u.unit; filterAttMembers(); }
+    if (_userUnit) { unitSel.value = _userUnit; filterAttMembers(); }
   }
 
   attCheckinHasSig = false;
@@ -3283,7 +3501,19 @@ async function loadTodayCheckins() {
 
 function renderCheckinList() {
   const list = document.getElementById('attCheckinList');
-  const sessions = Object.entries(attSessions);
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+  const isAdmin   = usr.isAdmin   || false;
+  const isOfficer = usr.isOfficer || false;
+  const userUnit  = usr.unit || '';
+  // 取自己分隊的成員名單
+  const unitMemberNames = members.filter(m => (m.unit||'') === userUnit).map(m => m.name);
+
+  // 一般成員只顯示自己分隊的人
+  const allSessions = Object.entries(attSessions);
+  const sessions = isAdmin
+    ? allSessions
+    : allSessions.filter(([k, s]) => unitMemberNames.includes(s.memberName));
+
   if (sessions.length === 0) {
     list.innerHTML = '<div class="member-empty"><span class="empty-icon">📋</span>尚無人簽到</div>';
     return;
@@ -3626,10 +3856,20 @@ async function initAttQuery() {
   // 填分隊選單
   const unitSel = document.getElementById('aqUnit');
   if (unitSel) {
-    unitSel.innerHTML = '<option value="">— 全部分隊 —</option>' +
-      _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
     const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
-    if (usr.unit) unitSel.value = usr.unit;
+    const _isAdmin  = usr.isAdmin  || false;
+    const _userUnit = usr.unit || '';
+    if (_isAdmin) {
+      // 只有管理員可選所有分隊
+      unitSel.innerHTML = '<option value="">— 全部分隊 —</option>' +
+        _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+      unitSel.disabled = false;
+      if (_userUnit) unitSel.value = _userUnit;
+    } else {
+      // 承辦人和一般成員鎖定自己分隊
+      unitSel.innerHTML = `<option value="${_userUnit}">${_userUnit}</option>`;
+      unitSel.disabled = true;
+    }
   }
   // 填成員選單（依預設分隊篩選）
   filterAqMembers();
@@ -3637,11 +3877,16 @@ async function initAttQuery() {
 }
 
 function filterAqMembers() {
-  const unit = document.getElementById('aqUnit')?.value || '';
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin  = usr.isAdmin  || false;
+  const _userUnit = usr.unit || '';
+  const unit = document.getElementById('aqUnit')?.value || (_isAdmin ? '' : _userUnit);
   const sel  = document.getElementById('aqMember');
   if (!sel) return;
   const cur = sel.value;
-  const filtered = unit ? members.filter(m => (m.unit||'') === unit) : members;
+  const filtered = _isAdmin
+    ? (unit ? members.filter(m => (m.unit||'') === unit) : members)
+    : members.filter(m => (m.unit||'') === _userUnit);
   sel.innerHTML = '<option value="">— 全部成員 —</option>' +
     filtered.map(m => {
       const selected = m.name === cur ? ' selected' : '';
@@ -3679,9 +3924,14 @@ async function doAttQuery() {
   const unit     = document.getElementById('aqUnit').value;
   const member   = document.getElementById('aqMember').value;
 
-  // 若選了分隊，建立該分隊成員名單供快速比對
-  const unitMemberNames = unit
-    ? new Set(members.filter(m => (m.unit||'') === unit).map(m => m.name))
+  const _usr2     = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin2 = _usr2.isAdmin || false;
+  const _userUnit2 = _usr2.unit || '';
+
+  // 管理員以外強制用自己分隊篩選
+  const effectiveUnit = _isAdmin2 ? unit : _userUnit2;
+  const unitMemberNames = effectiveUnit
+    ? new Set(members.filter(m => (m.unit||'') === effectiveUnit).map(m => m.name))
     : null;
 
   aqFiltered = aqAllRecords.filter((r, i) => {
@@ -3989,10 +4239,12 @@ async function loadStats() {
 
     if (filterUnit) {
       monthAtt = monthAtt.filter(r => (memberUnitMap[r.memberName]||r.unit||'') === filterUnit);
+      monthOut = monthOut.filter(r => (memberUnitMap[r.memberName]||r.unit||'') === filterUnit);
     }
 
-    if (!monthAtt.length) {
+    if (!monthAtt.length && !monthOut.length) {
       document.getElementById('statsEmptyMsg').textContent = `${year} 年 ${month} 月查無資料`;
+      document.getElementById('caseStatsSection').style.display = 'none';
       return;
     }
 
@@ -4033,6 +4285,9 @@ async function loadStats() {
     }).join('');
     document.getElementById('statsTableCard').style.display = 'block';
     document.getElementById('statsEmptyMsg').style.display = 'none';
+
+    // 案件類型統計
+    renderCaseTypeStats(monthOut, filterUnit, memberUnitMap, year, month);
   } catch(e) {
     document.getElementById('statsEmptyMsg').textContent = '❌ 載入失敗：' + e.message;
   }
@@ -4785,11 +5040,23 @@ async function loadAdminAttendance() {
   const el=document.getElementById('adminAttList');
   const from=document.getElementById('adminAttFrom').value;
   const to=document.getElementById('adminAttTo').value;
+  const unit=document.getElementById('adminAttUnit')?.value||'';
+  const member=document.getElementById('adminAttMember')?.value||'';
+  const usr=JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin=usr.isAdmin||false;
+  const _userUnit=usr.unit||'';
   el.innerHTML='<div style="color:var(--text-light);padding:8px 0;">載入中...</div>';
   try {
     let docs=await fbList(COL_ATTEND, 'date', 'asc');
     if(from)docs=docs.filter(d=>(d.date||'')>=from);
     if(to)  docs=docs.filter(d=>(d.date||'')<=to);
+    // 分隊篩選（承辦人強制自己分隊）
+    const effectiveUnit = _isAdmin ? unit : _userUnit;
+    if(effectiveUnit){
+      const unitNames=new Set(members.filter(m=>(m.unit||'')===effectiveUnit).map(m=>m.name));
+      docs=docs.filter(d=>unitNames.has(d.memberName||''));
+    }
+    if(member)docs=docs.filter(d=>(d.memberName||'')===member);
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">查無資料</div>';return;}
 
     const wrap = document.createElement('div');
@@ -4862,11 +5129,23 @@ async function loadAdminOuting() {
   const el=document.getElementById('adminOutList');
   const from=document.getElementById('adminOutFrom').value;
   const to=document.getElementById('adminOutTo').value;
+  const unit=document.getElementById('adminOutUnit')?.value||'';
+  const member=document.getElementById('adminOutMember')?.value||'';
+  const usr=JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin=usr.isAdmin||false;
+  const _userUnit=usr.unit||'';
   el.innerHTML='<div style="color:var(--text-light);padding:8px 0;">載入中...</div>';
   try {
     let docs=await fbList(COL_OUTING, 'date', 'asc');
     if(from)docs=docs.filter(d=>(d.date||'')>=from);
     if(to)  docs=docs.filter(d=>(d.date||'')<=to);
+    // 分隊篩選（承辦人強制自己分隊）
+    const effectiveUnit = _isAdmin ? unit : _userUnit;
+    if(effectiveUnit){
+      const unitNames=new Set(members.filter(m=>(m.unit||'')===effectiveUnit).map(m=>m.name));
+      docs=docs.filter(d=>unitNames.has(d.memberName||''));
+    }
+    if(member)docs=docs.filter(d=>(d.memberName||'')===member);
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">查無資料</div>';return;}
 
     const wrap = document.createElement('div');
@@ -4875,7 +5154,7 @@ async function loadAdminOuting() {
     const table = document.createElement('table');
     table.style.cssText = 'width:100%;border-collapse:collapse;min-width:540px;';
     table.innerHTML = `<thead><tr style="background:var(--warm);">
-      ${['日期','時間','行政區','姓名','服務項目','操作'].map(s=>`<th style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:0.78rem;font-weight:600;color:var(--text-mid);white-space:nowrap;">${s}</th>`).join('')}
+      ${['日期','時間','行政區','姓名','案件類型','服務項目','操作'].map(s=>`<th style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:0.78rem;font-weight:600;color:var(--text-mid);white-space:nowrap;">${s}</th>`).join('')}
     </tr></thead>`;
 
     const tbody = document.createElement('tbody');
@@ -4886,6 +5165,7 @@ async function loadAdminOuting() {
         <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${(d.timeOut||'')}～${(d.timeBack||'')}</td>
         <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;">${d.district||''}</td>
         <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;font-weight:500;white-space:nowrap;">${d.memberName||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${d.caseType||'—'}</td>
         <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${d.services||''}">${d.services||''}</td>
         <td style="padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap;">
           <button class="att-member-btn" style="padding:4px 10px;font-size:0.8rem;" data-id="${d.id}">✏️ 編輯</button>
@@ -4908,6 +5188,7 @@ async function adminEditOut(id) {
   document.getElementById('adminEditTitle').textContent='編輯協勤紀錄';
   document.getElementById('adminEditFields').innerHTML=`
     <div class="field"><label>日期</label><input type="date" id="aeODate" value="${doc.date||''}" style="width:100%;"></div>
+    <div class="field"><label>案件類型</label><input type="text" id="aeOCaseType" value="${doc.caseType||''}" style="width:100%;"></div>
     <div class="field"><label>協勤時間</label><input type="time" id="aeOOut" value="${doc.timeOut||''}" style="width:100%;"></div>
     <div class="field"><label>返勤時間</label><input type="time" id="aeOBack" value="${doc.timeBack||''}" style="width:100%;"></div>
     <div class="field"><label>行政區</label><input type="text" id="aeODist" value="${doc.district||''}" style="width:100%;"></div>
@@ -4919,6 +5200,7 @@ async function adminEditOut(id) {
     try {
       await fbSet(COL_OUTING,id,{
         date:document.getElementById('aeODate').value,
+        caseType:document.getElementById('aeOCaseType').value.trim(),
         timeOut:document.getElementById('aeOOut').value,
         timeBack:document.getElementById('aeOBack').value,
         district:document.getElementById('aeODist').value.trim(),
@@ -5051,16 +5333,39 @@ async function initAdminPage() {
     const el=document.getElementById(id); if(el)el.value=i%2===0?from:to;
   });
 
-  // 管理員限定：顯示登入紀錄區塊、tab、子導覽
-  ['adminSec-loginlog','adminTab-loginlog','adminSubNav-loginlog'].forEach(id => {
+  // 管理員限定：登入紀錄、分隊管理、公告管理、版本紀錄
+  const adminOnlySecs = [
+    'adminSec-loginlog', 'adminTab-loginlog', 'adminSubNav-loginlog',  // 登入紀錄
+    'adminSec-units',                                                    // 分隊管理（section，tab/subnav 另處理）
+    'adminSec-announce', 'adminTab-announce', 'adminSubNav-announce',   // 公告管理
+    'adminSec-changelog',                                                // 版本紀錄（section，tab/subnav 另處理）
+  ];
+  adminOnlySecs.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = isAdminOnly ? '' : 'none';
   });
-  // 分隊承辦人隱藏公告管理
-  ['adminSec-announce','adminTab-announce','adminSubNav-announce'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = isAdminOnly ? '' : 'none';
-  });
+
+  // 承辦人也隱藏分隊管理和版本紀錄的 tab 和 subnav 按鈕
+  if (!isAdminOnly) {
+    // 找到並隱藏對應的 tab 按鈕（以 onclick 內容比對）
+    document.querySelectorAll('.admin-tab').forEach(btn => {
+      const oc = btn.getAttribute('onclick') || '';
+      if (oc.includes('adminSec-units') || oc.includes('adminSec-changelog')) {
+        btn.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.admin-subnav-btn').forEach(btn => {
+      const oc = btn.getAttribute('onclick') || '';
+      if (oc.includes('adminSec-units') || oc.includes('adminSec-changelog')) {
+        btn.style.display = 'none';
+      }
+    });
+  } else {
+    // 管理員顯示全部
+    document.querySelectorAll('.admin-tab, .admin-subnav-btn').forEach(btn => {
+      if (!btn.id || !btn.id.includes('loginlog')) btn.style.display = '';
+    });
+  }
   // 設定登入紀錄分隊篩選
   if (isAdminOnly) {
     const llUnit = document.getElementById('loginLogUnit');
@@ -5073,7 +5378,7 @@ async function initAdminPage() {
 
   await loadUnits();
   populateUnitSelects();
-  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog()]);
+  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog(),loadAdminCaseTypes()]);
 
   // 顯示並定位固定 tab bar
   _positionAdminTabBar();
@@ -5084,9 +5389,9 @@ async function initAdminPage() {
 
   // IntersectionObserver：滾動時自動高亮對應 tab
   if (_adminTabObserver) _adminTabObserver.disconnect();
-  const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog'];
-  if (!isAdminOnly) secIds.splice(secIds.indexOf('adminSec-announce'), 1);
-  if (isAdminOnly) secIds.push('adminSec-loginlog');
+  const secIds = isAdminOnly
+    ? ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog','adminSec-loginlog']
+    : ['adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-feedback'];
   const tabs = document.querySelectorAll('.admin-tab');
   _adminTabObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -5262,6 +5567,26 @@ async function adminDelUnit(name) {
 }
 
 // 把 _unitsList 填入所有分隊 <select>
+function adminAttUnitChange() {
+  const unit = document.getElementById('adminAttUnit')?.value || '';
+  const sel  = document.getElementById('adminAttMember');
+  if (!sel) return;
+  const cur = sel.value;
+  const filtered = unit ? members.filter(m => (m.unit||'') === unit) : members;
+  sel.innerHTML = '<option value="">— 全部成員 —</option>' +
+    filtered.map(m => `<option value="${m.name}"${m.name===cur?' selected':''}>${m.name}</option>`).join('');
+}
+
+function adminOutUnitChange() {
+  const unit = document.getElementById('adminOutUnit')?.value || '';
+  const sel  = document.getElementById('adminOutMember');
+  if (!sel) return;
+  const cur = sel.value;
+  const filtered = unit ? members.filter(m => (m.unit||'') === unit) : members;
+  sel.innerHTML = '<option value="">— 全部成員 —</option>' +
+    filtered.map(m => `<option value="${m.name}"${m.name===cur?' selected':''}>${m.name}</option>`).join('');
+}
+
 function populateUnitSelects() {
   const opts = '<option value="">請選擇分隊</option>' + _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
   ['adminWlUnit','adminWlFilterUnit','adminMemUnit','itemUnit','rpt1Unit','rpt2Unit','rpt3Unit'].forEach(id => {
@@ -5280,6 +5605,27 @@ function populateUnitSelects() {
       loadAdminWhitelist(usr.unit);
     }
   }
+
+  // 後台簽到退/協勤的分隊選單（管理員可選全部，承辦人鎖定）
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin = usr.isAdmin || false;
+  const _userUnit = usr.unit || '';
+  ['adminAttUnit','adminOutUnit'].forEach(selId => {
+    const sel = document.getElementById(selId);
+    if (!sel) return;
+    if (_isAdmin) {
+      sel.innerHTML = '<option value="">— 全部分隊 —</option>' +
+        _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+      sel.disabled = false;
+    } else {
+      sel.innerHTML = `<option value="${_userUnit}">${_userUnit}</option>`;
+      sel.disabled = true;
+      sel.value = _userUnit;
+    }
+  });
+  // 初始化成員選單
+  adminAttUnitChange();
+  adminOutUnitChange();
 }
 
 // 待領物品：依分隊篩選成員
@@ -5583,11 +5929,25 @@ function filterMemberList() {
 // 意見回饋（改版）
 // ════════════════════════════════════════
 async function initFeedbackPage() {
-  await loadUnits();
+  await Promise.all([loadMembers(), loadUnits()]);
   const sel = document.getElementById('fbUnit');
   if (sel) {
-    sel.innerHTML = '<option value="">請選擇分隊</option>' +
-      _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
+    const _isAdmin  = usr.isAdmin  || false;
+    const _userUnit = usr.unit || '';
+    if (_isAdmin) {
+      sel.innerHTML = '<option value="">請選擇分隊</option>' +
+        _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
+      sel.disabled = false;
+    } else {
+      sel.innerHTML = `<option value="${_userUnit}">${_userUnit}</option>`;
+      sel.disabled = true;
+      // 自動帶入成員選單
+      if (_userUnit) {
+        sel.value = _userUnit;
+        onFbUnitChange();
+      }
+    }
   }
 }
 
@@ -5676,7 +6036,7 @@ async function loadAdminFeedback() {
     let docs=await fbList(COL_FEEDBACK);
     // 分隊承辦人只能看自己分隊
     const u=JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
-    if (!u.isAdmin && u.isOfficer) {
+    if (!u.isAdmin) {
       docs = docs.filter(d => d.unit === u.unit);
     }
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">尚無意見</div>';return;}
@@ -6093,13 +6453,22 @@ async function saveChangelog() {}
 // 協勤案件登錄：分隊篩選成員
 // ════════════════════════════════════════
 async function initFormPage() {
-  await Promise.all([loadMembers(), loadUnits()]);
+  await Promise.all([loadMembers(), loadUnits(), loadCaseTypes()]);
+  renderCaseTypeGrid();
   const unitSel = document.getElementById('formUnitSel');
   if (unitSel) {
-    unitSel.innerHTML = '<option value="">請選擇分隊</option>' +
-      _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
     const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
-    if (usr.unit) { unitSel.value = usr.unit; filterFormMembers(); }
+    const _isAdmin  = usr.isAdmin  || false;
+    const _userUnit = usr.unit || '';
+    if (_isAdmin) {
+      unitSel.innerHTML = '<option value="">請選擇分隊</option>' +
+        _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+      unitSel.disabled = false;
+    } else {
+      unitSel.innerHTML = '<option value="' + _userUnit + '">' + _userUnit + '</option>';
+      unitSel.disabled = true;
+    }
+    if (_userUnit) { unitSel.value = _userUnit; filterFormMembers(); }
   }
 }
 
@@ -6141,14 +6510,16 @@ function updateDutyStyle() {
   if (isLocalDev) {
     var area = document.getElementById('devLoginArea');
     if (area) area.style.display = '';
+    devLoadUnits();
   }
 })();
 
 function devLoginAs(role) {
+  var selUnit = (document.getElementById('devUnitSel') || {}).value || '潭子分隊';
   var profiles = {
     admin:   { email: 'paul25042505@gmail.com', name: '林伯霖（測試）', role: 'admin',   isAdmin: true,  isOfficer: false, unit: '潭子分隊' },
-    officer: { email: 'officer@dev.test',       name: '承辦人（測試）',role: 'officer', isAdmin: false, isOfficer: true,  unit: '潭子分隊' },
-    member:  { email: 'member@dev.test',         name: '隊員（測試）', role: 'member',  isAdmin: false, isOfficer: false, unit: '潭子分隊' },
+    officer: { email: 'officer@dev.test',       name: '承辦人（測試）', role: 'officer', isAdmin: false, isOfficer: true,  unit: selUnit },
+    member:  { email: 'member@dev.test',         name: '隊員（測試）',  role: 'member',  isAdmin: false, isOfficer: false, unit: selUnit },
   };
   var p = profiles[role] || profiles.member;
   sessionStorage.setItem('rescue_user', JSON.stringify({
@@ -6157,6 +6528,18 @@ function devLoginAs(role) {
   }));
   showApp(p.name, p.email, p.isAdmin, p.isOfficer, p.role);
   navTo('dashboardPage');
+}
+
+// 開發者登入：載入分隊清單到切換選單
+async function devLoadUnits() {
+  const sel = document.getElementById('devUnitSel');
+  if (!sel) return;
+  try {
+    await loadUnits();
+    if (_unitsList && _unitsList.length > 0) {
+      sel.innerHTML = _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+    }
+  } catch(e) {}
 }
 
 
@@ -6600,7 +6983,7 @@ async function renderMeetingList() {
     }
 
     if (docs.length === 0) {
-      el.innerHTML = '<div class="query-empty"><span class="empty-icon">📒</span>目前沒有定訓記錄</div>';
+      el.innerHTML = '<div class="query-empty"><span class="empty-icon">📒</span>目前沒有定訓與公告</div>';
       return;
     }
 
@@ -6672,7 +7055,7 @@ function meetingShowForm(doc) {
   _meetingEditId = doc ? doc.id : null;
   const usr = JSON.parse(sessionStorage.getItem('rescue_user') || '{}');
 
-  document.getElementById('meetingFormTitle').textContent = doc ? '編輯定訓記錄' : '新增定訓記錄';
+  document.getElementById('meetingFormTitle').textContent = doc ? '編輯定訓與公告' : '新增定訓與公告';
   document.getElementById('meetingTitle').value   = doc ? (doc.title   || '') : '';
   document.getElementById('meetingDate').value    = doc ? (doc.date    || new Date().toLocaleDateString('sv')) : new Date().toLocaleDateString('sv');
   document.getElementById('meetingContent').value = doc ? (doc.content || '') : '';
@@ -6741,6 +7124,303 @@ async function meetingDelete(id, title) {
   }
 }
 
+
+
+// ════════════════════════════════════════
+// 案件類型
+// ════════════════════════════════════════
+const DEFAULT_CASE_TYPES = ['路倒','急病','外傷','心臟病','呼吸困難','意識不清','車禍','燙傷','其他'];
+let _caseTypesList = [];
+
+async function loadCaseTypes() {
+  try {
+    const docs = await fbList(COL_CASETYPES);
+    _caseTypesList = docs.length
+      ? docs.sort((a,b)=>(a.order||0)-(b.order||0)).map(d=>d.name).filter(Boolean)
+      : [...DEFAULT_CASE_TYPES];
+  } catch(e) {
+    _caseTypesList = [...DEFAULT_CASE_TYPES];
+  }
+}
+
+function renderCaseTypeGrid() {
+  const grid = document.getElementById('caseTypeGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  _caseTypesList.forEach(ct => {
+    const lbl = document.createElement('label');
+    lbl.className = 'cb-item';
+    lbl.style.cssText = 'cursor:pointer;';
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'caseType';
+    radio.value = ct;
+    radio.style.cssText = 'accent-color:var(--red);flex-shrink:0;width:auto;border:none;padding:0;background:none;min-height:unset;';
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('#caseTypeGrid label').forEach(l => l.classList.remove('checked'));
+      lbl.classList.add('checked');
+      document.getElementById('caseTypeOtherField').style.display = ct === '其他' ? '' : 'none';
+    });
+    lbl.appendChild(radio);
+    lbl.appendChild(document.createTextNode(' ' + ct));
+    grid.appendChild(lbl);
+  });
+
+  // 「其他」選項（自填）— 若清單已有「其他」就不重複加
+  if (!_caseTypesList.includes('其他')) {
+    const lbl = document.createElement('label');
+    lbl.className = 'cb-item';
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'caseType';
+    radio.value = '__other__';
+    radio.style.cssText = 'accent-color:var(--red);flex-shrink:0;width:auto;border:none;padding:0;background:none;min-height:unset;';
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('#caseTypeGrid label').forEach(l => l.classList.remove('checked'));
+      lbl.classList.add('checked');
+      document.getElementById('caseTypeOtherField').style.display = '';
+    });
+    lbl.appendChild(radio);
+    lbl.appendChild(document.createTextNode(' 其他'));
+    grid.appendChild(lbl);
+  }
+}
+
+// 查詢頁面的案件類型下拉
+function populateCaseTypeSelect() {
+  const sel = document.getElementById('qCaseType');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— 全部類型 —</option>' +
+    _caseTypesList.map(ct => `<option value="${ct}">${ct}</option>`).join('');
+}
+
+// ── 後台案件類型管理 ──
+async function loadAdminCaseTypes() {
+  await loadCaseTypes();
+  const el = document.getElementById('adminCaseTypeList');
+  if (!el) return;
+  if (_caseTypesList.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">尚無自訂類型，使用預設值</div>';
+    return;
+  }
+  el.innerHTML = '';
+  _caseTypesList.forEach((ct, idx) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);';
+    const name = document.createElement('span');
+    name.style.cssText = 'flex:1;font-size:0.88rem;color:var(--text);';
+    name.textContent = ct;
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '刪除';
+    delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:4px;padding:3px 10px;font-size:0.75rem;color:#b94a3a;cursor:pointer;font-family:"Noto Sans TC",sans-serif;';
+    delBtn.onclick = () => deleteCaseType(ct);
+    row.appendChild(name);
+    row.appendChild(delBtn);
+    el.appendChild(row);
+  });
+}
+
+async function addCaseType() {
+  const inp = document.getElementById('newCaseTypeInput');
+  const name = (inp?.value || '').trim();
+  if (!name) { alert('請輸入案件類型名稱'); return; }
+  if (_caseTypesList.includes(name)) { alert('已有相同的案件類型'); return; }
+  try {
+    await fbAdd(COL_CASETYPES, { name, order: _caseTypesList.length });
+    inp.value = '';
+    await loadAdminCaseTypes();
+  } catch(e) { alert('新增失敗：' + e.message); }
+}
+
+async function deleteCaseType(name) {
+  if (!confirm('確定刪除「' + name + '」？')) return;
+  try {
+    const docs = await fbList(COL_CASETYPES);
+    const doc = docs.find(d => d.name === name);
+    if (doc) await fbDelete(COL_CASETYPES, doc.id);
+    await loadAdminCaseTypes();
+  } catch(e) { alert('刪除失敗：' + e.message); }
+}
+
+
+
+// ════════════════════════════════════════
+// 案件類型統計圖表
+// ════════════════════════════════════════
+let _pieChart = null, _barChart = null, _unitChart = null;
+
+const CHART_COLORS = [
+  '#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60',
+  '#16a085','#2980b9','#8e44ad','#7f8c8d','#2c3e50',
+  '#d35400','#1abc9c','#3498db','#9b59b6','#34495e'
+];
+
+function renderCaseTypeStats(outDocs, filterUnit, memberUnitMap, year, month) {
+  const section = document.getElementById('caseStatsSection');
+  if (!section) return;
+
+  // 所有協勤紀錄都納入，沒有 caseType 的歸為「未分類」
+  let docs = [...outDocs];
+  if (filterUnit) {
+    docs = docs.filter(d => (memberUnitMap[d.memberName]||'') === filterUnit);
+  }
+
+  if (!docs.length) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = '';
+
+  // ── 統計案件類型數量 ──
+  const typeCount = {};
+  docs.forEach(d => {
+    const t = (d.caseType || '').trim() || '未分類';
+    typeCount[t] = (typeCount[t]||0) + 1;
+  });
+  const total = docs.length;
+  const sorted = Object.entries(typeCount).sort((a,b) => b[1]-a[1]);
+  const labels = sorted.map(e=>e[0]);
+  const counts = sorted.map(e=>e[1]);
+  const colors = labels.map((_,i) => CHART_COLORS[i % CHART_COLORS.length]);
+
+  // ── 數字摘要 ──
+  const topType = sorted[0];
+  const uniqueTypes = sorted.length;
+  const overview = document.getElementById('caseStatsOverview');
+  overview.innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">案件總數</div></div>
+    <div class="stat-card"><div class="stat-num">${uniqueTypes}</div><div class="stat-label">案件類型數</div></div>
+    <div class="stat-card"><div class="stat-num" style="font-size:1.1rem;">${topType[0]}</div><div class="stat-label">最多案件類型</div></div>
+    <div class="stat-card"><div class="stat-num">${topType[1]}</div><div class="stat-label">${topType[0]} 件數</div></div>
+  `;
+
+  // ── 圓餅圖 & 長條圖（用 setTimeout 確保 canvas 已渲染完成）──
+  if (_pieChart) { _pieChart.destroy(); _pieChart = null; }
+  if (_barChart) { _barChart.destroy(); _barChart = null; }
+
+  // 圓餅圖圖例（先渲染文字，不需要等 canvas）
+  const legend = document.getElementById('caseTypeLegend');
+  if (legend) {
+    legend.innerHTML = labels.map((l,i) =>
+      `<span style="display:flex;align-items:center;gap:4px;white-space:nowrap;">
+        <span style="width:10px;height:10px;border-radius:2px;background:${colors[i]};flex-shrink:0;"></span>${l}
+      </span>`
+    ).join('');
+  }
+
+  // ── 圓餅圖（SVG）──
+  (function() {
+    const el = document.getElementById('caseTypePieChart');
+    if (!el) return;
+    const size = 200, cx = size/2, cy = size/2, r = 80, ir = 48;
+    let startAngle = -Math.PI/2;
+    let slices = '';
+    counts.forEach((cnt, i) => {
+      const angle = (cnt/total) * Math.PI * 2;
+      const endAngle = startAngle + angle;
+      const x1 = cx + r * Math.cos(startAngle), y1 = cy + r * Math.sin(startAngle);
+      const x2 = cx + r * Math.cos(endAngle),   y2 = cy + r * Math.sin(endAngle);
+      const ix1 = cx + ir * Math.cos(startAngle), iy1 = cy + ir * Math.sin(startAngle);
+      const ix2 = cx + ir * Math.cos(endAngle),   iy2 = cy + ir * Math.sin(endAngle);
+      const large = angle > Math.PI ? 1 : 0;
+      const pct = Math.round(cnt/total*100);
+      slices += `<path d="M${ix1},${iy1} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} L${ix2},${iy2} A${ir},${ir} 0 ${large},0 ${ix1},${iy1} Z"
+        fill="${colors[i]}" stroke="#fff" stroke-width="2">
+        <title>${labels[i]}：${cnt} 件（${pct}%）</title></path>`;
+      startAngle = endAngle;
+    });
+    el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" style="width:100%;max-width:200px;display:block;margin:0 auto;">
+      ${slices}
+      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="700" fill="#1e1a17">${total}</text>
+      <text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="9" fill="#9c8c80">件</text>
+    </svg>`;
+  })();
+
+  // ── 長條圖（SVG）──
+  (function() {
+    const el = document.getElementById('caseTypeBarChart');
+    if (!el) return;
+    const W = 280, barH = 28, gap = 8, padL = 70, padR = 50, padT = 8, padB = 8;
+    const H = padT + (barH + gap) * counts.length + padB;
+    const maxVal = Math.max(...counts, 1);
+    let bars = '';
+    counts.forEach((cnt, i) => {
+      const y = padT + i * (barH + gap);
+      const bw = Math.max(4, (cnt / maxVal) * (W - padL - padR));
+      const label = labels[i].length > 6 ? labels[i].slice(0,6)+'…' : labels[i];
+      bars += `<rect x="${padL}" y="${y}" width="${bw}" height="${barH}" rx="3" fill="${colors[i]}"/>
+        <text x="${padL - 6}" y="${y + barH/2}" text-anchor="end" dominant-baseline="middle" font-size="11" fill="#5a4f46">${label}</text>
+        <text x="${padL + bw + 5}" y="${y + barH/2}" dominant-baseline="middle" font-size="11" font-weight="600" fill="${colors[i]}">${cnt}</text>`;
+    });
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;">${bars}</svg>`;
+  })();
+
+  // ── 分隊比較（僅全部分隊時顯示）──
+  const compareCard = document.getElementById('caseUnitCompareCard');
+  if (!filterUnit && Object.keys(memberUnitMap).length > 0) {
+    // 取所有分隊
+    const allUnits = [...new Set(Object.values(memberUnitMap).filter(Boolean))].sort();
+    // 取 Top 6 類型
+    const topTypes = labels.slice(0, 6);
+    const unitDatasets = topTypes.map((type, i) => ({
+      label: type,
+      data: allUnits.map(u => {
+        const uDocs = outDocs.filter(d =>
+          d.caseType === type && (memberUnitMap[d.memberName]||'') === u
+        );
+        return uDocs.length;
+      }),
+      backgroundColor: colors[i],
+      borderRadius: 3,
+    }));
+
+    setTimeout(() => {
+    const unitCanvas = document.getElementById('caseUnitChart');
+    if (_unitChart) { _unitChart.destroy(); _unitChart = null; }
+    if (unitCanvas && allUnits.length > 1) {
+      unitCanvas.width  = unitCanvas.parentElement.clientWidth || 560;
+      unitCanvas.height = 280;
+      _unitChart = new Chart(unitCanvas, {
+        type: 'bar',
+        data: { labels: allUnits, datasets: unitDatasets },
+        options: {
+          responsive: false,
+          width: unitCanvas.width,
+          height: unitCanvas.height,
+          plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } },
+          scales: {
+            x: { stacked: false, grid: { display: false }, ticks: { font: { size: 11 } } },
+            y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }
+          }
+        }
+      });
+        compareCard.style.display = '';
+      } else {
+        compareCard.style.display = 'none';
+      }
+    }, 100);
+  } else {
+    compareCard.style.display = 'none';
+  }
+
+  // ── 明細表格 ──
+  const tbody = document.getElementById('caseTypeTableBody');
+  if (tbody) {
+    tbody.innerHTML = sorted.map(([type, cnt]) => {
+      const pct = Math.round(cnt/total*100);
+      return `<tr>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.85rem;font-weight:500;">${type}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:center;font-size:0.88rem;font-weight:600;color:var(--red);">${cnt}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;">${pct}%</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);">
+          <div style="background:var(--border);border-radius:4px;height:8px;min-width:80px;">
+            <div style="background:var(--red);border-radius:4px;height:8px;width:${pct}%;transition:width 0.4s;"></div>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
 
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
