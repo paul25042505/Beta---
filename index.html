@@ -44,34 +44,30 @@ body {
 /* ── Overlay ── */
 .overlay {
   display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 90;
+  background: rgba(0,0,0,0.4); z-index: 190;
 }
 .overlay.open { display: block; }
 
 /* ── Drawer ── */
 .drawer {
   position: fixed; top: 0; left: 0; height: 100%; width: 260px;
-  background: var(--text); z-index: 100;
+  background: var(--text); z-index: 200;
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
   display: flex; flex-direction: column;
 }
 .drawer.open { transform: translateX(0); }
 .drawer-header {
-  background: var(--red-dark); padding: 32px 24px 24px; position: relative;
+  background: var(--red-dark); padding: 20px 24px 16px; position: relative;
 }
-.drawer-header .cross { font-size: 2rem; color: rgba(255,255,255,0.3); display: block; margin-bottom: 10px; }
-.drawer-header h2 {
-  font-family: 'Noto Serif TC', serif; font-size: 1rem;
-  color: white; font-weight: 600; letter-spacing: 0.12em;
-}
+.drawer-header .cross { font-size: 2rem; color: rgba(255,255,255,0.3); display: block; }
 .drawer-close {
   position: absolute; top: 16px; right: 16px;
   background: none; border: none; color: rgba(255,255,255,0.7);
   font-size: 1.4rem; cursor: pointer; padding: 4px 8px; border-radius: 3px; transition: color 0.15s;
 }
 .drawer-close:hover { color: white; }
-.drawer nav { padding: 16px 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+.drawer nav { padding: 16px 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
 .drawer nav button {
   display: flex; align-items: center; gap: 12px; padding: 14px 24px;
   text-decoration: none; color: rgba(255,255,255,0.75); font-size: 0.9rem;
@@ -200,15 +196,6 @@ textarea { resize: vertical; min-height: 82px; }
 /* ── Footer ── */
 .form-footer { text-align: center; margin-top: 28px; font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.04em; line-height: 1.8; }
 
-/* ── Member shortcut link ── */
-.member-shortcut {
-  margin-top: 8px; background: none; border: none; font-size: 0.76rem;
-  color: var(--text-light); cursor: pointer; padding: 0; letter-spacing: 0.04em;
-  font-family: 'Noto Sans TC', sans-serif; transition: color 0.15s; display: inline-block;
-  min-height: unset;
-}
-.member-shortcut:hover { color: var(--red); }
-
 /* ── Members Page ── */
 .member-add-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
 .add-row { display: flex; gap: 10px; }
@@ -299,7 +286,35 @@ tr:hover td { background: #fdfcfb; }
 .query-empty .empty-icon { font-size: 2rem; display: block; margin-bottom: 10px; opacity: 0.4; }
 .loading-msg { text-align: center; padding: 30px; color: var(--text-light); font-size: 0.85rem; }
 
-/* ── Attendance Page ── */
+/* ── Admin Sub-Nav in Drawer ── */
+#adminSubNav {
+  border-left: 2px solid rgba(192,57,43,0.4);
+  margin: 0 0 4px 32px;
+}
+.admin-subnav-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  color: rgba(255,255,255,0.55); font-size: 0.8rem;
+  letter-spacing: 0.04em; border-left: 2px solid transparent;
+  transition: all 0.15s; cursor: pointer; background: none; width: 100%;
+  font-family: 'Noto Sans TC', sans-serif;
+  border-top: none; border-right: none; border-bottom: none;
+}
+.admin-subnav-btn:hover, .admin-subnav-btn.active-subnav {
+  color: white; background: rgba(255,255,255,0.07); border-left-color: var(--red-mid);
+}
+
+
+.admin-tab {
+  background: var(--white); border: 1px solid var(--border); border-radius: 20px;
+  padding: 6px 14px; font-size: 0.78rem; font-family: 'Noto Sans TC', sans-serif;
+  color: var(--text-mid); cursor: pointer; white-space: nowrap;
+  transition: all 0.15s; min-height: unset;
+}
+.admin-tab:hover { border-color: var(--red); color: var(--red); background: var(--red-faint); }
+.admin-tab.active { background: var(--red); color: white; border-color: var(--red); font-weight: 600; }
+
+
 .attendance-wrap { max-width: 700px; margin: 0 auto; padding: 28px 16px 64px; }
 .status-banner {
   border-radius: 6px; padding: 14px 20px; margin-bottom: 20px;
@@ -461,7 +476,7 @@ tr:hover td { background: #fdfcfb; }
     <div class="login-logo">✚</div>
     <div class="login-title">救護義消系統</div>
     <div class="login-sub">
-      臺中市政府消防局<br>鳳凰救護大隊潭子分隊
+      臺中市義勇消防總隊<br>鳳凰救護大隊
     </div>
     <div class="login-divider"></div>
     <!-- Google 登入按鈕 -->
@@ -484,6 +499,26 @@ tr:hover td { background: #fdfcfb; }
     <div class="login-hint">
       僅限授權義消成員登入<br>
       如無法登入請聯絡管理員
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <button onclick="showLoginFeedback()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:8px 20px;font-size:0.78rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;width:100%;transition:all 0.15s;min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">
+          💬 意見回饋 / 聯絡我們
+        </button>
+      </div>
+    </div>
+    <!-- 登入頁意見回饋表單（展開式）-->
+    <div id="loginFeedbackForm" style="display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:16px;">
+      <div style="font-size:0.78rem;color:var(--text-mid);margin-bottom:10px;font-weight:600;">💬 意見回饋</div>
+      <div style="margin-bottom:8px;">
+        <input type="text" id="lfName" placeholder="姓名（可留空匿名）" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:'Noto Sans TC',sans-serif;box-sizing:border-box;background:white;">
+      </div>
+      <div style="margin-bottom:8px;">
+        <textarea id="lfContent" rows="3" placeholder="請填寫您的問題或建議..." style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:'Noto Sans TC',sans-serif;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="submitLoginFeedback()" style="flex:1;background:var(--red);color:white;border:none;border-radius:6px;padding:9px;font-size:0.85rem;font-family:'Noto Sans TC',sans-serif;font-weight:600;cursor:pointer;min-height:unset;">送出</button>
+        <button onclick="hideLoginFeedback()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:9px 16px;font-size:0.85rem;font-family:'Noto Sans TC',sans-serif;color:var(--text-mid);cursor:pointer;min-height:unset;">取消</button>
+      </div>
+      <div id="lfStatus" style="font-size:0.8rem;margin-top:8px;text-align:center;display:none;"></div>
     </div>
     <!-- 開發者快速登入（僅 localhost 顯示）-->
     <div id="devLoginArea" style="display:none;margin-top:20px;border-top:1px dashed #e0d5c8;padding-top:16px;">
@@ -512,22 +547,33 @@ tr:hover td { background: #fdfcfb; }
 <div class="drawer" id="drawer">
   <div class="drawer-header">
     <span class="cross">✚</span>
-    <h2>救護義消系統</h2>
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
   </div>
   <nav>
     <button id="nav-dashboard" class="active-nav" onclick="navTo('dashboardPage')"><span class="icon">🏠</span>首頁</button>
     <button id="nav-members" onclick="navTo('membersPage')"><span class="icon">👥</span>成員管理</button>
-    <button id="nav-form" onclick="navTo('formPage')"><span class="icon">📋</span>協勤案件登錄</button>
-    <button id="nav-query" onclick="navTo('queryPage')"><span class="icon">🔍</span>協勤紀錄查詢</button>
+    <button id="nav-items" onclick="navTo('itemsPage')"><span class="icon">📦</span>待領物品</button>
     <button id="nav-attendance" onclick="navTo('attendancePage')"><span class="icon">✍</span>簽到簽退登錄</button>
     <button id="nav-attquery" onclick="navTo('attQueryPage')"><span class="icon">📊</span>簽到簽退記錄查詢</button>
+    <button id="nav-form" onclick="navTo('formPage')"><span class="icon">📋</span>協勤案件登錄</button>
+    <button id="nav-query" onclick="navTo('queryPage')"><span class="icon">🔍</span>協勤紀錄查詢</button>
     <button id="nav-report" onclick="navTo('reportPage')"><span class="icon">📑</span>報表匯出</button>
     <button id="nav-stats" onclick="navTo('statsPage')"><span class="icon">📈</span>協勤統計</button>
-    <button id="nav-items" onclick="navTo('itemsPage')"><span class="icon">📦</span>待領物品</button>
     <button id="nav-feedback" onclick="navTo('feedbackPage')"><span class="icon">💬</span>意見回饋</button>
     <button id="nav-changelog" onclick="navTo('changelogPage')"><span class="icon">📝</span>版本修改紀錄</button>
     <button id="nav-admin" onclick="navTo('adminPage')" style="display:none;border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:12px;"><span class="icon">⚙️</span>管理員後台</button>
+    <!-- 後台子導覽（管理員才顯示，進入 adminPage 後展開）-->
+    <div id="adminSubNav" style="display:none;">
+      <button onclick="adminNavTo('adminSec-units')"    class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">🏢</span>分隊管理</button>
+      <button onclick="adminNavTo('adminSec-wl')"       class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">👤</span>成員帳號</button>
+      <button onclick="adminNavTo('adminSec-att')"      class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">✍</span>簽到退紀錄</button>
+      <button onclick="adminNavTo('adminSec-outing')"   class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">🚑</span>協勤紀錄</button>
+      <button onclick="adminNavTo('adminSec-items')"    class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📦</span>物品領用</button>
+      <button id="adminSubNav-announce" onclick="adminNavTo('adminSec-announce')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📢</span>公告管理</button>
+      <button onclick="adminNavTo('adminSec-feedback')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">💬</span>意見回饋</button>
+      <button onclick="adminNavTo('adminSec-changelog')"class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📝</span>版本紀錄</button>
+      <button id="adminSubNav-loginlog" onclick="adminNavTo('adminSec-loginlog')" class="admin-subnav-btn" style="display:none;"><span class="icon" style="font-size:0.75rem;">🔐</span>登入紀錄</button>
+    </div>
   </nav>
 </div>
 
@@ -558,20 +604,16 @@ tr:hover td { background: #fdfcfb; }
 <!-- ══════ PAGE 0：儀表板 ══════ -->
 <div class="page active" id="dashboardPage">
   <div class="form-wrap">
-    <!-- 公告區 -->
-    <div id="announcementBar" style="display:none;background:linear-gradient(135deg,#b94a3a,#d4604f);color:white;border-radius:8px;padding:10px 16px;margin-bottom:12px;font-size:0.85rem;line-height:1.5;position:relative;">
-      <span style="font-weight:600;margin-right:8px;">📢 公告</span>
-      <span id="announcementText"></span>
-      <button onclick="document.getElementById('announcementBar').style.display='none'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;min-height:unset;padding:0;">×</button>
-    </div>
+    <!-- 公告區（多則）-->
+    <div id="announcementBar" style="display:none;margin-bottom:12px;"></div>
     <!-- 緊急公告彈窗 -->
     <div id="urgentModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;align-items:center;justify-content:center;padding:16px;">
-      <div style="background:white;border-radius:12px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+      <div style="background:white;border-radius:12px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.4);max-height:80vh;overflow-y:auto;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="font-size:1.4rem;">🚨</span>
           <span style="font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:700;color:var(--red);">緊急公告</span>
         </div>
-        <div id="urgentText" style="font-size:0.88rem;line-height:1.7;color:var(--text);margin-bottom:20px;"></div>
+        <div id="urgentText" style="font-size:0.88rem;line-height:1.7;color:var(--text);margin-bottom:20px;white-space:pre-wrap;"></div>
         <button onclick="confirmUrgent()" class="btn-submit" style="width:100%;">已閱，確認關閉</button>
       </div>
     </div>
@@ -634,7 +676,7 @@ tr:hover td { background: #fdfcfb; }
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">待領物品</div>
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">領取簽名</div>
         </button>
-        <button onclick="navTo('attendancePage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+        <button id="quick-attendance" onclick="navTo('attendancePage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">✍</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退登錄</div>
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤簽到</div>
@@ -644,7 +686,7 @@ tr:hover td { background: #fdfcfb; }
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">簽到簽退查詢</div>
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤紀錄查詢</div>
         </button>
-        <button onclick="navTo('formPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+        <button id="quick-form" onclick="navTo('formPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📋</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">協勤案件登錄</div>
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">協勤案件記錄</div>
@@ -665,76 +707,8 @@ tr:hover td { background: #fdfcfb; }
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">建議與問題回報</div>
         </button>
       </div>
-      </div>
-      <div class="site-footer-placeholder"></div>
     </div>
-
-    <!-- ── 簽退畫面 ── -->
-    <div id="attCheckoutView" style="display:none;">
-      <div class="section">
-        <div class="section-head">
-          <div class="section-num" style="font-size:0.9rem;">←</div>
-          <div class="section-title" id="attCheckoutName">成員姓名</div>
-          <div class="section-line"></div>
-          <button type="button" onclick="attBackToMain()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.78rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;min-height:unset;">← 返回</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-head">
-          <div class="section-num">✓</div>
-          <div class="section-title">簽退</div>
-          <div class="section-line"></div>
-        </div>
-        <div class="card">
-          <div class="field" style="background:var(--warm);border-radius:4px;padding:10px 14px;margin-bottom:16px;">
-            <span style="font-size:0.78rem;color:var(--text-mid);">簽到時間：</span>
-            <span class="time-badge" id="attCheckinTimeRef"></span>
-          </div>
-          <div class="field">
-            <label>簽退時間 <span class="req">*</span></label>
-            <!-- 修復4：onchange 立即計算時數 -->
-            <select id="attCheckoutTime" style="width:100%;" onchange="autoCalcHours()"></select>
-          </div>
-          <div class="field">
-            <label>簽退簽名 <span class="req">*</span></label>
-            <div class="sig-wrap">
-              <canvas id="attCheckoutCanvas"></canvas>
-              <div class="sig-footer">
-                <span>請用滑鼠或手指於上方簽名</span>
-                <button type="button" class="btn-clear" onclick="clearAttCanvas('checkout')">清除重簽</button>
-              </div>
-            </div>
-          </div>
-          <div class="card-divider"></div>
-          <div class="field">
-            <label>協勤時數</label>
-            <input type="number" id="attHours" min="0" step="0.5" placeholder="選擇簽退時間後自動計算" style="width:100%;color:var(--text);" readonly>
-          </div>
-          <div class="field">
-            <label>協勤次數</label>
-            <input type="number" id="attCount" min="0" step="1" placeholder="0" style="width:100%;color:var(--text-light);" readonly>
-          </div>
-          <div class="field">
-            <label>服務人次</label>
-            <input type="number" id="attService" min="0" step="1" placeholder="0" style="width:100%;background:white;">
-          </div>
-          <div class="submit-section" style="margin-top:16px;">
-            <button type="button" class="btn-checkout" onclick="doCheckout()">確認簽退送出</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="success-msg" id="attSuccessMsg">
-        <div class="success-icon">✓</div>
-        <h3>簽退完成</h3>
-        <p id="attSuccessDetail">紀錄已成功儲存。</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
-          <button type="button" onclick="goToAttQuery()" style="background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看簽到紀錄 →</button>
-        </div>
-      </div>
-      <div class="site-footer-placeholder"></div>
-    </div>
+    <div class="site-footer-placeholder"></div>
   </div>
 </div>
 
@@ -851,9 +825,6 @@ tr:hover td { background: #fdfcfb; }
             <select id="memberSelect" required>
               <option value="">— 請先選擇分隊 —</option>
             </select>
-            <button type="button" class="member-shortcut" onclick="navTo('membersPage')">
-              ＋ 找不到姓名？前往成員管理新增
-            </button>
           </div>
           <div class="card-divider"></div>
           <div class="field">
@@ -1167,7 +1138,13 @@ tr:hover td { background: #fdfcfb; }
             <label for="aqDateTo">日期（迄）</label>
             <input type="date" id="aqDateTo">
           </div>
-          <div class="field" style="grid-column:1/-1;">
+          <div class="field">
+            <label for="aqUnit">分隊別</label>
+            <select id="aqUnit" onchange="filterAqMembers()">
+              <option value="">— 全部分隊 —</option>
+            </select>
+          </div>
+          <div class="field">
             <label for="aqMember">義消姓名</label>
             <select id="aqMember">
               <option value="">— 全部成員 —</option>
@@ -1371,7 +1348,7 @@ tr:hover td { background: #fdfcfb; }
           <div class="field">
             <label>分隊別</label>
             <select id="statsUnit" style="width:100%;" onchange="loadStats()">
-              <option value="">全部分隊</option>
+              <option value="">— 全部分隊 —</option>
             </select>
           </div>
         </div>
@@ -1439,10 +1416,17 @@ tr:hover td { background: #fdfcfb; }
         <div class="section-num">📦</div>
         <div class="section-title">待領清單</div>
         <div class="section-line"></div>
-        <button onclick="loadItems()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
+        <button onclick="reloadItemsList()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
+      </div>
+      <div class="filter-card" style="margin-bottom:16px;padding:14px 16px;">
+        <label style="display:block;font-size:0.78rem;font-weight:500;color:var(--text-mid);margin-bottom:6px;letter-spacing:0.05em;">分隊別 <span class="req">*</span></label>
+        <select id="itemsListUnit" onchange="reloadItemsList()" style="width:100%;">
+          <option value="">請選擇分隊</option>
+        </select>
+        <div id="itemsListUnitHint" style="display:none;font-size:0.72rem;color:var(--text-light);margin-top:5px;">🔒 僅限查看本分隊</div>
       </div>
       <div id="itemsList">
-        <div class="query-empty"><span class="empty-icon">📦</span>載入中...</div>
+        <div class="query-empty"><span class="empty-icon">📦</span>請先選擇分隊</div>
       </div>
     </div>
 
@@ -1475,24 +1459,6 @@ tr:hover td { background: #fdfcfb; }
   </div>
 </div>
 
-
-<!-- 待領物品提示 Modal -->
-<div id="pendingItemsAlert" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:400;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:white;border-radius:12px;padding:24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <span style="font-size:1.4rem;">📦</span>
-      <div>
-        <div style="font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:700;color:var(--text);">尚有物品待領取</div>
-        <div style="font-size:0.78rem;color:var(--text-light);margin-top:2px;">請盡速完成領取，謝謝！</div>
-      </div>
-    </div>
-    <div id="pendingItemsList" style="font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:20px;max-height:200px;overflow-y:auto;"></div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="navTo('itemsPage');document.getElementById('pendingItemsAlert').style.display='none';" style="flex:1;background:var(--red);border:none;border-radius:6px;padding:10px;font-size:0.85rem;color:white;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-weight:500;">前往領取</button>
-      <button onclick="document.getElementById('pendingItemsAlert').style.display='none';" style="background:none;border:1px solid var(--border);border-radius:6px;padding:10px 16px;font-size:0.85rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;">稍後再說</button>
-    </div>
-  </div>
-</div>
 
 <!-- 待領物品提示 Modal -->
 <div id="pendingItemsAlert" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:400;align-items:center;justify-content:center;padding:16px;">
@@ -1598,10 +1564,23 @@ tr:hover td { background: #fdfcfb; }
 <!-- ══════ PAGE：管理員後台 ══════ -->
 <div class="page" id="adminPage">
   <div class="query-wrap">
-    <div class="section">
-      <div class="section-head"><div class="section-num">⚙️</div><div class="section-title">管理員後台</div><div class="section-line"></div></div>
+
+    <!-- 後台導覽 Tab -->
+    <div id="adminTabBar" style="display:none;position:fixed;left:0;right:0;z-index:150;background:var(--cream);padding:6px 16px 8px;border-bottom:2px solid var(--border);gap:6px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+      <button onclick="adminScrollTo('adminSec-units')"    class="admin-tab">🏢 分隊</button>
+      <button onclick="adminScrollTo('adminSec-wl')"       class="admin-tab">👤 帳號</button>
+      <button onclick="adminScrollTo('adminSec-att')"      class="admin-tab">✍ 簽到退</button>
+      <button onclick="adminScrollTo('adminSec-outing')"   class="admin-tab">🚑 協勤</button>
+      <button onclick="adminScrollTo('adminSec-items')"    class="admin-tab">📦 物品</button>
+      <button id="adminTab-announce" onclick="adminScrollTo('adminSec-announce')" class="admin-tab">📢 公告</button>
+      <button onclick="adminScrollTo('adminSec-feedback')" class="admin-tab">💬 回饋</button>
+      <button onclick="adminScrollTo('adminSec-changelog')"class="admin-tab">📝 版本</button>
+      <button id="adminTab-loginlog" onclick="adminScrollTo('adminSec-loginlog')" class="admin-tab" style="display:none;">🔐 登入紀錄</button>
     </div>
-    <div class="section">
+    <!-- tab bar 佔位，避免內容被蓋住 -->
+    <div id="adminTabBarSpacer" style="display:none;height:8px;"></div>
+
+    <div class="section" id="adminSec-units">
       <div class="section-head"><div class="section-num">🏢</div><div class="section-title">分隊管理</div><div class="section-line"></div>
         <button onclick="loadAdminUnits()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
       </div>
@@ -1614,7 +1593,7 @@ tr:hover td { background: #fdfcfb; }
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="adminSec-wl">
       <div class="section-head"><div class="section-num">👤</div><div class="section-title">成員帳號管理</div><div class="section-line"></div>
         <button onclick="loadAdminWhitelist()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
       </div>
@@ -1632,16 +1611,19 @@ tr:hover td { background: #fdfcfb; }
         </div>
         <!-- 分隊篩選 -->
         <div style="margin-bottom:12px;margin-top:8px;">
+          <label style="display:block;font-size:0.78rem;font-weight:500;color:var(--text-mid);margin-bottom:6px;letter-spacing:0.05em;">分隊別</label>
           <select id="adminWlFilterUnit" onchange="filterAdminWlByUnit()"
             style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.88rem;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:white;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 12 8%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%23999%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>');background-repeat:no-repeat;background-position:right 12px center;background-size:11px;">
-            <option value="">全部分隊</option>
+            <option value="">請選擇分隊</option>
           </select>
         </div>
-        <div id="adminWlList"></div>
+        <div id="adminWlList">
+          <div style="color:var(--text-light);padding:8px 0;font-size:0.85rem;">請先選擇分隊</div>
+        </div>
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="adminSec-att">
       <div class="section-head"><div class="section-num">✍</div><div class="section-title">簽到簽退紀錄</div><div class="section-line"></div></div>
       <div class="filter-card">
         <div class="filter-grid">
@@ -1653,9 +1635,9 @@ tr:hover td { background: #fdfcfb; }
           <button onclick="adminClearDate('adminAttFrom','adminAttTo');loadAdminAttendance();" class="btn-reset" style="white-space:nowrap;">全部</button>
         </div>
       </div>
-      <div id="adminAttList" style="margin-top:12px;"></div>
+      <div id="adminAttList" style="margin-top:12px;overflow-x:auto;"></div>
     </div>
-    <div class="section">
+    <div class="section" id="adminSec-outing">
       <div class="section-head"><div class="section-num">📋</div><div class="section-title">協勤紀錄管理</div><div class="section-line"></div></div>
       <div class="filter-card">
         <div class="filter-grid">
@@ -1667,34 +1649,68 @@ tr:hover td { background: #fdfcfb; }
           <button onclick="adminClearDate('adminOutFrom','adminOutTo');loadAdminOuting();" class="btn-reset" style="white-space:nowrap;">全部</button>
         </div>
       </div>
-      <div id="adminOutList" style="margin-top:12px;"></div>
+      <div id="adminOutList" style="margin-top:12px;overflow-x:auto;"></div>
     </div>
-    <div class="section">
+    <div class="section" id="adminSec-items">
       <div class="section-head"><div class="section-num">📦</div><div class="section-title">物品領用管理</div><div class="section-line"></div>
         <button onclick="loadAdminItems()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
       </div>
       <div id="adminItemList"></div>
     </div>
-    <div class="section">
-      <div class="section-head"><div class="section-num">📢</div><div class="section-title">公告管理</div><div class="section-line"></div></div>
-      <div class="card">
-        <div class="field"><label>公告內容</label><textarea id="adminAnnounceText" rows="2" placeholder="填寫公告內容（留空則關閉公告）" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:'Noto Sans TC',sans-serif;font-size:0.88rem;resize:vertical;"></textarea></div>
-        <div style="display:flex;gap:8px;margin-top:4px;">
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;font-weight:400;"><input type="checkbox" id="adminAnnounceUrgent"> 緊急公告（彈窗）</label>
+    <div class="section" id="adminSec-announce">
+      <div class="section-head">
+        <div class="section-num">📢</div>
+        <div class="section-title">公告管理</div>
+        <div class="section-line"></div>
+        <button onclick="showAnnounceForm(null)" class="btn-search" style="min-height:unset;padding:4px 14px;font-size:0.78rem;">＋ 新增公告</button>
+      </div>
+
+      <!-- 新增/編輯表單 -->
+      <div id="announceForm" style="display:none;background:var(--warm);border-radius:10px;padding:16px;margin-bottom:16px;">
+        <input type="hidden" id="anFormId">
+        <div class="field" style="margin-bottom:10px;">
+          <label style="font-size:0.78rem;">公告內容 <span class="req">*</span></label>
+          <textarea id="anFormText" rows="3" placeholder="填寫公告內容..." style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.88rem;font-family:'Noto Sans TC',sans-serif;resize:vertical;"></textarea>
         </div>
-        <button onclick="saveAnnouncement()" class="btn-search" style="width:100%;margin-top:12px;">儲存公告</button>
-        <div id="adminAnnounceStatus" style="font-size:0.82rem;margin-top:8px;text-align:center;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div class="field" style="margin:0;">
+            <label style="font-size:0.78rem;">開始日期 <span class="req">*</span></label>
+            <input type="date" id="anFormStart" style="width:100%;">
+          </div>
+          <div class="field" style="margin:0;">
+            <label style="font-size:0.78rem;">結束日期 <span class="req">*</span></label>
+            <input type="date" id="anFormEnd" style="width:100%;">
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;font-weight:400;">
+            <input type="checkbox" id="anFormUrgent" style="accent-color:var(--red);"> 🚨 緊急公告（彈窗顯示）
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;font-weight:400;">
+            <input type="checkbox" id="anFormPinned" style="accent-color:var(--red);"> 📌 置頂顯示
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="saveAnnounceForm()" class="btn-search" style="flex:1;min-height:unset;">發布公告</button>
+          <button onclick="hideAnnounceForm()" class="btn-reset" style="min-height:unset;">取消</button>
+        </div>
+        <div id="anFormStatus" style="font-size:0.82rem;margin-top:8px;text-align:center;"></div>
+      </div>
+
+      <!-- 公告列表 -->
+      <div id="adminAnnounceList">
+        <div class="query-empty"><span class="empty-icon">📢</span>載入中...</div>
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="adminSec-feedback">
       <div class="section-head"><div class="section-num">💬</div><div class="section-title">意見回饋</div><div class="section-line"></div>
         <button onclick="loadAdminFeedback()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
       </div>
       <div id="adminFeedbackList"></div>
     </div>
 
-    <div class="section">
+    <div class="section" id="adminSec-changelog">
       <div class="section-head">
         <div class="section-num">📝</div>
         <div class="section-title">版本修改紀錄管理</div>
@@ -1731,6 +1747,31 @@ tr:hover td { background: #fdfcfb; }
       </div>
       <div id="adminChangelogList"></div>
     </div>
+
+    <!-- 登入紀錄（僅系統管理員可見）-->
+    <div class="section" id="adminSec-loginlog" style="display:none;">
+      <div class="section-head">
+        <div class="section-num">🔐</div>
+        <div class="section-title">登入紀錄</div>
+        <div class="section-line"></div>
+        <button onclick="loadLoginLog()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
+      </div>
+      <div class="filter-card" style="margin-bottom:12px;padding:14px 16px;">
+        <div class="filter-grid">
+          <div class="field" style="margin:0;"><label style="font-size:0.78rem;">日期（起）</label><input type="date" id="loginLogFrom" style="width:100%;"></div>
+          <div class="field" style="margin:0;"><label style="font-size:0.78rem;">日期（迄）</label><input type="date" id="loginLogTo" style="width:100%;"></div>
+          <div class="field" style="margin:0;grid-column:1/-1;"><label style="font-size:0.78rem;">分隊別</label><select id="loginLogUnit" style="width:100%;"><option value="">— 全部分隊 —</option></select></div>
+        </div>
+        <div class="filter-actions" style="margin-top:12px;">
+          <button class="btn-search" onclick="loadLoginLog()">查　詢</button>
+          <button class="btn-reset" onclick="resetLoginLog()">清除</button>
+        </div>
+      </div>
+      <div id="adminLoginLogList">
+        <div class="query-empty"><span class="empty-icon">🔐</span>請點查詢載入紀錄</div>
+      </div>
+    </div>
+
     <div class="site-footer-placeholder"></div>
   </div>
 </div>
@@ -1797,6 +1838,7 @@ var _fbDB = null;
 var COL_WHITELIST = 'whitelist', COL_MEMBERS = 'members';
 var COL_OUTING = 'outingRecords', COL_ATTEND = 'attendance';
 var COL_ITEMS = 'items', COL_FEEDBACK = 'feedback', COL_UNITS = 'units', COL_CHANGELOG = 'changelogs';
+var COL_LOGINLOG = 'loginLogs';
 
 // Firebase 初始化（SDK 用 defer 載入，window.onload 後才 init）
 var _fbReady = false;
@@ -2000,7 +2042,12 @@ async function handleGoogleLogin(response) {
       sessionStorage.setItem('rescue_user', JSON.stringify({
         email, name, memberName, isAdmin, isOfficer, role, unit, loginAt: Date.now()
       }));
-      console.log('[Login] memberName:', memberName, 'isAdmin:', isAdmin, 'isOfficer:', isOfficer, 'role:', role);
+      // 寫入登入紀錄
+      fbAdd(COL_LOGINLOG, {
+        email, memberName, role, unit,
+        loginAt: new Date().toLocaleString('sv').replace('T', ' '),
+        ua: navigator.userAgent.substring(0, 120),
+      }).catch(() => {});
       showApp(memberName, email, isAdmin, isOfficer, role);
     } else {
       spinner.classList.remove('show');
@@ -2040,6 +2087,13 @@ function showApp(name, email, isAdmin, isOfficer, role) {
   if (!isAdmin && !isOfficer) {
     const reportNav = document.getElementById('nav-report');
     if (reportNav) reportNav.style.display = 'none';
+  }
+  // 分隊承辦人隱藏「簽到簽退登錄」和「協勤案件登錄」
+  if (isOfficer && !isAdmin) {
+    ['nav-attendance', 'nav-form', 'quick-attendance', 'quick-form'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
   }
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.style.display = 'inline';
@@ -2235,18 +2289,28 @@ function fmtTime(v) {
 // ════════════════════════════════════════
 // Site Footer
 // ════════════════════════════════════════
-function initFooters() {
+function initFooters(version) {
+  const ver = version || 'v1.4.05';
   const lines = [
-    '© 2026 臺中市政府消防局潭子分隊　v1.4.05　版權所有，轉載必究',
+    `© 2026 臺中市政府消防局潭子分隊　${ver}　版權所有，轉載必究`,
     '本網站所有內容均受著作權法保護，未經授權不得轉載、複製或使用。',
     '本網站資訊僅供參考，緊急狀況請撥打 04-25327425。',
     '隱私權保護政策｜網站安全政策｜資訊無障礙聲明',
   ].join('　');
-  document.querySelectorAll('.site-footer-placeholder').forEach(el => {
+  document.querySelectorAll('.site-footer-placeholder, .form-footer').forEach(el => {
     el.className = 'form-footer';
     el.style.marginTop = '28px';
     el.textContent = lines;
   });
+}
+
+async function initFootersWithVersion() {
+  initFooters(); // 先用預設版本顯示，避免空白
+  try {
+    const docs = await fbList(COL_CHANGELOG);
+    const latest = docs.find(d => d.isLatest) || docs.sort((a,b) => (b.date||'') > (a.date||'') ? 1 : -1)[0];
+    if (latest && latest.version) initFooters(latest.version);
+  } catch(e) {}
 }
 
 // ════════════════════════════════════════
@@ -2310,25 +2374,10 @@ function navTo(pageId, fromHistory) {
   else if (pageId === 'membersPage') initMembersPage();
   else if (pageId === 'queryPage') updateQueryMemberSelect();
   else if (pageId === 'attendancePage') {
-    // 先立即重置，再呼叫 initAttendancePage
-    var _am = document.getElementById('attMain');
-    var _acv = document.getElementById('attCheckoutView');
-    if (_am)  _am.style.display  = 'block';
-    if (_acv) _acv.style.display = 'none';
+    attCheckoutTarget = null;
+    document.getElementById('attMain').style.display = 'block';
+    document.getElementById('attCheckoutView').style.display = 'none';
     initAttendancePage();
-    // 300ms / 1000ms 雙重保險
-    setTimeout(function() {
-      var m = document.getElementById('attMain');
-      var c = document.getElementById('attCheckoutView');
-      if (m)  m.style.display  = 'block';
-      if (c)  c.style.display  = 'none';
-    }, 300);
-    setTimeout(function() {
-      var m = document.getElementById('attMain');
-      var c = document.getElementById('attCheckoutView');
-      if (m)  m.style.display  = 'block';
-      if (c)  c.style.display  = 'none';
-    }, 1000);
   }
   else if (pageId === 'statsPage') initStatsPage();
   else if (pageId === 'reportPage') initReportPage();
@@ -2336,6 +2385,18 @@ function navTo(pageId, fromHistory) {
   else if (pageId === 'attQueryPage') initAttQuery();
   else if (pageId === 'adminPage')    initAdminPage();
   else if (pageId === 'feedbackPage') initFeedbackPage();
+  else if (pageId === 'changelogPage') loadChangelog();
+
+  // 進入後台時展開子導覽，離開時收起；tab bar 顯示/隱藏由 initAdminPage 控制
+  const adminSubNav = document.getElementById('adminSubNav');
+  if (adminSubNav) adminSubNav.style.display = pageId === 'adminPage' ? '' : 'none';
+  if (pageId !== 'adminPage') {
+    const bar = document.getElementById('adminTabBar');
+    const spacer = document.getElementById('adminTabBarSpacer');
+    if (bar)    { bar.style.display = 'none'; }
+    if (spacer) { spacer.style.display = 'none'; }
+    if (_adminTabObserver) { _adminTabObserver.disconnect(); _adminTabObserver = null; }
+  }
 
   closeDrawer();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2347,6 +2408,9 @@ function navTo(pageId, fromHistory) {
 function openDrawer() {
   document.getElementById('drawer').classList.add('open');
   document.getElementById('overlay').classList.add('open');
+  // 每次開側邊欄都從頂部開始
+  const nav = document.querySelector('.drawer nav');
+  if (nav) nav.scrollTop = 0;
 }
 function closeDrawer() {
   document.getElementById('drawer').classList.remove('open');
@@ -2416,7 +2480,7 @@ async function loadMembers() {
     // 從 whitelist 讀取（整合帳號與成員資料，unit 一定有）
     const wlDocs = await fbList(COL_WHITELIST);
     if (wlDocs.length > 0) {
-      const TITLE_ORDER=['分隊長','副分隊長','幹事','幹事助理','小隊長','隊員'];
+      const TITLE_ORDER=['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'];
       members = wlDocs.map(d=>({
         id: d.id, name: d.memberName||'', title: d.title||'',
         unit: d.unit||'', cert: d.cert||'', certExp: d.certExp||'',
@@ -2891,26 +2955,9 @@ function roundTo15(date) {
 }
 
 async function initAttendancePage() {
-  // 追蹤誰把 attMain 設成 none
-  const _attMain = document.getElementById('attMain');
-  const _attCoView = document.getElementById('attCheckoutView');
-  if (_attMain) { _attMain.style.display = 'block'; _attMain.style.visibility = 'visible'; }
-  if (_attCoView) _attCoView.style.display = 'none';
-  // 監控 display 變化
-  if (_attMain && !_attMain._watched) {
-    _attMain._watched = true;
-    var _origSet = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'display') && Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'display').set;
-    if (_origSet) {
-      var _style = _attMain.style;
-      Object.defineProperty(_style, 'display', {
-        get: function() { return _origSet ? '' : this._display || ''; },
-        set: function(v) {
-          if (v === 'none') { console.error('[attMain] display 被設成 none！呼叫堆疊:', new Error().stack); }
-          _origSet.call(this, v);
-        },
-        configurable: true
-      });
-    }
+  if (!attCheckoutTarget) {
+    document.getElementById('attMain').style.display = 'block';
+    document.getElementById('attCheckoutView').style.display = 'none';
   }
   try {
 
@@ -2925,34 +2972,26 @@ async function initAttendancePage() {
   if (unitSel) {
     unitSel.innerHTML = '<option value="">請選擇分隊</option>' +
       _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
-    // 自動帶入登入者分隊
+    const sel = document.getElementById('attMemberSel');
+    if (sel) sel.innerHTML = '<option value="">— 請先選擇分隊 —</option>';
+    // 自動帶入登入者分隊，帶入後立刻填成員清單
     const u = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
     if (u.unit) { unitSel.value = u.unit; filterAttMembers(); }
-  }
-  loadItems();  // 預載物品清單，供簽到後提示用
-  const sel = document.getElementById('attMemberSel');
-  if (sel) {
-    sel.innerHTML = '<option value="">— 請先選擇分隊 —</option>';
   }
 
   attCheckinHasSig = false;
   document.getElementById('attSuccessMsg')?.classList.remove('show');
   setTimeout(() => initAttCanvas('checkin'), 100);
 
-  // 從 Sheets 讀取今日在線名單，還原 attSessions
+  // 從 Firestore 讀取今日在線名單，還原 attSessions
   await loadTodayCheckins();
-  // loadTodayCheckins → renderCheckinList 完成後再次確保顯示狀態
-  const _m2 = document.getElementById('attMain');
-  const _c2 = document.getElementById('attCheckoutView');
-  if (_m2) _m2.style.display = 'block';
-  if (_c2) _c2.style.display = 'none';
+  // 只在沒有進行簽退時才重置顯示（避免覆蓋使用者已點的簽退畫面）
+  if (!attCheckoutTarget) {
+    document.getElementById('attMain').style.display = 'block';
+    document.getElementById('attCheckoutView').style.display = 'none';
+  }
   } catch(e) {
     console.error('initAttendancePage 失敗:', e);
-    // Firebase 失敗時也要確保頁面顯示
-    var m = document.getElementById('attMain');
-    var c = document.getElementById('attCheckoutView');
-    if (m)  m.style.display  = 'block';
-    if (c)  c.style.display  = 'none';
   }
 }
 
@@ -2992,54 +3031,89 @@ function renderCheckinList() {
     if (a[1].done !== b[1].done) return (a[1].done ? 1 : 0) - (b[1].done ? 1 : 0);
     return (a[1].date||'') < (b[1].date||'') ? -1 : 1;
   });
-  list.innerHTML = sorted.map(([key, s]) => {
+
+  // 用 DocumentFragment 避免 innerHTML 的 onclick key 轉義問題
+  const frag = document.createDocumentFragment();
+  sorted.forEach(([key, s]) => {
     const name = s.memberName || key;
     const m    = members.find(x => x.name === name) || { name, title: '' };
     const isYesterday = s.date && s.date !== todayStr;
-    const dateLabel = isYesterday
-      ? '<span style="font-size:0.7rem;color:#e67e22;margin-left:4px;">（' + s.date + ' 待補簽）</span>'
-      : '';
-    if (s.done) {
-      return '<div class="member-item">'
-        + '<div class="member-avatar" style="background:#95a5a6;">' + name.charAt(0) + '</div>'
-        + '<div class="member-info">'
-        + '<div class="member-name">' + name + dateLabel + '</div>'
-        + '<div class="member-title">' + s.checkinTime + ' → ' + s.checkoutTime + '</div>'
-        + '</div>'
-        + '<span class="att-status-badge done">已完成</span>'
-        + '</div>';
+
+    const row = document.createElement('div');
+    row.className = 'member-item';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'member-avatar';
+    avatar.style.background = s.done ? '#95a5a6' : (isYesterday ? '#e67e22' : '#27ae60');
+    avatar.textContent = name.charAt(0);
+
+    const info = document.createElement('div');
+    info.className = 'member-info';
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'member-name';
+    nameDiv.textContent = name;
+    if (isYesterday) {
+      const tag = document.createElement('span');
+      tag.style.cssText = 'font-size:0.7rem;color:#e67e22;margin-left:4px;';
+      tag.textContent = '（' + s.date + ' 待補簽）';
+      nameDiv.appendChild(tag);
     }
-    return '<div class="member-item">'
-      + '<div class="member-avatar" style="background:' + (isYesterday ? '#e67e22' : '#27ae60') + ';">' + name.charAt(0) + '</div>'
-      + '<div class="member-info">'
-      + '<div class="member-name">' + name + dateLabel + '</div>'
-      + (m.title ? '<div class="member-title">' + m.title + '</div>' : '')
-      + '</div>'
-      + '<span class="att-status-badge in">簽到 ' + s.checkinTime + '</span>'
-      + '<div style="width:8px;"></div>'
-      + '<button class="att-member-btn" style="border-color:var(--red);color:var(--red);" data-key="' + key.replace(/"/g, '&quot;') + '" onclick="openCheckout(this.dataset.key)">簽退</button>'
-      + '</div>';
-  }).join('');
+    info.appendChild(nameDiv);
+
+    if (s.done) {
+      const timeDiv = document.createElement('div');
+      timeDiv.className = 'member-title';
+      timeDiv.textContent = s.checkinTime + ' → ' + s.checkoutTime;
+      info.appendChild(timeDiv);
+      const badge = document.createElement('span');
+      badge.className = 'att-status-badge done';
+      badge.textContent = '已完成';
+      row.appendChild(avatar); row.appendChild(info); row.appendChild(badge);
+    } else {
+      if (m.title) {
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'member-title';
+        titleDiv.textContent = m.title;
+        info.appendChild(titleDiv);
+      }
+      const badge = document.createElement('span');
+      badge.className = 'att-status-badge in';
+      badge.textContent = '簽到 ' + s.checkinTime;
+
+      const gap = document.createElement('div');
+      gap.style.width = '8px';
+
+      const btn = document.createElement('button');
+      btn.className = 'att-member-btn';
+      btn.style.cssText = 'border-color:var(--red);color:var(--red);';
+      btn.textContent = '簽退';
+      btn.addEventListener('click', () => openCheckout(key));
+
+      row.appendChild(avatar); row.appendChild(info); row.appendChild(badge);
+      row.appendChild(gap); row.appendChild(btn);
+    }
+    frag.appendChild(row);
+  });
+
+  list.innerHTML = '';
+  list.appendChild(frag);
 }
 
 function openCheckout(key) {
   attCheckoutTarget = key;
   const session = attSessions[key];
-  // session 可能用 memberName 當 key（舊格式）或 docId（新格式）
   const memberName = session ? (session.memberName || key) : key;
   const resolvedSession = session || Object.values(attSessions).find(s => s.memberName === key) || {};
-  document.getElementById('attCheckoutName').textContent    = memberName;
-  document.getElementById('attCheckinTimeRef').textContent  = resolvedSession.checkinTime || '';
+  document.getElementById('attCheckoutName').textContent   = memberName;
+  document.getElementById('attCheckinTimeRef').textContent = resolvedSession.checkinTime || '';
   buildTimeOptions('attCheckoutTime', roundTo15(new Date()));
   document.getElementById('attHours').value   = '';
   document.getElementById('attCount').value   = '';
   document.getElementById('attService').value = '';
   document.getElementById('attSuccessMsg')?.classList.remove('show');
-  // 只有在 attendancePage 顯示時才切換
-  if (document.getElementById('attendancePage').classList.contains('active')) {
-    document.getElementById('attMain').style.display         = 'none';
-    document.getElementById('attCheckoutView').style.display = 'block';
-  }
+  document.getElementById('attMain').style.display         = 'none';
+  document.getElementById('attCheckoutView').style.display = 'block';
   attCheckoutHasSig = false;
   autoCalcHours();
   loadTodayCount(memberName);
@@ -3121,23 +3195,8 @@ async function doCheckin() {
   btn.textContent = '簽到中...'; btn.disabled = true;
 
   try {
-    // 用 no-cors 寫入 Sheets（無法讀回應，但寫入會成功）
-    const dutyTypeVal=document.getElementById('attDutyType')?.value||'協勤';
-    fbAdd(COL_ATTEND,{
-      date,dutyType:dutyTypeVal,title:memberObj.title||'',memberName,
-      checkinSig,checkinTime:timeVal,checkoutSig:'',checkoutTime:'',hours:0,count:0,service:0,
-    }).then(docId=>{
-      if(attSessions[tempKey]){
-        attSessions[docId]=Object.assign({},attSessions[tempKey],{fbDocId:docId});
-        delete attSessions[tempKey];
-        renderCheckinList();
-      }
-    }).catch(()=>{});
-    fetch(BASE_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'checkin',date,title:memberObj.title||'',memberName,checkinSig,checkinTime:timeVal,dutyType:dutyTypeVal})
-    });
-    // no-cors 不等回應，直接存入本地 session
-    // rowIndex 留空，簽退時 Apps Script 用 日期+姓名+簽到時間 找對應行
+    const dutyTypeVal = document.getElementById('attDutyType')?.value || '協勤';
+    // 先建立 tempKey session，讓 .then() 回呼能正確找到它
     const tempKey = 'new_' + memberName + '_' + Date.now();
     attSessions[tempKey] = {
       memberName,
@@ -3145,10 +3204,26 @@ async function doCheckin() {
       checkinSig,
       fbDocId:     null,
       rowIndex:    null,
-      date:        date,
+      date,
       dutyType:    dutyTypeVal,
       done:        false,
     };
+
+    fbAdd(COL_ATTEND, {
+      date, dutyType: dutyTypeVal, title: memberObj.title || '', memberName,
+      checkinSig, checkinTime: timeVal, checkoutSig: '', checkoutTime: '', hours: 0, count: 0, service: 0,
+    }).then(docId => {
+      // 將 tempKey 更新成真正的 Firestore docId
+      if (attSessions[tempKey]) {
+        attSessions[docId] = Object.assign({}, attSessions[tempKey], { fbDocId: docId });
+        delete attSessions[tempKey];
+        renderCheckinList();
+      }
+    }).catch(() => {});
+
+    fetch(BASE_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'checkin', date, title: memberObj.title || '', memberName, checkinSig, checkinTime: timeVal, dutyType: dutyTypeVal })
+    });
 
     // 簽到成功後：若有未領取物品，彈出提示
     showPendingItemsAlert();
@@ -3283,17 +3358,33 @@ async function doCheckout() {
 let aqAllRecords = [];
 let aqFiltered = [];
 
-function initAttQuery() {
-  const sel = document.getElementById('aqMember');
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">— 全部成員 —</option>';
-  members.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.name; opt.textContent = m.name;
-    if (m.name === cur) opt.selected = true;
-    sel.appendChild(opt);
-  });
+async function initAttQuery() {
+  await Promise.all([loadMembers(), loadUnits()]);
+
+  // 填分隊選單
+  const unitSel = document.getElementById('aqUnit');
+  if (unitSel) {
+    unitSel.innerHTML = '<option value="">— 全部分隊 —</option>' +
+      _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    if (usr.unit) unitSel.value = usr.unit;
+  }
+  // 填成員選單（依預設分隊篩選）
+  filterAqMembers();
   ['aqEditCheckin','aqEditCheckout'].forEach(id => buildTimeOptions(id, '08:00'));
+}
+
+function filterAqMembers() {
+  const unit = document.getElementById('aqUnit')?.value || '';
+  const sel  = document.getElementById('aqMember');
+  if (!sel) return;
+  const cur = sel.value;
+  const filtered = unit ? members.filter(m => (m.unit||'') === unit) : members;
+  sel.innerHTML = '<option value="">— 全部成員 —</option>' +
+    filtered.map(m => {
+      const selected = m.name === cur ? ' selected' : '';
+      return `<option value="${m.name}"${selected}>${m.name}</option>`;
+    }).join('');
 }
 
 async function doAttQuery() {
@@ -3316,7 +3407,6 @@ async function doAttQuery() {
       checkinSig:  d.checkinSig||'',
       checkoutSig: d.checkoutSig||'',
     }));
-    const _unused = null; // dummy
   } catch(e) {
     alert('無法取得資料：' + e.message);
     btn.textContent = '查　詢'; btn.disabled = false;
@@ -3324,14 +3414,21 @@ async function doAttQuery() {
   }
   const dateFrom = document.getElementById('aqDateFrom').value;
   const dateTo   = document.getElementById('aqDateTo').value;
+  const unit     = document.getElementById('aqUnit').value;
   const member   = document.getElementById('aqMember').value;
+
+  // 若選了分隊，建立該分隊成員名單供快速比對
+  const unitMemberNames = unit
+    ? new Set(members.filter(m => (m.unit||'') === unit).map(m => m.name))
+    : null;
+
   aqFiltered = aqAllRecords.filter((r, i) => {
     r._row = i;
-    // 支援 Firebase 格式（r.date）和舊 Sheets 格式（r['日期']）
     const d = r.date || normDate(r['日期'] || '');
     if (dateFrom && d < dateFrom) return false;
     if (dateTo   && d > dateTo)   return false;
     const nm = r.memberName || r['姓名'] || '';
+    if (unitMemberNames && !unitMemberNames.has(nm)) return false;
     if (member && nm !== member) return false;
     return true;
   });
@@ -3441,7 +3538,11 @@ async function saveAttEdit() {
 }
 
 function resetAttQuery() {
-  ['aqDateFrom','aqDateTo','aqMember'].forEach(id => document.getElementById(id).value = '');
+  ['aqDateFrom','aqDateTo','aqUnit','aqMember'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  filterAqMembers(); // 重置成員選單為全部
   document.getElementById('aqResultCard').style.display = 'none';
   document.getElementById('aqInitMsg').style.display = 'block';
 }
@@ -3592,8 +3693,10 @@ function initStatsPage() {
   loadUnits().then(() => {
     const unitSel = document.getElementById('statsUnit');
     if (unitSel) {
-      unitSel.innerHTML = '<option value="">全部分隊</option>' +
+      unitSel.innerHTML = '<option value="">— 全部分隊 —</option>' +
         _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
+      const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+      if (usr.unit) unitSel.value = usr.unit;
     }
   }).catch(()=>{});
   loadStats();
@@ -3676,30 +3779,57 @@ async function loadStats() {
 
 async function initItemsPage() {
   const container = document.getElementById('itemsList');
-  if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>載入中...</div>';
-  const _u = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
-  const _canManage = _u.isAdmin || _u.isOfficer || _u.role==='admin' || _u.role==='officer';
-  const _addSec = document.getElementById('itemAddSection');
-  if (_addSec) _addSec.style.display = _canManage ? '' : 'none';
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const isAdmin    = usr.isAdmin || usr.role === 'admin';
+  const isOfficer  = usr.isOfficer || usr.role === 'officer';
+  const canManage  = isAdmin || isOfficer;
+  const userUnit   = usr.unit || '';
+
+  // 新增物品區塊：管理員/承辦人才顯示
+  const addSec = document.getElementById('itemAddSection');
+  if (addSec) addSec.style.display = canManage ? '' : 'none';
+
   try {
     await loadMembers();
     await loadUnits();
-    // 填入分隊 select
+
+    // ── 新增物品用的分隊 select ──
     const unitSel = document.getElementById('itemUnit');
     if (unitSel) {
       unitSel.innerHTML = '<option value="">請選擇分隊</option>' +
-        _unitsList.map(u=>`<option value="${u}">${u}</option>`).join('');
+        _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+      // 先設定預設提示，有分隊再呼叫 filterMembersByUnit 覆蓋
+      const recipients = document.getElementById('itemRecipients');
+      if (recipients) recipients.innerHTML = '<div style="color:var(--text-light);font-size:0.85rem;grid-column:1/-1;">請先選擇分隊</div>';
+      if (userUnit) { unitSel.value = userUnit; filterMembersByUnit(); }
     }
-    // 清空成員列表（等選分隊後才顯示）
-    const recipients = document.getElementById('itemRecipients');
-    if (recipients) recipients.innerHTML = '<div style="color:var(--text-light);font-size:0.85rem;grid-column:1/-1;">請先選擇分隊</div>';
-    // 自動帶入登入者分隊
-    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
-    if (usr.unit && unitSel) {
-      unitSel.value = usr.unit;
-      filterMembersByUnit();
+
+    // ── 待領清單分隊篩選 select ──
+    const listUnitSel = document.getElementById('itemsListUnit');
+    if (listUnitSel) {
+      if (isAdmin) {
+        // 系統管理員：可選所有分隊，包含「全部分隊」
+        listUnitSel.innerHTML = '<option value="">請選擇分隊</option>' +
+          '<option value="__all__">📋 全部分隊</option>' +
+          _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+        listUnitSel.disabled = false;
+        if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>請選擇分隊以查看待領清單</div>';
+      } else {
+        // 承辦人／一般成員：鎖定自己的分隊，不可切換
+        listUnitSel.innerHTML = userUnit
+          ? `<option value="${userUnit}">${userUnit}</option>`
+          : '<option value="">（未設定分隊）</option>';
+        listUnitSel.disabled = true;
+        const hint = document.getElementById('itemsListUnitHint');
+        if (hint) hint.style.display = '';
+        if (userUnit) {
+          listUnitSel.value = userUnit;
+          await loadItems(userUnit);
+        } else {
+          if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>帳號未設定分隊，請聯絡管理員</div>';
+        }
+      }
     }
-    await loadItems();
   } catch(e) {
     if (container) container.innerHTML = `<div class="query-empty"><span class="empty-icon">⚠️</span>初始化失敗：${e.message}</div>`;
   }
@@ -3725,7 +3855,18 @@ function renderItemRecipients() {
   });
 }
 
-async function loadItems() {
+// 待領清單分隊篩選觸發（清單區的分隊 select onchange）
+async function reloadItemsList() {
+  const unit = document.getElementById('itemsListUnit')?.value || '';
+  const container = document.getElementById('itemsList');
+  if (!unit) {
+    if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>請先選擇分隊</div>';
+    return;
+  }
+  await loadItems(unit);
+}
+
+async function loadItems(filterUnit) {
   const container = document.getElementById('itemsList');
   if (!container) return;
   container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>載入中...</div>';
@@ -3733,39 +3874,45 @@ async function loadItems() {
     const docs = await fbList(COL_ITEMS);
     allItems = docs.map(d=>({
       itemId:d.id, itemName:d.itemName||'', note:d.note||'',
+      unit: d.unit||'',
       createTime:d.createTime||'',
       recipients:Array.isArray(d.recipients)?d.recipients:[],
     })).sort((a,b)=>a.createTime>b.createTime?1:-1);
   } catch(e) {
     container.innerHTML='<div class="query-empty"><span class="empty-icon">⚠️</span>載入失敗</div>'; return;
   }
-  renderItemsList();
+  renderItemsList(filterUnit);
   updateItemsBadge();
 }
 
 
-function renderItemsList() {
+function renderItemsList(filterUnit) {
   const container = document.getElementById('itemsList');
-  if (allItems.length === 0) {
-    container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>目前沒有待領物品</div>';
+  const unit = filterUnit || document.getElementById('itemsListUnit')?.value || '';
+
+  if (!unit) {
+    container.innerHTML = '<div class="query-empty"><span class="empty-icon">📦</span>請先選擇分隊</div>';
     return;
   }
 
-  // 分成「有人未領」和「全部已領」兩組
-  const pending  = allItems.filter(item => item.recipients.some(r => !r.claimed));
-  const done     = allItems.filter(item => item.recipients.every(r => r.claimed));
+  // '__all__' 表示全部分隊
+  const filtered = unit === '__all__' ? allItems : allItems.filter(item => (item.unit || '') === unit);
+  const label    = unit === '__all__' ? '全部分隊' : unit;
 
-  let html = '';
-
-  if (pending.length > 0) {
-    html += pending.map(item => renderItemCard(item, false)).join('');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="query-empty"><span class="empty-icon">📦</span>${label} 目前沒有待領物品</div>`;
+    return;
   }
 
+  const pending = filtered.filter(item => item.recipients.some(r => !r.claimed));
+  const done    = filtered.filter(item => item.recipients.every(r => r.claimed));
+
+  let html = '';
+  if (pending.length > 0) html += pending.map(item => renderItemCard(item, false)).join('');
   if (done.length > 0) {
     html += `<div style="font-size:0.78rem;color:var(--text-light);letter-spacing:0.06em;margin:20px 0 8px;font-family:inherit;">── 已全數領取 ──</div>`;
     html += done.map(item => renderItemCard(item, true)).join('');
   }
-
   container.innerHTML = html;
 }
 
@@ -3775,11 +3922,16 @@ function renderItemCard(item, allDone) {
   const pct      = total > 0 ? Math.round(claimed / total * 100) : 0;
 
   const recipientsHtml = item.recipients.map(r => {
+    // 從 members 陣列查出該人的分隊
+    const memberUnit = (members.find(m => m.name === r.name) || {}).unit || '';
+    const unitBadge  = memberUnit
+      ? `<span style="font-size:0.68rem;color:var(--text-light);background:var(--warm);border:1px solid var(--border);border-radius:3px;padding:1px 5px;margin-left:4px;white-space:nowrap;">${memberUnit}</span>`
+      : '';
     if (r.claimed) {
       return `<div class="member-item" style="padding:10px 16px;">
         <div class="member-avatar" style="background:#27ae60;width:32px;height:32px;font-size:0.85rem;">${r.name.charAt(0)}</div>
         <div class="member-info">
-          <div class="member-name" style="font-size:0.88rem;">${r.name}</div>
+          <div class="member-name" style="font-size:0.88rem;">${r.name}${unitBadge}</div>
           <div class="member-title">已領取　${r.claimTime ? r.claimTime.substring(0,16) : ''}</div>
         </div>
         ${r.sig ? `<img src="${r.sig}" style="height:32px;border:1px solid var(--border);border-radius:3px;" title="領取簽名">` : '<span class="att-status-badge done">已領取</span>'}
@@ -3788,7 +3940,7 @@ function renderItemCard(item, allDone) {
     return `<div class="member-item" style="padding:10px 16px;">
       <div class="member-avatar" style="background:#e0d5c8;color:var(--text-mid);width:32px;height:32px;font-size:0.85rem;">${r.name.charAt(0)}</div>
       <div class="member-info">
-        <div class="member-name" style="font-size:0.88rem;">${r.name}</div>
+        <div class="member-name" style="font-size:0.88rem;">${r.name}${unitBadge}</div>
         <div class="member-title">尚未領取</div>
       </div>
       <button class="att-member-btn" style="border-color:#27ae60;color:#27ae60;"
@@ -3850,31 +4002,36 @@ function renderItemCard(item, allDone) {
 }
 
 async function addItem() {
-  const name=document.getElementById('itemName').value.trim();
-  const note=document.getElementById('itemNote').value.trim();
-  const checked=[...document.querySelectorAll('#itemRecipients input:checked')];
-  if(!name){alert('請填入物品名稱');return;}
-  if(!checked.length){alert('請選擇至少一位領取人');return;}
-  const btn=document.querySelector('#itemsPage .btn-submit');
-  if(btn){btn.textContent='新增中...';btn.disabled=true;}
-  const recipients=checked.map(cb=>cb.value).map(n=>({name:n,claimed:false,claimTime:'',sig:''}));
-  const timeStr=new Date().toLocaleString('sv').replace('T',' ');
+  const name = document.getElementById('itemName').value.trim();
+  const note = document.getElementById('itemNote').value.trim();
+  const unit = document.getElementById('itemUnit').value;
+  const checked = [...document.querySelectorAll('#itemRecipients input:checked')];
+  if (!name)          { alert('請填入物品名稱'); return; }
+  if (!unit)          { alert('請選擇分隊別'); return; }
+  if (!checked.length){ alert('請選擇至少一位領取人'); return; }
+  const btn = document.querySelector('#itemsPage .btn-submit');
+  if (btn) { btn.textContent = '新增中...'; btn.disabled = true; }
+  const recipients = checked.map(cb=>cb.value).map(n=>({name:n,claimed:false,claimTime:'',sig:''}));
+  const timeStr = new Date().toLocaleString('sv').replace('T',' ');
   try {
-    await fbAdd(COL_ITEMS,{itemName:name,note,recipients,createTime:timeStr});
-    document.getElementById('itemName').value='';
-    document.getElementById('itemNote').value='';
+    await fbAdd(COL_ITEMS, { itemName:name, note, unit, recipients, createTime:timeStr });
+    document.getElementById('itemName').value = '';
+    document.getElementById('itemNote').value = '';
     document.querySelectorAll('#itemRecipients input').forEach(cb=>{
-      cb.checked=false; cb.closest?.('.cb-item')?.classList.remove('checked');
+      cb.checked = false; cb.closest?.('.cb-item')?.classList.remove('checked');
     });
-    setTimeout(()=>{loadItems();updateItemsBadge();},500);
-  } catch(e){alert('新增失敗：'+e.message);}
-  finally{if(btn){btn.textContent='新增物品';btn.disabled=false;}}
+    // 新增後重新整理清單（同步分隊選單到新增用的分隊）
+    const listSel = document.getElementById('itemsListUnit');
+    if (listSel) listSel.value = unit;
+    setTimeout(() => { loadItems(unit); updateItemsBadge(); }, 500);
+  } catch(e) { alert('新增失敗：' + e.message); }
+  finally { if (btn) { btn.textContent = '新增物品'; btn.disabled = false; } }
 }
 
 
 async function deleteItem(itemId, itemName) {
   if(!confirm(`確定要刪除「${itemName}」嗎？`))return;
-  try{await fbDelete(COL_ITEMS,itemId);await loadItems();updateItemsBadge();}
+  try{await fbDelete(COL_ITEMS,itemId);const _du=document.getElementById('itemsListUnit')?.value||'';await loadItems(_du);updateItemsBadge();}
   catch(e){alert('刪除失敗：'+e.message);}
 }
 
@@ -4022,7 +4179,7 @@ async function saveEditItem() {
     toAdd.forEach(n=>recipients.push({name:n,claimed:false,claimTime:'',sig:''}));
     recipients=recipients.filter(r=>!toRemove.includes(r.name));
     await fbUpdate(COL_ITEMS,editTargetItemId,{recipients});
-    closeEditItemModal();await loadItems();
+    closeEditItemModal(); const _eu=document.getElementById('itemsListUnit')?.value||''; await loadItems(_eu);
   } catch(e){alert('儲存失敗：'+e.message);}
   finally{if(btn){btn.textContent='儲存';btn.disabled=false;}}
 }
@@ -4032,7 +4189,7 @@ async function saveEditItem() {
 // DOMContentLoaded
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  initFooters();
+  initFootersWithVersion();
 
   // ── 上一頁／下一頁監聽 ──
   window.addEventListener('popstate', (e) => {
@@ -4066,7 +4223,15 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAnnouncement();
   initSigCanvas();
   loadDashboard();
-  loadItems();
+  // 預載物品資料供角標及簽到提示用，不渲染清單（清單需選分隊後才顯示）
+  fbList(COL_ITEMS).then(docs => {
+    allItems = docs.map(d=>({
+      itemId:d.id, itemName:d.itemName||'', note:d.note||'',
+      unit:d.unit||'', createTime:d.createTime||'',
+      recipients:Array.isArray(d.recipients)?d.recipients:[],
+    }));
+    updateItemsBadge();
+  }).catch(()=>{});
 });
 
 if ('serviceWorker' in navigator) {
@@ -4087,14 +4252,18 @@ function adminClearDate(fromId, toId) {
 
 async function loadAdminWhitelist(filterUnit) {
   const el = document.getElementById('adminWlList'); if (!el) return;
+  // 未選分隊時顯示提示，不載入資料
+  if (!filterUnit) {
+    el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;font-size:0.85rem;">請先選擇分隊</div>';
+    return;
+  }
   el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">載入中...</div>';
   try {
     let docs = await fbList(COL_WHITELIST);
-    // 如果有篩選分隊，只顯示該分隊
-    if (filterUnit) docs = docs.filter(d => (d.unit||'') === filterUnit);
+    docs = docs.filter(d => (d.unit||'') === filterUnit);
     if (!docs.length) { el.innerHTML = '<div style="color:var(--text-light);">' + (filterUnit ? '此分隊暫無成員' : '尚無資料') + '</div>'; return; }
 
-    const TITLE_ORDER = ['分隊長','副分隊長','幹事','幹事助理','小隊長','隊員'];
+    const TITLE_ORDER = ['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'];
     docs.sort(function(a,b){
       var au=a.unit||'未分配', bu=b.unit||'未分配';
       if(au!==bu) return au>bu?1:-1;
@@ -4234,7 +4403,7 @@ function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp) {
   cert    = cert    || '';
   certExp = certExp || '';
   title   = title   || '';
-  var TITLES = ['分隊長','副分隊長','幹事','幹事助理','小隊長','隊員'];
+  var TITLES = ['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'];
   var titleOpts = '<option value="">請選擇</option>' +
     TITLES.map(function(t){ return '<option value="'+t+'"'+(t===title?' selected':'')+'>'+t+'</option>'; }).join('');
   var roleOpts =
@@ -4248,13 +4417,13 @@ function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp) {
     '<option value="EMT-P"'+(cert==='EMT-P'?' selected':'')+'>EMT-P（中級）</option>';
   document.getElementById('adminEditTitle').textContent='編輯帳號資料';
   document.getElementById('adminEditFields').innerHTML =
-    '<div class="field"><label>Email</label><input type="email" id="aeWlEmail" value="'+email+'" style="width:100%;"></div>'+
-    '<div class="field"><label>義消姓名</label><input type="text" id="aeWlName" value="'+memberName+'" style="width:100%;"></div>'+
+    '<div class="field"><label>Email</label><input type="email" id="aeWlEmail" value="'+email+'" style="width:100%;background:white;border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-size:0.92rem;font-family:\'Noto Sans TC\',sans-serif;color:var(--text);min-height:42px;box-sizing:border-box;"></div>'+
+    '<div class="field"><label>義消姓名</label><input type="text" id="aeWlName" value="'+memberName+'" style="width:100%;background:white;border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-size:0.92rem;font-family:\'Noto Sans TC\',sans-serif;color:var(--text);min-height:42px;box-sizing:border-box;"></div>'+
     '<div class="field"><label>分隊別</label><select id="aeWlUnit" style="width:100%;"><option value="">請選擇</option>'+getUnitsSelectOptions(unit)+'</select></div>'+
     '<div class="field"><label>職稱</label><select id="aeWlTitle" style="width:100%;">'+titleOpts+'</select></div>'+
     '<div class="field"><label>角色權限</label><select id="aeWlRole" style="width:100%;">'+roleOpts+'</select></div>'+
     '<div class="field"><label>證照等級</label><select id="aeWlCert" style="width:100%;">'+certOpts+'</select></div>'+
-    '<div class="field"><label>證照效期</label><input type="date" id="aeWlCertExp" value="'+certExp+'" style="width:100%;"></div>';
+    '<div class="field"><label>證照效期</label><input type="date" id="aeWlCertExp" value="'+certExp+'" style="width:100%;background:white;border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-size:0.92rem;font-family:\'Noto Sans TC\',sans-serif;color:var(--text);min-height:42px;box-sizing:border-box;"></div>';
   adminEditSave = async function() {
     var r = document.getElementById('aeWlRole').value || 'member';
     try {
@@ -4268,7 +4437,8 @@ function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp) {
         certExp: document.getElementById('aeWlCertExp').value || '',
       });
       document.getElementById('adminEditModal').style.display = 'none';
-      await loadAdminWhitelist();
+      const curUnit = document.getElementById('adminWlFilterUnit')?.value || '';
+      await loadAdminWhitelist(curUnit);
       await loadMembers();
     } catch(e) { alert('儲存失敗：'+e.message); }
   };
@@ -4282,7 +4452,7 @@ async function loadAdminMembers() {
   try {
     const docs=await fbList(COL_MEMBERS);
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);">尚無成員</div>';return;}
-    const TITLE_ORDER = ['分隊長','副分隊長','幹事','幹事助理','小隊長','隊員'];
+    const TITLE_ORDER = ['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'];
     docs.sort((a,b) => {
       if ((a.unit||'') !== (b.unit||'')) return (a.unit||'') > (b.unit||'') ? 1 : -1;
       const ai = TITLE_ORDER.indexOf(a.title), bi = TITLE_ORDER.indexOf(b.title);
@@ -4323,7 +4493,7 @@ function adminEditMem(id,name,title,unit,cert,certExp) {
     <div class="field"><label>姓名</label><input type="text" id="aeMName" value="${name}" style="width:100%;"></div>
     <div class="field"><label>職稱</label><select id="aeMTitle" style="width:100%;">
       <option value="">請選擇</option>
-      ${['分隊長','副分隊長','幹事','幹事助理','小隊長','隊員'].map(t=>`<option value="\${t}" \${t===title?'selected':''}>\${t}</option>`).join('')}
+      ${['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'].map(t=>`<option value="\${t}" \${t===title?'selected':''}>\${t}</option>`).join('')}
     </select></div>
     <div class="field"><label>分隊別</label><select id="aeMUnit" style="width:100%;"><option value="">請選擇</option>${getUnitsSelectOptions(unit)}</select></div>
     <div class="field"><label>證照等級</label><select id="aeMCert" style="width:100%;">
@@ -4359,15 +4529,39 @@ async function loadAdminAttendance() {
     if(from)docs=docs.filter(d=>(d.date||'')>=from);
     if(to)  docs=docs.filter(d=>(d.date||'')<=to);
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">查無資料</div>';return;}
-    const th=s=>`<th style="padding:6px 8px;border-bottom:2px solid var(--border);text-align:left;font-size:0.78rem;white-space:nowrap;">${s}</th>`;
-    const td=(s,w)=>`<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.8rem;${w?'white-space:nowrap;':''}">${s||''}</td>`;
-    el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
-      <thead><tr>${['日期','類別','姓名','簽到','簽退','時數','操作'].map(th).join('')}</tr></thead>
-      <tbody>${docs.map(d=>`<tr>${td(d.date,1)}${td(d.dutyType||'協勤',1)}${td(d.memberName,1)}${td(d.checkinTime,1)}${td(d.checkoutTime,1)}${td(d.hours||0,1)}
-        <td style="padding:6px 8px;border-bottom:1px solid var(--border);">
-          <button onclick="adminEditAtt('${d.id}')" style="background:none;border:1px solid var(--border);border-radius:3px;padding:2px 8px;font-size:0.72rem;cursor:pointer;">編</button>
-          <button onclick="adminDel('${COL_ATTEND}','${d.id}','簽到 ${d.memberName} ${d.date}',loadAdminAttendance)" style="background:none;border:1px solid #f5c6c6;border-radius:3px;padding:2px 8px;font-size:0.72rem;color:#b94a3a;cursor:pointer;margin-left:4px;">刪</button>
-        </td></tr>`).join('')}</tbody></table></div>`;
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.04);overflow-x:auto;';
+
+    const table = document.createElement('table');
+    table.style.cssText = 'width:100%;border-collapse:collapse;min-width:520px;';
+    table.innerHTML = `<thead><tr style="background:var(--warm);">
+      ${['日期','類別','姓名','簽到','簽退','時數','操作'].map(s=>`<th style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:0.78rem;font-weight:600;color:var(--text-mid);white-space:nowrap;">${s}</th>`).join('')}
+    </tr></thead>`;
+
+    const tbody = document.createElement('tbody');
+    docs.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${d.date||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${d.dutyType||'協勤'}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;font-weight:500;">${d.memberName||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${d.checkinTime||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${d.checkoutTime||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;text-align:center;">${d.hours||0}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap;">
+          <button class="att-member-btn" style="padding:4px 10px;font-size:0.8rem;" data-id="${d.id}">✏️ 編輯</button>
+          <button class="att-member-btn" style="padding:4px 10px;font-size:0.8rem;border-color:#f5c6c6;color:#b94a3a;margin-left:4px;" data-del="${d.id}" data-label="簽到 ${(d.memberName||'')} ${(d.date||'')}">🗑️</button>
+        </td>`;
+      tr.querySelector('[data-id]').addEventListener('click', () => adminEditAtt(d.id));
+      tr.querySelector('[data-del]').addEventListener('click', () => adminDel(COL_ATTEND, d.id, `簽到 ${d.memberName||''} ${d.date||''}`, loadAdminAttendance));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    el.innerHTML = '';
+    el.appendChild(wrap);
+    el.insertAdjacentHTML('beforeend', `<div style="font-size:0.75rem;color:var(--text-light);padding:8px 4px;">共 ${docs.length} 筆</div>`);
   } catch(e){el.innerHTML='載入失敗：'+e.message;}
 }
 
@@ -4412,16 +4606,38 @@ async function loadAdminOuting() {
     if(from)docs=docs.filter(d=>(d.date||'')>=from);
     if(to)  docs=docs.filter(d=>(d.date||'')<=to);
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">查無資料</div>';return;}
-    const th=s=>`<th style="padding:6px 8px;border-bottom:2px solid var(--border);text-align:left;font-size:0.78rem;white-space:nowrap;">${s}</th>`;
-    const td=(s,w)=>`<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.8rem;${w?'white-space:nowrap;':''}">${s||''}</td>`;
-    el.innerHTML=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
-      <thead><tr>${['日期','時間','行政區','姓名','服務','操作'].map(th).join('')}</tr></thead>
-      <tbody>${docs.map(d=>`<tr>${td(d.date,1)}${td((d.timeOut||'')+'～'+(d.timeBack||''),1)}${td(d.district)}${td(d.memberName,1)}
-        <td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.8rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.services||''}</td>
-        <td style="padding:6px 8px;border-bottom:1px solid var(--border);">
-          <button onclick="adminEditOut('${d.id}')" style="background:none;border:1px solid var(--border);border-radius:3px;padding:2px 8px;font-size:0.72rem;cursor:pointer;">編</button>
-          <button onclick="adminDel('${COL_OUTING}','${d.id}','協勤 ${d.memberName} ${d.date}',loadAdminOuting)" style="background:none;border:1px solid #f5c6c6;border-radius:3px;padding:2px 8px;font-size:0.72rem;color:#b94a3a;cursor:pointer;margin-left:4px;">刪</button>
-        </td></tr>`).join('')}</tbody></table></div>`;
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.04);overflow-x:auto;';
+
+    const table = document.createElement('table');
+    table.style.cssText = 'width:100%;border-collapse:collapse;min-width:540px;';
+    table.innerHTML = `<thead><tr style="background:var(--warm);">
+      ${['日期','時間','行政區','姓名','服務項目','操作'].map(s=>`<th style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:0.78rem;font-weight:600;color:var(--text-mid);white-space:nowrap;">${s}</th>`).join('')}
+    </tr></thead>`;
+
+    const tbody = document.createElement('tbody');
+    docs.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${d.date||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;white-space:nowrap;">${(d.timeOut||'')}～${(d.timeBack||'')}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;">${d.district||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;font-weight:500;white-space:nowrap;">${d.memberName||''}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${d.services||''}">${d.services||''}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap;">
+          <button class="att-member-btn" style="padding:4px 10px;font-size:0.8rem;" data-id="${d.id}">✏️ 編輯</button>
+          <button class="att-member-btn" style="padding:4px 10px;font-size:0.8rem;border-color:#f5c6c6;color:#b94a3a;margin-left:4px;" data-del="${d.id}">🗑️</button>
+        </td>`;
+      tr.querySelector('[data-id]').addEventListener('click', () => adminEditOut(d.id));
+      tr.querySelector('[data-del]').addEventListener('click', () => adminDel(COL_OUTING, d.id, `協勤 ${d.memberName||''} ${d.date||''}`, loadAdminOuting));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    el.innerHTML = '';
+    el.appendChild(wrap);
+    el.insertAdjacentHTML('beforeend', `<div style="font-size:0.75rem;color:var(--text-light);padding:8px 4px;">共 ${docs.length} 筆</div>`);
   } catch(e){el.innerHTML='載入失敗：'+e.message;}
 }
 
@@ -4499,25 +4715,246 @@ async function adminDel(col,id,label,reloadFn) {
   catch(e){alert('刪除失敗：'+e.message);}
 }
 
+function adminNavTo(sectionId) {
+  if (!document.getElementById('adminPage').classList.contains('active')) {
+    navTo('adminPage');
+    setTimeout(() => adminScrollTo(sectionId), 600);
+    return;
+  }
+  adminScrollTo(sectionId);
+  document.querySelectorAll('.admin-subnav-btn').forEach(b => b.classList.remove('active-subnav'));
+  const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog'];
+  const idx = secIds.indexOf(sectionId);
+  const btns = document.querySelectorAll('.admin-subnav-btn');
+  if (btns[idx]) btns[idx].classList.add('active-subnav');
+  closeDrawer();
+}
+
+function _positionAdminTabBar() {
+  const header = document.querySelector('.header');
+  const bar    = document.getElementById('adminTabBar');
+  const spacer = document.getElementById('adminTabBarSpacer');
+  if (!bar) return;
+  // 用 requestAnimationFrame 確保 DOM 已渲染完畢再抓高度
+  requestAnimationFrame(() => {
+    const headerH = header ? header.getBoundingClientRect().height : 56;
+    bar.style.top = headerH + 'px';
+    bar.style.display = 'flex';
+    if (spacer) {
+      spacer.style.display = '';
+      spacer.style.height = (bar.getBoundingClientRect().height + 4) + 'px';
+    }
+  });
+  // 視窗大小改變時重新定位
+  window._adminTabBarResizeHandler = function() {
+    if (document.getElementById('adminPage').classList.contains('active')) {
+      requestAnimationFrame(() => {
+        const h = header ? header.getBoundingClientRect().height : 56;
+        bar.style.top = h + 'px';
+        if (spacer) spacer.style.height = (bar.getBoundingClientRect().height + 4) + 'px';
+      });
+    }
+  };
+  window.removeEventListener('resize', window._adminTabBarResizeHandler);
+  window.addEventListener('resize', window._adminTabBarResizeHandler);
+}
+
+function adminScrollTo(sectionId) {
+  const el = document.getElementById(sectionId);
+  if (!el) return;
+  const header = document.querySelector('.header');
+  const bar    = document.getElementById('adminTabBar');
+  const headerH = header ? header.getBoundingClientRect().height : 56;
+  const barH    = bar    ? bar.getBoundingClientRect().height    : 52;
+  const top = el.getBoundingClientRect().top + window.scrollY - headerH - barH - 8;
+  window.scrollTo({ top, behavior: 'smooth' });
+  // 高亮 tab
+  const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog'];
+  const idx = secIds.indexOf(sectionId);
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.admin-tab');
+  if (tabs[idx]) tabs[idx].classList.add('active');
+}
+
+var _adminTabObserver = null;
 async function initAdminPage() {
   const u=JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
   if(!u.isAdmin && !u.isOfficer){alert('您沒有管理員權限');navTo('dashboardPage');return;}
+  const isAdminOnly = u.isAdmin || u.role === 'admin';
+
   const now=new Date(), y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
   const from=y+'-'+m+'-01';
   const to=y+'-'+m+'-'+String(new Date(y,now.getMonth()+1,0).getDate()).padStart(2,'0');
   ['adminAttFrom','adminAttTo','adminOutFrom','adminOutTo'].forEach((id,i)=>{
     const el=document.getElementById(id); if(el)el.value=i%2===0?from:to;
   });
-  // 先載入分隊（其他 select 依賴分隊資料）
+
+  // 管理員限定：顯示登入紀錄區塊、tab、子導覽
+  ['adminSec-loginlog','adminTab-loginlog','adminSubNav-loginlog'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isAdminOnly ? '' : 'none';
+  });
+  // 分隊承辦人隱藏公告管理
+  ['adminSec-announce','adminTab-announce','adminSubNav-announce'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isAdminOnly ? '' : 'none';
+  });
+  // 設定登入紀錄分隊篩選
+  if (isAdminOnly) {
+    const llUnit = document.getElementById('loginLogUnit');
+    if (llUnit) {
+      await loadUnits();
+      llUnit.innerHTML = '<option value="">— 全部分隊 —</option>' +
+        _unitsList.map(u => `<option value="${u}">${u}</option>`).join('');
+    }
+  }
+
   await loadUnits();
   populateUnitSelects();
-  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminFeedback(),loadAdminChangelog()]);
+  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog()]);
+
+  // 顯示並定位固定 tab bar
+  _positionAdminTabBar();
+
+  // 預設高亮第一個 tab
+  const firstTab = document.querySelector('.admin-tab');
+  if (firstTab) firstTab.classList.add('active');
+
+  // IntersectionObserver：滾動時自動高亮對應 tab
+  if (_adminTabObserver) _adminTabObserver.disconnect();
+  const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog'];
+  if (!isAdminOnly) secIds.splice(secIds.indexOf('adminSec-announce'), 1);
+  if (isAdminOnly) secIds.push('adminSec-loginlog');
+  const tabs = document.querySelectorAll('.admin-tab');
+  _adminTabObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = secIds.indexOf(entry.target.id);
+        if (idx >= 0) {
+          tabs.forEach(t => t.classList.remove('active'));
+          if (tabs[idx]) tabs[idx].classList.add('active');
+          document.querySelectorAll('.admin-subnav-btn').forEach(b => b.classList.remove('active-subnav'));
+          const subBtns = document.querySelectorAll('.admin-subnav-btn');
+          if (subBtns[idx]) subBtns[idx].classList.add('active-subnav');
+        }
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  secIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) _adminTabObserver.observe(el);
+  });
 }
 
 
 // ════════════════════════════════════════
-// 分隊管理
+// 登入紀錄（管理員限定）
 // ════════════════════════════════════════
+async function loadLoginLog() {
+  const el = document.getElementById('adminLoginLogList');
+  if (!el) return;
+  el.innerHTML = '<div class="query-empty"><span class="empty-icon">🔐</span>載入中...</div>';
+  try {
+    const dateFrom = document.getElementById('loginLogFrom')?.value || '';
+    const dateTo   = document.getElementById('loginLogTo')?.value   || '';
+    const unit     = document.getElementById('loginLogUnit')?.value  || '';
+
+    let docs = await fbList(COL_LOGINLOG);
+    // 依登入時間倒序
+    docs.sort((a,b) => (b.loginAt||'') > (a.loginAt||'') ? 1 : -1);
+
+    if (dateFrom) docs = docs.filter(d => (d.loginAt||'').substring(0,10) >= dateFrom);
+    if (dateTo)   docs = docs.filter(d => (d.loginAt||'').substring(0,10) <= dateTo);
+    if (unit)     docs = docs.filter(d => (d.unit||'') === unit);
+
+    if (!docs.length) { el.innerHTML = '<div class="query-empty"><span class="empty-icon">🔐</span>查無紀錄</div>'; return; }
+
+    const ROLE_LABEL = { admin:'系統管理員', officer:'分隊承辦人', member:'一般成員' };
+    const ROLE_COLOR = { admin:'#856404', officer:'#084298', member:'#495057' };
+    const ROLE_BG    = { admin:'#fff3cd', officer:'#cfe2ff', member:'#e9ecef' };
+
+    el.innerHTML = `
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
+          <thead>
+            <tr>
+              <th style="background:var(--warm);padding:10px 12px;text-align:left;font-weight:600;color:var(--text-mid);border-bottom:1px solid var(--border);white-space:nowrap;">#</th>
+              <th style="background:var(--warm);padding:10px 12px;text-align:left;font-weight:600;color:var(--text-mid);border-bottom:1px solid var(--border);white-space:nowrap;">登入時間</th>
+              <th style="background:var(--warm);padding:10px 12px;text-align:left;font-weight:600;color:var(--text-mid);border-bottom:1px solid var(--border);white-space:nowrap;">姓名</th>
+              <th style="background:var(--warm);padding:10px 12px;text-align:left;font-weight:600;color:var(--text-mid);border-bottom:1px solid var(--border);white-space:nowrap;">分隊</th>
+              <th style="background:var(--warm);padding:10px 12px;text-align:left;font-weight:600;color:var(--text-mid);border-bottom:1px solid var(--border);white-space:nowrap;">角色</th>
+              <th style="background:var(--warm);padding:10px 12px;text-align:left;font-weight:600;color:var(--text-mid);border-bottom:1px solid var(--border);">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${docs.map((d,i) => {
+              const role = d.role || 'member';
+              const roleBg = ROLE_BG[role] || '#e9ecef';
+              const roleColor = ROLE_COLOR[role] || '#495057';
+              const roleLabel = ROLE_LABEL[role] || role;
+              return `<tr>
+                <td style="padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-light);font-size:0.78rem;">${i+1}</td>
+                <td style="padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;">${d.loginAt||''}</td>
+                <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-weight:500;">${d.memberName||''}</td>
+                <td style="padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;">${d.unit||''}</td>
+                <td style="padding:10px 12px;border-bottom:1px solid var(--border);">
+                  <span style="font-size:0.68rem;background:${roleBg};color:${roleColor};border-radius:10px;padding:2px 8px;font-weight:600;white-space:nowrap;">${roleLabel}</span>
+                </td>
+                <td style="padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--text-light);">${d.email||''}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-light);padding:8px 4px;">共 ${docs.length} 筆登入紀錄</div>`;
+  } catch(e) {
+    el.innerHTML = '<div class="query-empty"><span class="empty-icon">⚠️</span>載入失敗：' + e.message + '</div>';
+  }
+}
+
+function resetLoginLog() {
+  ['loginLogFrom','loginLogTo'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const u = document.getElementById('loginLogUnit'); if (u) u.value = '';
+  const el = document.getElementById('adminLoginLogList');
+  if (el) el.innerHTML = '<div class="query-empty"><span class="empty-icon">🔐</span>請點查詢載入紀錄</div>';
+}
+
+// ── 登入頁意見回饋 ──
+function showLoginFeedback() {
+  document.getElementById('loginFeedbackForm').style.display = '';
+  document.getElementById('lfContent').focus();
+}
+function hideLoginFeedback() {
+  document.getElementById('loginFeedbackForm').style.display = 'none';
+  document.getElementById('lfName').value = '';
+  document.getElementById('lfContent').value = '';
+  document.getElementById('lfStatus').style.display = 'none';
+}
+async function submitLoginFeedback() {
+  const name    = (document.getElementById('lfName').value||'').trim() || '匿名';
+  const content = (document.getElementById('lfContent').value||'').trim();
+  const status  = document.getElementById('lfStatus');
+  if (!content) { status.style.cssText='display:block;color:var(--red);'; status.textContent='請填寫意見內容'; return; }
+  try {
+    await ensureFirebase();
+    await fbAdd(COL_FEEDBACK, {
+      name, unit: '（未登入）', sender: 'anon',
+      category: '問題回報',
+      content,
+      time: new Date().toLocaleString('sv').replace('T', ' '),
+    });
+    status.style.cssText='display:block;color:#1a6b35;';
+    status.textContent='✓ 已送出，感謝您的回饋！';
+    document.getElementById('lfContent').value = '';
+    document.getElementById('lfName').value = '';
+  } catch(e) {
+    status.style.cssText='display:block;color:var(--red);';
+    status.textContent='送出失敗：' + e.message;
+  }
+}
+
 async function loadAdminUnits() {
   const el = document.getElementById('adminUnitList');
   if (!el) return;
@@ -4572,6 +5009,15 @@ function populateUnitSelects() {
     el.innerHTML = opts;
     if (cur) el.value = cur;
   });
+  // adminWlFilterUnit：預設帶入登入者分隊並載入
+  const filterSel = document.getElementById('adminWlFilterUnit');
+  if (filterSel) {
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    if (usr.unit) {
+      filterSel.value = usr.unit;
+      loadAdminWhitelist(usr.unit);
+    }
+  }
 }
 
 // 待領物品：依分隊篩選成員
@@ -4609,23 +5055,43 @@ function filterMembersByUnit() {
 // ════════════════════════════════════════
 const COL_ANNOUNCE = 'announcements';
 
+// ── 首頁：載入並顯示目前有效的公告 ──
 async function loadAnnouncement() {
   try {
-    const docs = await fbList(COL_ANNOUNCE);
-    const active = docs.find(d => d.active);
-    if (!active) return;
-    if (active.urgent) {
-      // 緊急公告彈窗
-      const seen = sessionStorage.getItem('urgentSeen_' + active.id);
-      if (!seen) {
-        document.getElementById('urgentText').textContent = active.text || '';
+    const today = new Date().toLocaleDateString('sv');
+    const docs  = await fbList(COL_ANNOUNCE);
+    // 篩選日期範圍內且啟用的公告，置頂優先
+    const active = docs
+      .filter(d => d.active !== false && (d.startDate||'') <= today && (d.endDate||'9999') >= today)
+      .sort((a,b) => (b.pinned?1:0) - (a.pinned?1:0) || (a.startDate||'') > (b.startDate||'') ? 1 : -1);
+
+    const bar = document.getElementById('announcementBar');
+    if (!active.length) { if(bar) bar.style.display='none'; return; }
+
+    // 顯示橫幅公告
+    const banners = active.filter(d => !d.urgent);
+    if (banners.length && bar) {
+      bar.style.display = '';
+      bar.innerHTML = banners.map(d => `
+        <div style="background:linear-gradient(135deg,#b94a3a,#d4604f);color:white;border-radius:8px;padding:10px 16px;margin-bottom:6px;font-size:0.85rem;line-height:1.6;">
+          <div style="font-weight:700;margin-bottom:4px;">
+            ${d.pinned ? '<span style="font-size:0.72rem;background:rgba(255,255,255,0.25);border-radius:4px;padding:1px 6px;margin-right:6px;">📌 置頂</span>' : ''}
+            📢 公告
+          </div>
+          <div style="white-space:pre-wrap;font-size:0.85rem;">${d.text||''}</div>
+          <div style="font-size:0.7rem;opacity:0.7;margin-top:6px;">有效期限：${d.startDate||''} ～ ${d.endDate||''}</div>
+        </div>`).join('');
+    }
+
+    // 緊急公告彈窗（只顯示第一則未讀的）
+    const urgents = active.filter(d => d.urgent);
+    for (const u of urgents) {
+      if (!sessionStorage.getItem('urgentSeen_' + u.id)) {
+        document.getElementById('urgentText').textContent = u.text || '';
         document.getElementById('urgentModal').style.display = 'flex';
-        document.getElementById('urgentModal').dataset.id = active.id;
+        document.getElementById('urgentModal').dataset.id = u.id;
+        break;
       }
-    } else {
-      // 跑馬燈
-      document.getElementById('announcementText').textContent = active.text || '';
-      document.getElementById('announcementBar').style.display = 'block';
     }
   } catch(e) {}
 }
@@ -4637,22 +5103,138 @@ function confirmUrgent() {
   modal.style.display = 'none';
 }
 
-async function saveAnnouncement() {
-  const text   = (document.getElementById('adminAnnounceText').value||'').trim();
-  const urgent = document.getElementById('adminAnnounceUrgent').checked;
-  const status = document.getElementById('adminAnnounceStatus');
+// ── 後台：表單開關 ──
+function showAnnounceForm(doc) {
+  const today = new Date().toLocaleDateString('sv');
+  const nextWeek = new Date(Date.now() + 7*24*3600*1000).toLocaleDateString('sv');
+  document.getElementById('anFormId').value      = doc ? (doc.id||'') : '';
+  document.getElementById('anFormText').value    = doc ? (doc.text||'') : '';
+  document.getElementById('anFormStart').value   = doc ? (doc.startDate||today) : today;
+  document.getElementById('anFormEnd').value     = doc ? (doc.endDate||nextWeek) : nextWeek;
+  document.getElementById('anFormUrgent').checked = doc ? !!doc.urgent : false;
+  document.getElementById('anFormPinned').checked = doc ? !!doc.pinned : false;
+  document.getElementById('anFormStatus').textContent = '';
+  document.getElementById('announceForm').style.display = '';
+  document.getElementById('announceForm').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function hideAnnounceForm() {
+  document.getElementById('announceForm').style.display = 'none';
+}
+
+async function saveAnnounceForm() {
+  const id      = document.getElementById('anFormId').value;
+  const text    = document.getElementById('anFormText').value.trim();
+  const start   = document.getElementById('anFormStart').value;
+  const end     = document.getElementById('anFormEnd').value;
+  const urgent  = document.getElementById('anFormUrgent').checked;
+  const pinned  = document.getElementById('anFormPinned').checked;
+  const status  = document.getElementById('anFormStatus');
+  if (!text)  { status.style.color='var(--red)'; status.textContent='請填入公告內容'; return; }
+  if (!start || !end) { status.style.color='var(--red)'; status.textContent='請填入日期範圍'; return; }
+  if (start > end) { status.style.color='var(--red)'; status.textContent='結束日期不能早於開始日期'; return; }
+  const btn = document.querySelector('#announceForm .btn-search');
+  if (btn) { btn.textContent='發布中...'; btn.disabled=true; }
   try {
-    // 先關閉所有舊公告
-    const docs = await fbList(COL_ANNOUNCE);
-    await Promise.all(docs.map(d => fbUpdate(COL_ANNOUNCE, d.id, { active: false })));
-    if (text) {
-      await fbAdd(COL_ANNOUNCE, { text, urgent, active: true, time: new Date().toLocaleString('sv').replace('T',' ') });
-    }
-    if (status) { status.style.color='#1a6b35'; status.textContent = text ? '✓ 公告已更新' : '✓ 公告已關閉'; }
+    const data = { text, startDate:start, endDate:end, urgent, pinned, active:true,
+                   updatedAt: new Date().toLocaleString('sv').replace('T',' ') };
+    if (id) { await fbSet(COL_ANNOUNCE, id, data); }
+    else    { await fbAdd(COL_ANNOUNCE, data); }
+    hideAnnounceForm();
+    await loadAdminAnnouncements();
+    loadAnnouncement();
   } catch(e) {
-    if (status) { status.style.color='var(--red)'; status.textContent = '失敗：' + e.message; }
+    status.style.color='var(--red)'; status.textContent='失敗：'+e.message;
+  } finally {
+    if (btn) { btn.textContent='發布公告'; btn.disabled=false; }
   }
 }
+
+async function toggleAnnounce(id, currentActive) {
+  try {
+    await fbUpdate(COL_ANNOUNCE, id, { active: !currentActive });
+    await loadAdminAnnouncements();
+    loadAnnouncement();
+  } catch(e) { alert('操作失敗：'+e.message); }
+}
+
+async function deleteAnnounce(id, text) {
+  if (!confirm(`確定刪除公告「${text.substring(0,20)}...」？`)) return;
+  try {
+    await fbDelete(COL_ANNOUNCE, id);
+    await loadAdminAnnouncements();
+    loadAnnouncement();
+  } catch(e) { alert('刪除失敗：'+e.message); }
+}
+
+async function loadAdminAnnouncements() {
+  const el = document.getElementById('adminAnnounceList');
+  if (!el) return;
+  el.innerHTML = '<div class="query-empty"><span class="empty-icon">📢</span>載入中...</div>';
+  try {
+    const today = new Date().toLocaleDateString('sv');
+    const docs  = await fbList(COL_ANNOUNCE);
+    docs.sort((a,b) => (b.pinned?1:0)-(a.pinned?1:0) || (b.startDate||'') > (a.startDate||'') ? 1 : -1);
+    if (!docs.length) { el.innerHTML='<div class="query-empty"><span class="empty-icon">📢</span>尚無公告</div>'; return; }
+    el.innerHTML = '';
+    docs.forEach(d => {
+      const isActive  = d.active !== false && (d.startDate||'') <= today && (d.endDate||'9999') >= today;
+      const isExpired = (d.endDate||'9999') < today;
+      const card = document.createElement('div');
+      card.style.cssText = `border:1px solid ${isActive ? '#a9dfbf' : 'var(--border)'};border-radius:8px;margin-bottom:10px;overflow:hidden;opacity:${isExpired?0.5:1};`;
+
+      // 頂部狀態列
+      const head = document.createElement('div');
+      head.style.cssText = `background:${isActive ? '#eafaf1' : 'var(--warm)'};padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;`;
+
+      const statusBadge = document.createElement('span');
+      statusBadge.style.cssText = `font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;background:${isActive?'#27ae60':isExpired?'#95a5a6':'#e0d5c8'};color:white;`;
+      statusBadge.textContent = isActive ? '✓ 進行中' : isExpired ? '已過期' : '未啟用';
+
+      const typeBadges = document.createElement('div');
+      typeBadges.style.cssText = 'display:flex;gap:4px;';
+      if (d.urgent) { const b=document.createElement('span'); b.style.cssText='font-size:0.68rem;background:#e74c3c;color:white;border-radius:10px;padding:2px 8px;'; b.textContent='🚨 緊急'; typeBadges.appendChild(b); }
+      if (d.pinned) { const b=document.createElement('span'); b.style.cssText='font-size:0.68rem;background:#f39c12;color:white;border-radius:10px;padding:2px 8px;'; b.textContent='📌 置頂'; typeBadges.appendChild(b); }
+
+      const dateSpan = document.createElement('span');
+      dateSpan.style.cssText = 'font-size:0.75rem;color:var(--text-light);margin-left:auto;';
+      dateSpan.textContent = `${d.startDate||''} ～ ${d.endDate||''}`;
+
+      head.appendChild(statusBadge); head.appendChild(typeBadges); head.appendChild(dateSpan);
+
+      // 內容
+      const body = document.createElement('div');
+      body.style.cssText = 'padding:10px 14px;font-size:0.85rem;color:var(--text);line-height:1.7;white-space:pre-wrap;border-bottom:1px solid var(--border);';
+      body.textContent = d.text||'';
+
+      // 操作列
+      const foot = document.createElement('div');
+      foot.style.cssText = 'padding:8px 14px;display:flex;gap:6px;background:var(--cream);';
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '✏️ 編輯';
+      editBtn.style.cssText = 'background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:0.75rem;cursor:pointer;min-height:unset;';
+      editBtn.addEventListener('click', () => showAnnounceForm(d));
+
+      const toggleBtn = document.createElement('button');
+      toggleBtn.textContent = d.active !== false ? '⏸ 停用' : '▶ 啟用';
+      toggleBtn.style.cssText = `background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:0.75rem;cursor:pointer;min-height:unset;color:${d.active!==false?'#856404':'#1a6b35'};`;
+      toggleBtn.addEventListener('click', () => toggleAnnounce(d.id, d.active !== false));
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '🗑 刪除';
+      delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:6px;padding:4px 12px;font-size:0.75rem;color:#b94a3a;cursor:pointer;min-height:unset;';
+      delBtn.addEventListener('click', () => deleteAnnounce(d.id, d.text||''));
+
+      foot.appendChild(editBtn); foot.appendChild(toggleBtn); foot.appendChild(delBtn);
+      card.appendChild(head); card.appendChild(body); card.appendChild(foot);
+      el.appendChild(card);
+    });
+  } catch(e) { el.innerHTML = '<div class="query-empty"><span class="empty-icon">⚠️</span>載入失敗：'+e.message+'</div>'; }
+}
+
+// 相容舊版 saveAnnouncement（保留避免呼叫出錯）
+async function saveAnnouncement() { showAnnounceForm(null); }
 
 // ════════════════════════════════════════
 // 成員管理頁（公開瀏覽）
@@ -4662,26 +5244,24 @@ async function initMembersPage() {
   const sel = document.getElementById('memberFilterUnit');
   if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>載入中...</div>';
 
-  var docs = [];
   try {
-    docs = await fbList(COL_WHITELIST);
+    await Promise.all([fbList(COL_WHITELIST).then(docs => {
+      members = docs.map(d => ({
+        id: d.id, name: d.memberName||'', title: d.title||'',
+        unit: (d.unit||'').trim(), cert: d.cert||'', certExp: d.certExp||'',
+        role: d.role||(d.isAdmin?'admin':'member'), email: d.email||'',
+      })).filter(m => m.name);
+    }), loadUnits()]);
   } catch(e) {
     if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">⚠️</span>Firebase 連線失敗：' + e.message + '</div>';
     return;
   }
 
-  members = docs.map(d => ({
-    id: d.id, name: d.memberName||'', title: d.title||'',
-    unit: (d.unit||'').trim(), cert: d.cert||'', certExp: d.certExp||'',
-    role: d.role||(d.isAdmin?'admin':'member'), email: d.email||'',
-  })).filter(m => m.name);
-
-  var unitOptions = [...new Set(members.map(m => m.unit).filter(Boolean))].sort();
-
   if (sel) {
     sel.innerHTML = '<option value="">請選擇分隊</option>' +
-      unitOptions.map(u => '<option value="' + u + '">' + u + '</option>').join('');
-    sel.value = '';
+      _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    if (usr.unit) { sel.value = usr.unit; filterMemberList(); return; }
   }
   if (container) container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>請先選擇分隊</div>';
 }
@@ -4695,7 +5275,7 @@ function filterMemberList() {
     container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>請先選擇分隊</div>';
     return;
   }
-  const TITLE_ORDER = ['分隊長','副分隊長','幹事','幹事助理','小隊長','隊員'];
+  const TITLE_ORDER = ['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'];
   const filtered = members.filter(m => (m.unit||'').trim() === unit.trim());
   if (!filtered.length) {
     container.innerHTML = '<div class="query-empty"><span class="empty-icon">👥</span>此分隊暫無成員</div>';
@@ -4867,30 +5447,18 @@ async function loadChangelog() {
       el.innerHTML = '<div class="query-empty"><span class="empty-icon">📝</span>尚無版本紀錄</div>';
       return;
     }
-    // 小標題自動配 icon
-    const ICONS = {
-      'Firebase':'🔥','整合':'🔥','資料':'📊','報表':'📑','後台':'⚙️','管理員':'⚙️',
-      '分隊':'🏢','意見':'💬','角色':'👤','權限':'🔐','公告':'📢','UI':'🎨','介面':'🎨',
-      '樣式':'🎨','修復':'🐛','Bug':'🐛','新增':'✨','功能':'✨','待領':'📦','物品':'📦',
-      '簽到':'✍','簽退':'✍','協勤':'🚑','查詢':'🔍','補簽':'🕐','類別':'🏷',
-      '顯示':'👁','排序':'📋','統計':'📈','安全':'🔒','其他':'💡',
-    };
-    function getIcon(subtitle) {
-      for (const [k, v] of Object.entries(ICONS)) {
-        if (subtitle.includes(k)) return v;
-      }
-      return '▸';
-    }
     var html = '';
     docs.forEach(function(d, idx) {
       var isLatest = !!d.isLatest;
       var itemsHtml = (d.items||[]).map(function(it) {
-        var icon = getIcon(it.subtitle||'');
-        return '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--warm);">'
-          + '<span style="flex-shrink:0;font-size:0.68rem;background:' + (isLatest?'var(--red)':'#6c757d') + ';color:white;border-radius:10px;padding:2px 9px;white-space:nowrap;align-self:flex-start;margin-top:2px;display:flex;align-items:center;gap:3px;">'
-          + icon + ' ' + (it.subtitle||'')
+        var detail = (it.detail||'').replace(/\n/g, '<br>');
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--warm);">'
+          + '<div style="margin-bottom:5px;">'
+          + '<span style="font-size:0.68rem;background:' + (isLatest?'var(--red)':'#6c757d') + ';color:white;border-radius:10px;padding:2px 9px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
+          + (it.subtitle||'')
           + '</span>'
-          + '<span style="font-size:0.83rem;color:var(--text);line-height:1.7;">' + (it.detail||'') + '</span>'
+          + '</div>'
+          + '<div style="font-size:0.83rem;color:var(--text);line-height:1.7;">' + detail + '</div>'
           + '</div>';
       }).join('');
 
@@ -4925,44 +5493,136 @@ async function loadChangelog() {
 
 // ── 後台版本紀錄管理 ──
 var _clItems = [];
+var _clEditingId = null;  // 目前展開編輯的版本 id（null = 新增）
 
-function showChangelogForm(doc) {
+// 把表單狀態填入目標容器（新增用頂部容器、編輯用各卡片內嵌容器）
+function _fillChangelogForm(container, doc) {
   var today = new Date().toLocaleDateString('sv');
-  document.getElementById('clFormId').value       = doc ? (doc.id||'') : '';
-  document.getElementById('clFormVersion').value  = doc ? (doc.version||'') : '';
-  document.getElementById('clFormDate').value     = doc ? (doc.date||today) : today;
-  document.getElementById('clFormTitle').value    = doc ? (doc.title||'') : '';
-  document.getElementById('clFormIsLatest').checked = doc ? !!doc.isLatest : false;
-  _clItems = doc ? JSON.parse(JSON.stringify(doc.items||[])) : [];
-  renderClFormItems();
-  document.getElementById('changelogForm').style.display = '';
-  document.getElementById('changelogForm').scrollIntoView({ behavior:'smooth', block:'start' });
+  container.innerHTML = '';
+  container.style.display = '';
+
+  var formId      = doc ? (doc.id||'') : '';
+  var formVersion = doc ? (doc.version||'') : '';
+  var formDate    = doc ? (doc.date||today) : today;
+  var formTitle   = doc ? (doc.title||'') : '';
+  var formLatest  = doc ? !!doc.isLatest : false;
+  _clItems        = doc ? JSON.parse(JSON.stringify(doc.items||[])) : [];
+
+  // 版本 / 日期 row
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;';
+  var fVer = _mkField('版本號 *', 'text',  formVersion, '例：v1.6.0', 'cl-ver-'+formId);
+  var fDat = _mkField('日期 *',   'date',  formDate,    '',           'cl-dat-'+formId);
+  grid.appendChild(fVer); grid.appendChild(fDat);
+  container.appendChild(grid);
+
+  // 標題
+  var fTit = _mkField('標題 *', 'text', formTitle, '例：Firebase 全面整合', 'cl-tit-'+formId);
+  fTit.style.marginBottom = '10px';
+  container.appendChild(fTit);
+
+  // 項目區
+  var itemsLabel = document.createElement('div');
+  itemsLabel.style.cssText = 'font-size:0.78rem;color:var(--text-mid);margin-bottom:6px;font-weight:600;';
+  itemsLabel.textContent = '內容項目';
+  container.appendChild(itemsLabel);
+
+  var itemsContainer = document.createElement('div');
+  itemsContainer.id = 'clItems-' + (formId||'new');
+  itemsContainer.style.marginBottom = '8px';
+  container.appendChild(itemsContainer);
+
+  var addItemBtn = document.createElement('button');
+  addItemBtn.textContent = '＋ 新增項目';
+  addItemBtn.style.cssText = 'background:none;border:1px dashed var(--border);border-radius:6px;padding:6px;font-size:0.78rem;cursor:pointer;width:100%;color:var(--text-mid);font-family:"Noto Sans TC",sans-serif;min-height:unset;';
+  addItemBtn.addEventListener('click', function() {
+    _clItems.push({ subtitle:'', detail:'' });
+    _renderClItems(itemsContainer);
+  });
+  container.appendChild(addItemBtn);
+
+  // 最新版本 checkbox + 儲存/取消
+  var footer = document.createElement('div');
+  footer.style.cssText = 'display:flex;gap:8px;align-items:center;margin-top:12px;';
+
+  var saveBtn = document.createElement('button');
+  saveBtn.textContent = '儲存';
+  saveBtn.className = 'btn-search';
+  saveBtn.style.cssText = 'flex:1;min-height:unset;';
+  saveBtn.addEventListener('click', function() {
+    var version = container.querySelector('[data-cl="ver"]').value.trim();
+    var date    = container.querySelector('[data-cl="dat"]').value;
+    var title   = container.querySelector('[data-cl="tit"]').value.trim();
+    var latest  = container.querySelector('[data-cl="lat"]').checked;
+    _saveChangelogInline(formId, version, date, title, latest, saveBtn, container, !!doc);
+  });
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.textContent = '取消';
+  cancelBtn.className = 'btn-reset';
+  cancelBtn.style.cssText = 'min-height:unset;';
+  cancelBtn.addEventListener('click', function() {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    if (doc) {
+      // 編輯：恢復 infoRow（包含 actions）
+      var card = container.parentElement;
+      var infoEl = card.querySelector('.cl-info');
+      if (infoEl) infoEl.style.display = 'flex';
+    }
+    _clItems = [];
+  });
+
+  var latestLabel = document.createElement('label');
+  latestLabel.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:0.8rem;cursor:pointer;font-weight:400;white-space:nowrap;color:var(--red);';
+  var latestCb = document.createElement('input');
+  latestCb.type = 'checkbox';
+  latestCb.setAttribute('data-cl','lat');
+  latestCb.style.accentColor = 'var(--red)';
+  latestCb.checked = formLatest;
+  latestLabel.appendChild(latestCb);
+  latestLabel.appendChild(document.createTextNode('標為最新版本'));
+
+  footer.appendChild(saveBtn);
+  footer.appendChild(cancelBtn);
+  footer.appendChild(latestLabel);
+  container.appendChild(footer);
+
+  _renderClItems(itemsContainer);
 }
 
-function hideChangelogForm() {
-  document.getElementById('changelogForm').style.display = 'none';
-  _clItems = [];
+// helper: 建立一個 label+input 的 field div
+function _mkField(labelText, type, value, placeholder, id) {
+  var wrap = document.createElement('div');
+  wrap.className = 'field';
+  wrap.style.margin = '0';
+  var lbl = document.createElement('label');
+  lbl.style.fontSize = '0.78rem';
+  lbl.textContent = labelText;
+  var inp = document.createElement('input');
+  inp.type = type;
+  inp.value = value;
+  inp.placeholder = placeholder;
+  inp.style.width = '100%';
+  // data 屬性方便之後讀取
+  if (labelText.includes('版本')) inp.setAttribute('data-cl','ver');
+  if (labelText.includes('日期')) inp.setAttribute('data-cl','dat');
+  if (labelText.includes('標題')) inp.setAttribute('data-cl','tit');
+  wrap.appendChild(lbl);
+  wrap.appendChild(inp);
+  return wrap;
 }
 
-function addChangelogItem() {
-  _clItems.push({ subtitle:'', detail:'' });
-  renderClFormItems();
-}
-
-function removeClItem(i) {
-  _clItems.splice(i, 1);
-  renderClFormItems();
-}
-
-function renderClFormItems() {
-  var el = document.getElementById('clFormItems');
-  if (!el) return;
+// 渲染項目列表到指定容器
+function _renderClItems(container) {
+  container.innerHTML = '';
   if (!_clItems.length) {
-    el.innerHTML = '<div style="color:var(--text-light);font-size:0.82rem;text-align:center;padding:8px 0;">尚無項目，點下方按鈕新增</div>';
+    var empty = document.createElement('div');
+    empty.style.cssText = 'color:var(--text-light);font-size:0.82rem;text-align:center;padding:8px 0;';
+    empty.textContent = '尚無項目，點下方按鈕新增';
+    container.appendChild(empty);
     return;
   }
-  // 用 DOM 操作避免字串引號衝突
-  el.innerHTML = '';
   _clItems.forEach(function(it, i) {
     var row = document.createElement('div');
     row.style.cssText = 'display:flex;gap:8px;margin-bottom:10px;align-items:flex-start;';
@@ -4974,39 +5634,30 @@ function renderClFormItems() {
     inp.type = 'text';
     inp.placeholder = '小標題（例：Firebase 整合）';
     inp.value = it.subtitle || '';
-    inp.style.cssText = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;';
+    inp.style.cssText = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:"Noto Sans TC",sans-serif;';
     inp.addEventListener('input', function() { _clItems[i].subtitle = this.value; });
 
     var ta = document.createElement('textarea');
-    ta.placeholder = '詳細說明...';
+    ta.placeholder = '詳細說明（可換行）...';
     ta.rows = 2;
-    ta.textContent = it.detail || '';
-    ta.style.cssText = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;resize:vertical;';
+    ta.value = it.detail || '';
+    ta.style.cssText = 'width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;resize:vertical;font-family:"Noto Sans TC",sans-serif;';
     ta.addEventListener('input', function() { _clItems[i].detail = this.value; });
 
     var delBtn = document.createElement('button');
     delBtn.textContent = '✕';
     delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:6px;padding:5px 9px;color:#b94a3a;cursor:pointer;font-size:0.8rem;min-height:unset;flex-shrink:0;margin-top:2px;';
-    delBtn.addEventListener('click', function() { removeClItem(i); });
+    delBtn.addEventListener('click', function() { _clItems.splice(i,1); _renderClItems(container); });
 
-    col.appendChild(inp);
-    col.appendChild(ta);
-    row.appendChild(col);
-    row.appendChild(delBtn);
-    el.appendChild(row);
+    col.appendChild(inp); col.appendChild(ta);
+    row.appendChild(col); row.appendChild(delBtn);
+    container.appendChild(row);
   });
 }
 
-
-async function saveChangelog() {
-  var id       = document.getElementById('clFormId').value;
-  var version  = document.getElementById('clFormVersion').value.trim();
-  var date     = document.getElementById('clFormDate').value;
-  var title    = document.getElementById('clFormTitle').value.trim();
-  var isLatest = document.getElementById('clFormIsLatest').checked;
+async function _saveChangelogInline(id, version, date, title, isLatest, btn, formEl, isEdit) {
   if (!version || !date || !title) { alert('請填入版本號、日期、標題'); return; }
-  var btn = document.querySelector('#changelogForm .btn-search');
-  if (btn) { btn.textContent='儲存中...'; btn.disabled=true; }
+  btn.textContent = '儲存中...'; btn.disabled = true;
   try {
     if (isLatest) {
       var all = await fbList(COL_CHANGELOG);
@@ -5015,12 +5666,32 @@ async function saveChangelog() {
     }
     var data = { version:version, date:date, title:title, items:_clItems, isLatest:isLatest };
     if (id) { await fbSet(COL_CHANGELOG, id, data); }
-    else    { await fbAdd(COL_CHANGELOG, data); }
-    hideChangelogForm();
+    else    { var newId = await fbAdd(COL_CHANGELOG, data); }
+    _clItems = [];
+    formEl.style.display = 'none';
     await loadAdminChangelog();
     loadChangelog();
+    initFootersWithVersion(); // 同步更新底部版本號
   } catch(e) { alert('儲存失敗：'+e.message); }
-  finally { if (btn) { btn.textContent='儲存'; btn.disabled=false; } }
+  finally { btn.textContent = '儲存'; btn.disabled = false; }
+}
+
+// 上下移排序（交換 order 欄位）
+var _clDocs = [];
+async function _moveChangelog(idx, dir) {
+  var swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= _clDocs.length) return;
+  var a = _clDocs[idx], b = _clDocs[swapIdx];
+  var aOrder = a.order !== undefined ? a.order : idx;
+  var bOrder = b.order !== undefined ? b.order : swapIdx;
+  try {
+    await Promise.all([
+      fbUpdate(COL_CHANGELOG, a.id, { order: bOrder }),
+      fbUpdate(COL_CHANGELOG, b.id, { order: aOrder }),
+    ]);
+    await loadAdminChangelog();
+    loadChangelog();
+  } catch(e) { alert('排序失敗：'+e.message); }
 }
 
 async function loadAdminChangelog() {
@@ -5028,54 +5699,132 @@ async function loadAdminChangelog() {
   if (!el) return;
   el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">載入中...</div>';
   try {
-    var docs = await fbList(COL_CHANGELOG, 'date', 'desc');
+    // 先取全部，再依 order（若無則日期倒序）排列
+    var docs = await fbList(COL_CHANGELOG);
+    docs.sort(function(a,b){
+      var ao = a.order !== undefined ? a.order : 9999;
+      var bo = b.order !== undefined ? b.order : 9999;
+      if (ao !== bo) return ao - bo;
+      return (b.date||'') > (a.date||'') ? 1 : -1;
+    });
+    _clDocs = docs;
+
     if (!docs.length) { el.innerHTML = '<div style="color:var(--text-light);">尚無版本紀錄</div>'; return; }
     el.innerHTML = '';
-    docs.forEach(function(d) {
-      var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);';
 
+    docs.forEach(function(d, idx) {
+      var card = document.createElement('div');
+      card.style.cssText = 'border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;';
+
+      // ── 資訊列（正常顯示狀態）──
+      var infoRow = document.createElement('div');
+      infoRow.className = 'cl-info';
+      infoRow.style.cssText = 'display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--warm);';
+
+      // 上下（左右）箭頭
+      var arrows = document.createElement('div');
+      arrows.style.cssText = 'display:flex;flex-direction:row;gap:4px;flex-shrink:0;';
+      var upBtn = document.createElement('button');
+      upBtn.textContent = '▲';
+      upBtn.title = '上移';
+      upBtn.style.cssText = 'background:var(--warm);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.85rem;color:var(--text-mid);padding:5px 10px;min-height:unset;line-height:1;transition:all 0.15s;';
+      upBtn.disabled = idx === 0;
+      if (idx === 0) upBtn.style.opacity = '0.25';
+      upBtn.addEventListener('mouseover', function(){ if(!this.disabled) this.style.background='var(--red-faint)'; });
+      upBtn.addEventListener('mouseout',  function(){ this.style.background='var(--warm)'; });
+      upBtn.addEventListener('click', (function(i){ return function(){ _moveChangelog(i, -1); }; })(idx));
+
+      var dnBtn = document.createElement('button');
+      dnBtn.textContent = '▼';
+      dnBtn.title = '下移';
+      dnBtn.style.cssText = 'background:var(--warm);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.85rem;color:var(--text-mid);padding:5px 10px;min-height:unset;line-height:1;transition:all 0.15s;';
+      dnBtn.disabled = idx === docs.length - 1;
+      if (idx === docs.length - 1) dnBtn.style.opacity = '0.25';
+      dnBtn.addEventListener('mouseover', function(){ if(!this.disabled) this.style.background='var(--red-faint)'; });
+      dnBtn.addEventListener('mouseout',  function(){ this.style.background='var(--warm)'; });
+      dnBtn.addEventListener('click', (function(i){ return function(){ _moveChangelog(i, 1); }; })(idx));
+
+      arrows.appendChild(upBtn); arrows.appendChild(dnBtn);
+
+      // 版本資訊文字
       var info = document.createElement('div');
       info.style.cssText = 'flex:1;min-width:0;';
-      var vLine = document.createElement('div');
-      vLine.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;';
+      var vRow = document.createElement('div');
+      vRow.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;';
       var vSpan = document.createElement('span');
       vSpan.style.cssText = 'font-weight:700;font-size:0.92rem;';
       vSpan.textContent = d.version||'';
-      vLine.appendChild(vSpan);
+      vRow.appendChild(vSpan);
       if (d.isLatest) {
         var badge = document.createElement('span');
         badge.style.cssText = 'font-size:0.65rem;background:var(--red);color:white;border-radius:3px;padding:0 5px;';
         badge.textContent = '最新';
-        vLine.appendChild(badge);
+        vRow.appendChild(badge);
       }
       var dSpan = document.createElement('span');
       dSpan.style.cssText = 'font-size:0.8rem;color:var(--text-light);';
       dSpan.textContent = d.date||'';
-      vLine.appendChild(dSpan);
+      vRow.appendChild(dSpan);
       var titleDiv = document.createElement('div');
-      titleDiv.style.cssText = 'font-size:0.82rem;color:var(--text-mid);margin-top:2px;';
-      titleDiv.textContent = d.title||'';
-      var countDiv = document.createElement('div');
-      countDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);';
-      countDiv.textContent = (d.items||[]).length + ' 個項目';
-      info.appendChild(vLine); info.appendChild(titleDiv); info.appendChild(countDiv);
+      titleDiv.style.cssText = 'font-size:0.82rem;color:var(--text-mid);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      titleDiv.textContent = (d.title||'') + '　(' + (d.items||[]).length + ' 項)';
+      info.appendChild(vRow); info.appendChild(titleDiv);
 
+      // 編輯 / 刪除按鈕
+      var actions = document.createElement('div');
+      actions.className = 'cl-actions';
+      actions.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
       var editBtn = document.createElement('button');
       editBtn.textContent = '✏️ 編輯';
-      editBtn.style.cssText = 'background:none;border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:0.75rem;cursor:pointer;white-space:nowrap;';
-      editBtn.addEventListener('click', (function(doc){ return function(){ showChangelogForm(doc); }; })(d));
-
+      editBtn.style.cssText = 'background:none;border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:0.75rem;cursor:pointer;white-space:nowrap;min-height:unset;';
       var delBtn = document.createElement('button');
       delBtn.textContent = '刪除';
-      delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:6px;padding:5px 12px;font-size:0.75rem;color:#b94a3a;cursor:pointer;white-space:nowrap;';
+      delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:6px;padding:5px 12px;font-size:0.75rem;color:#b94a3a;cursor:pointer;white-space:nowrap;min-height:unset;';
       delBtn.addEventListener('click', (function(doc){ return function(){ adminDel(COL_CHANGELOG, doc.id, '版本 '+doc.version, loadAdminChangelog); }; })(d));
+      actions.appendChild(editBtn); actions.appendChild(delBtn);
 
-      row.appendChild(info); row.appendChild(editBtn); row.appendChild(delBtn);
-      el.appendChild(row);
+      infoRow.appendChild(arrows); infoRow.appendChild(info); infoRow.appendChild(actions);
+
+      // ── 內嵌編輯表單（預設隱藏）──
+      var formEl = document.createElement('div');
+      formEl.style.cssText = 'display:none;padding:16px;background:var(--cream);border-top:1px solid var(--border);';
+
+      // 點編輯按鈕：填入表單並展開
+      editBtn.addEventListener('click', (function(doc, formEl, infoRow){
+        return function() {
+          _clItems = [];
+          _fillChangelogForm(formEl, doc);
+          infoRow.style.display = 'none';
+          formEl.style.display = '';
+          formEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        };
+      })(d, formEl, infoRow));
+
+      card.appendChild(infoRow);
+      card.appendChild(formEl);
+      el.appendChild(card);
     });
   } catch(e) { el.innerHTML = '載入失敗：'+e.message; }
 }
+
+// 舊的 showChangelogForm / hideChangelogForm / saveChangelog / renderClFormItems / addChangelogItem 保留供「新增版本」按鈕用
+function showChangelogForm(doc) {
+  if (doc) return; // 編輯走內嵌，只有 null（新增）走這裡
+  var container = document.getElementById('changelogForm');
+  _fillChangelogForm(container, null);
+  container.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function hideChangelogForm() {
+  var container = document.getElementById('changelogForm');
+  container.style.display = 'none';
+  container.innerHTML = '';
+  _clItems = [];
+}
+// 以下舊函式不再使用，保留空函式避免其他地方呼叫出錯
+function addChangelogItem() {}
+function removeClItem(i) {}
+function renderClFormItems() {}
+async function saveChangelog() {}
 
 
 // ════════════════════════════════════════
