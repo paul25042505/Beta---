@@ -1020,6 +1020,7 @@ tr:hover td { background: #fdfcfb; }
             </div>
           </div>
           <div class="field" id="caseTypeOtherField" style="display:none;">
+            <input type="hidden" id="isOtherCaseType" value="0">
             <label for="caseTypeOther">其他（請說明）<span class="req">*</span></label>
             <input type="text" id="caseTypeOther" placeholder="請輸入案件類型">
           </div>
@@ -1103,18 +1104,7 @@ tr:hover td { background: #fdfcfb; }
       </div>
 
       <div class="submit-section">
-        <button type="button" class="btn-submit" onclick="
-          var _ct = document.querySelector('#caseTypeGrid input[type=radio]:checked');
-          if (_ct && _ct.value === '__other__') {
-            var _ov = document.getElementById('caseTypeOther');
-            if (!_ov || !_ov.value.trim()) {
-              alert('選擇「其他」時必須填寫實際案件類型，否則無法送出');
-              _ov && _ov.focus();
-              return;
-            }
-          }
-          submitOutingForm();
-        ">送　出　紀　錄</button>
+        <button type="button" class="btn-submit" onclick="submitOutingForm()">送　出　紀　錄</button>
       </div>
       <div class="success-msg" id="successMsg">
         <div class="success-icon">✓</div>
@@ -3370,6 +3360,16 @@ function setAttDuty(type) {
 function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; }
 
 function submitOutingForm() {
+  // 最優先：其他案件類型必填檢查（靠 hidden input 判斷，不靠動態 id）
+  if (document.getElementById('isOtherCaseType')?.value === '1') {
+    const _otherInput = document.getElementById('caseTypeOther');
+    if (!_otherInput || !_otherInput.value.trim()) {
+      alert('選擇「其他」時必須填寫實際案件類型，否則無法送出');
+      if (_otherInput) _otherInput.focus();
+      return;
+    }
+  }
+
   const checked = [...document.querySelectorAll('#serviceGrid input:checked')];
   const selectedCaseType = document.querySelector('#caseTypeGrid input[type="radio"]:checked');
   const caseTypeOtherVal = document.getElementById('caseTypeOther')?.value.trim() || '';
@@ -3391,12 +3391,12 @@ function submitOutingForm() {
   if (!_district) { alert('請選擇行政區'); return; }
   if (!_address)  { alert('請填入詳細地址'); return; }
   if (!selectedCaseType) { alert('請選擇案件類型'); return; }
-  if (selectedCaseType.value === '__other__') {
+  // 同步檢查（備用）
+  if (document.getElementById('isOtherCaseType')?.value === '1') {
     const otherInput = document.getElementById('caseTypeOther');
-    const otherFilled = (otherInput?.value || '').trim();
-    if (!otherFilled) {
-      alert('選擇「其他」時必須在下方填寫實際案件類型，否則無法送出');
-      otherInput?.focus();
+    if (!otherInput || !otherInput.value.trim()) {
+      alert('選擇「其他」時必須填寫實際案件類型，否則無法送出');
+      otherInput && otherInput.focus();
       return;
     }
   }
@@ -6049,7 +6049,7 @@ async function loadAnnouncement() {
     // 篩選日期範圍內且啟用的公告，置頂優先
     const active = docs
       .filter(d => d.active !== false && (d.startDate||'') <= today && (d.endDate||'9999') >= today)
-      .sort((a,b) => (b.pinned?1:0) - (a.pinned?1:0) || (a.startDate||'') > (b.startDate||'') ? 1 : -1);
+      .sort((a,b) => { const p=(b.pinned?1:0)-(a.pinned?1:0); return p!==0?p:((b.startDate||'')>(a.startDate||'')?1:-1); });
 
     const bar = document.getElementById('announcementBar');
     if (!active.length) { if(bar) bar.style.display='none'; return; }
@@ -6122,6 +6122,12 @@ async function saveAnnounceForm() {
   const btn = document.querySelector('#announceForm .btn-search');
   if (btn) { btn.textContent='發布中...'; btn.disabled=true; }
   try {
+    // 若勾選置頂，先把其他公告的置頂取消（只能一則置頂）
+    if (pinned) {
+      const allDocs = await fbList(COL_ANNOUNCE);
+      await Promise.all(allDocs.filter(d => d.pinned && d.id !== id)
+        .map(d => fbUpdate(COL_ANNOUNCE, d.id, { pinned: false })));
+    }
     const data = { text, startDate:start, endDate:end, urgent, pinned, active:true,
                    updatedAt: new Date().toLocaleString('sv').replace('T',' ') };
     if (id) { await fbSet(COL_ANNOUNCE, id, data); }
@@ -6160,7 +6166,7 @@ async function loadAdminAnnouncements() {
   try {
     const today = new Date().toLocaleDateString('sv');
     const docs  = await fbList(COL_ANNOUNCE);
-    docs.sort((a,b) => (b.pinned?1:0)-(a.pinned?1:0) || (b.startDate||'') > (a.startDate||'') ? 1 : -1);
+    docs.sort((a,b) => { const p=(b.pinned?1:0)-(a.pinned?1:0); return p!==0?p:((b.startDate||'')>(a.startDate||'')?1:-1); });
     if (!docs.length) { el.innerHTML='<div class="query-empty"><span class="empty-icon">📢</span>尚無公告</div>'; return; }
     el.innerHTML = '';
     docs.forEach(d => {
@@ -6445,10 +6451,10 @@ async function loadChangelog() {
     let docs = await fbList(COL_CHANGELOG);
     // 跟後台一樣：先依 order 排，order 相同再依日期倒序
     docs.sort(function(a,b){
-      var ao = a.order !== undefined ? a.order : 9999;
-      var bo = b.order !== undefined ? b.order : 9999;
-      if (ao !== bo) return ao - bo;
-      return (b.date||'') > (a.date||'') ? 1 : -1;
+      // isLatest 永遠排第一，其餘依日期倒序
+      if (a.isLatest && !b.isLatest) return -1;
+      if (!a.isLatest && b.isLatest) return 1;
+      return (b.date||'') > (a.date||'') ? 1 : (b.date||'') < (a.date||'') ? -1 : 0;
     });
     if (!docs.length) {
       el.innerHTML = '<div class="query-empty"><span class="empty-icon">📝</span>尚無版本紀錄</div>';
@@ -6709,10 +6715,10 @@ async function loadAdminChangelog() {
     // 先取全部，再依 order（若無則日期倒序）排列
     var docs = await fbList(COL_CHANGELOG);
     docs.sort(function(a,b){
-      var ao = a.order !== undefined ? a.order : 9999;
-      var bo = b.order !== undefined ? b.order : 9999;
-      if (ao !== bo) return ao - bo;
-      return (b.date||'') > (a.date||'') ? 1 : -1;
+      // isLatest 永遠排第一，其餘依日期倒序
+      if (a.isLatest && !b.isLatest) return -1;
+      if (!a.isLatest && b.isLatest) return 1;
+      return (b.date||'') > (a.date||'') ? 1 : (b.date||'') < (a.date||'') ? -1 : 0;
     });
     _clDocs = docs;
 
@@ -7523,7 +7529,7 @@ async function meetingDelete(id, title) {
 // ════════════════════════════════════════
 // 案件類型
 // ════════════════════════════════════════
-const DEFAULT_CASE_TYPES = ['路倒','急病','外傷','心臟病','呼吸困難','意識不清','車禍','燙傷','其他'];
+const DEFAULT_CASE_TYPES = ['路倒','急病','外傷','心臟病','呼吸困難','意識不清','車禍','燙傷'];
 let _caseTypesList = [];
 
 let _caseTypeDocs = []; // 儲存完整 doc 含 id
@@ -7547,7 +7553,11 @@ function renderCaseTypeGrid() {
   const grid = document.getElementById('caseTypeGrid');
   if (!grid) return;
   grid.innerHTML = '';
-  _caseTypesList.forEach(ct => {
+
+  // 過濾掉「其他」，永遠用獨立的 __other__ 按鈕處理
+  const types = _caseTypesList.filter(ct => ct !== '其他');
+
+  types.forEach(ct => {
     const lbl = document.createElement('label');
     lbl.className = 'cb-item';
     lbl.style.cssText = 'cursor:pointer;';
@@ -7559,31 +7569,35 @@ function renderCaseTypeGrid() {
     radio.addEventListener('change', () => {
       document.querySelectorAll('#caseTypeGrid label').forEach(l => l.classList.remove('checked'));
       lbl.classList.add('checked');
-      document.getElementById('caseTypeOtherField').style.display = ct === '其他' ? '' : 'none';
+      document.getElementById('caseTypeOtherField').style.display = 'none';
+      document.getElementById('caseTypeOther').value = '';
+      document.getElementById('isOtherCaseType').value = '0';
     });
     lbl.appendChild(radio);
     lbl.appendChild(document.createTextNode(' ' + ct));
     grid.appendChild(lbl);
   });
 
-  // 「其他」選項（自填）— 若清單已有「其他」就不重複加
-  if (!_caseTypesList.includes('其他')) {
-    const lbl = document.createElement('label');
-    lbl.className = 'cb-item';
-    const radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.name = 'caseType';
-    radio.value = '__other__';
-    radio.style.cssText = 'accent-color:var(--red);flex-shrink:0;width:auto;border:none;padding:0;background:none;min-height:unset;';
-    radio.addEventListener('change', () => {
-      document.querySelectorAll('#caseTypeGrid label').forEach(l => l.classList.remove('checked'));
-      lbl.classList.add('checked');
-      document.getElementById('caseTypeOtherField').style.display = '';
-    });
-    lbl.appendChild(radio);
-    lbl.appendChild(document.createTextNode(' 其他'));
-    grid.appendChild(lbl);
-  }
+  // 「其他」永遠用 __other__
+  const otherLbl = document.createElement('label');
+  otherLbl.className = 'cb-item';
+  otherLbl.style.cssText = 'cursor:pointer;';
+  const otherRadio = document.createElement('input');
+  otherRadio.type = 'radio';
+  otherRadio.name = 'caseType';
+  otherRadio.value = '__other__';
+  otherRadio.id = 'caseTypeOtherRadio';
+  otherRadio.style.cssText = 'accent-color:var(--red);flex-shrink:0;width:auto;border:none;padding:0;background:none;min-height:unset;';
+  otherRadio.addEventListener('change', () => {
+    document.querySelectorAll('#caseTypeGrid label').forEach(l => l.classList.remove('checked'));
+    otherLbl.classList.add('checked');
+    document.getElementById('caseTypeOtherField').style.display = '';
+    document.getElementById('isOtherCaseType').value = '1';
+    document.getElementById('caseTypeOther').focus();
+  });
+  otherLbl.appendChild(otherRadio);
+  otherLbl.appendChild(document.createTextNode(' 其他'));
+  grid.appendChild(otherLbl);
 }
 
 // 查詢頁面的案件類型下拉
@@ -8270,6 +8284,58 @@ async function handleCorrection(corrId, docId, type, action) {
   } catch(e) { alert('操作失敗：' + e.message); }
 }
 
+
+
+// ── 一次性：清除 Firestore caseTypes 裡的「其他」──
+async function removeOtherCaseType() {
+  try {
+    const docs = await fbList(COL_CASETYPES);
+    const other = docs.find(d => d.name === '其他');
+    if (other) {
+      await fbDelete(COL_CASETYPES, other.id);
+      alert('✅ 已從資料庫移除「其他」案件類型');
+    } else {
+      alert('資料庫裡沒有「其他」這個類型，不需要清除');
+    }
+    await loadCaseTypes();
+    renderCaseTypeGrid();
+  } catch(e) { alert('失敗：' + e.message); }
+}
+
+
+// ── 一次性：新增 v1.9.01 版本記錄 ──
+async function injectV1901() {
+  const items = [
+    { subtitle:'📝 資料修正申請', detail:'24小時內可直接編輯自己的協勤/簽到退紀錄；超過24小時可申請修正，由承辦人審核後處理；後台新增「修正申請」管理區塊' },
+    { subtitle:'📅 定訓行事曆', detail:'後台新增定訓排程管理（日期、分隊、主題、是否推播）；與定訓與公告頁面分開，先排行程再填記錄' },
+    { subtitle:'🔔 PWA 推播通知', detail:'定訓前一天晚上8點自動推播提醒；需安裝到主畫面並允許通知權限；GitHub Actions 每日自動執行' },
+    { subtitle:'📲 裝置設定', detail:'個人資料頁新增裝置設定區塊；可手動觸發安裝引導與推播訂閱' },
+    { subtitle:'📱 手機號碼', detail:'成員自填手機號碼後，後台成員帳號管理可查看與編輯' },
+    { subtitle:'🚫 協勤必填驗證', detail:'協勤案件登錄所有欄位（日期、時間、地址、案件類型、服務項目、姓名、簽名）皆為必填，缺一不能送出' },
+    { subtitle:'🚫 其他案件類型必填', detail:'選擇「其他」案件類型時，說明欄必須填寫才能送出；修正預設清單含「其他」導致驗證被繞過的問題' },
+    { subtitle:'📊 查詢排序修正', detail:'協勤紀錄查詢、簽到退查詢、後台協勤與簽到退，全部統一由舊到新排序' },
+    { subtitle:'📌 公告置頂修正', detail:'置頂公告正確顯示在最上方；同時只能有一則置頂，勾選新置頂時自動取消舊置頂' },
+    { subtitle:'🔧 Header 固定修正', detail:'iOS Safari 捲動時 header 不再跳動；改用 appScroll 容器捲動架構' },
+    { subtitle:'🔧 後台 Tab bar 修正', detail:'點選 Tab 正確高亮；改用 onclick 屬性比對，不靠 index，隱藏按鈕不影響定位' },
+    { subtitle:'🔧 側邊欄修正', detail:'側邊欄不再被 header 遮住首頁選項；drawer 從 header 下方開始顯示' },
+  ];
+  try {
+    const all = await fbList(COL_CHANGELOG);
+    await Promise.all(all.filter(d => d.isLatest).map(d => fbUpdate(COL_CHANGELOG, d.id, { isLatest: false })));
+    await fbAdd(COL_CHANGELOG, {
+      version: 'v1.9.01',
+      date: '2026-04-20',
+      title: '修正申請・推播通知・防呆驗證・UI 全面修正',
+      items,
+      isLatest: true,
+      order: 0,
+    });
+    alert('✅ v1.9.01 已新增！');
+    await loadAdminChangelog();
+    loadChangelog();
+    initFootersWithVersion();
+  } catch(e) { alert('失敗：' + e.message); }
+}
 
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
