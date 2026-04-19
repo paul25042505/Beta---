@@ -629,6 +629,7 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminNavTo('adminSec-items')"    class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📦</span>物品領用</button>
       <button id="adminSubNav-announce" onclick="adminNavTo('adminSec-announce')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📢</span>公告管理</button>
       <button onclick="adminNavTo('adminSec-feedback')" class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">💬</span>意見回饋</button>
+      <button onclick="adminNavTo('adminSec-correction')" class="admin-subnav-btn" id="adminSubNav-correction"><span class="icon" style="font-size:0.75rem;">📝</span>修正申請</button>
       <button onclick="adminNavTo('adminSec-schedule')" class="admin-subnav-btn" id="adminSubNav-schedule"><span class="icon" style="font-size:0.75rem;">📅</span>定訓行事曆</button>
       <button onclick="adminNavTo('adminSec-changelog')"class="admin-subnav-btn"><span class="icon" style="font-size:0.75rem;">📝</span>版本紀錄</button>
       <button id="adminSubNav-loginlog" onclick="adminNavTo('adminSec-loginlog')" class="admin-subnav-btn" style="display:none;"><span class="icon" style="font-size:0.75rem;">🔐</span>登入紀錄</button>
@@ -1222,6 +1223,7 @@ tr:hover td { background: #fdfcfb; }
               <th>義消姓名</th>
               <th>備註</th>
               <th>簽名</th>
+              <th>操作</th>
             </tr>
           </thead>
           <tbody id="resultBody"></tbody>
@@ -1894,6 +1896,7 @@ tr:hover td { background: #fdfcfb; }
       <button onclick="adminScrollTo('adminSec-items')"    class="admin-tab">📦 物品</button>
       <button id="adminTab-announce" onclick="adminScrollTo('adminSec-announce')" class="admin-tab">📢 公告</button>
       <button onclick="adminScrollTo('adminSec-feedback')" class="admin-tab">💬 回饋</button>
+      <button onclick="adminScrollTo('adminSec-correction')" class="admin-tab" id="adminTab-correction">📝 修正</button>
       <button onclick="adminScrollTo('adminSec-schedule')" class="admin-tab" id="adminTab-schedule">📅 定訓</button>
       <button onclick="adminScrollTo('adminSec-changelog')"class="admin-tab">📝 版本</button>
       <button id="adminTab-loginlog" onclick="adminScrollTo('adminSec-loginlog')" class="admin-tab" style="display:none;">🔐 登入紀錄</button>
@@ -2060,6 +2063,16 @@ tr:hover td { background: #fdfcfb; }
         <button onclick="loadAdminFeedback()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
       </div>
       <div id="adminFeedbackList"></div>
+    </div>
+
+    <div class="section" id="adminSec-correction">
+      <div class="section-head">
+        <div class="section-num">📝</div>
+        <div class="section-title">修正申請</div>
+        <div class="section-line"></div>
+        <button onclick="loadAdminCorrections()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:0.75rem;color:var(--text-mid);cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">重新整理</button>
+      </div>
+      <div id="adminCorrectionList" style="margin-top:4px;"></div>
     </div>
 
     <div class="section" id="adminSec-schedule">
@@ -2400,6 +2413,40 @@ tr:hover td { background: #fdfcfb; }
 </div>
 
 <!-- Signature Modal -->
+<!-- ══════ 申請修正 Modal ══════ -->
+<div id="correctionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:white;border-radius:10px;padding:24px;width:100%;max-width:480px;margin-top:20px;box-shadow:0 8px 40px rgba(0,0,0,0.2);">
+    <div style="font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px;">📝 申請資料修正</div>
+    <div style="font-size:0.78rem;color:var(--text-light);margin-bottom:16px;">超過 24 小時的紀錄需由承辦人審核後修正</div>
+    <input type="hidden" id="corrType">
+    <input type="hidden" id="corrDocId">
+    <div class="field">
+      <label>紀錄日期</label>
+      <div id="corrDateDisplay" style="padding:8px 0;font-size:0.9rem;color:var(--text-mid);"></div>
+    </div>
+    <div class="field">
+      <label>義消姓名</label>
+      <div id="corrNameDisplay" style="padding:8px 0;font-size:0.9rem;color:var(--text-mid);"></div>
+    </div>
+    <div class="field">
+      <label>需要修正的項目 <span class="req">*</span></label>
+      <input type="text" id="corrField" placeholder="例：服務項目、時間、地址">
+    </div>
+    <div class="field">
+      <label>正確內容 <span class="req">*</span></label>
+      <textarea id="corrCorrect" placeholder="請填寫正確的資料內容" style="min-height:80px;"></textarea>
+    </div>
+    <div class="field">
+      <label>說明原因</label>
+      <textarea id="corrReason" placeholder="填寫錯誤原因（選填）" style="min-height:60px;"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button onclick="submitCorrection()" style="flex:1;background:var(--red);color:white;border:none;border-radius:8px;padding:12px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">送出申請</button>
+      <button onclick="document.getElementById('correctionModal').style.display='none'" style="flex:1;background:white;color:var(--text-mid);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:0.9rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">取消</button>
+    </div>
+  </div>
+</div>
+
 <div id="sigModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;cursor:pointer;">
   <div style="background:white;border-radius:8px;padding:16px;max-width:90vw;max-height:90vh;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
     <img id="sigModalImg" style="max-width:80vw;max-height:80vh;display:block;">
@@ -2417,6 +2464,7 @@ var COL_OUTING = 'outingRecords', COL_ATTEND = 'attendance';
 var COL_ITEMS = 'items', COL_FEEDBACK = 'feedback', COL_UNITS = 'units', COL_CHANGELOG = 'changelogs';
 var COL_LOGINLOG = 'loginLogs';
 var COL_MEETING  = 'meetingRecords';
+var COL_CORRECTION = 'correctionRequests';
 var COL_CASETYPES = 'caseTypes';
 
 // Firebase 初始化（SDK 用 defer 載入，window.onload 後才 init）
@@ -3465,6 +3513,7 @@ async function doQuery() {
     try {
       const docs=await fbList(COL_OUTING, 'date', 'asc');
       allRecords=docs.map(d=>({
+        id:d.id||'',
         date:d.date||'',timeOut:d.timeOut||'',timeBack:d.timeBack||'',
         district:(d.district||'').replace(/^台中/,'臺中'),
         address:d.address||'',caseType:d.caseType||'',services:d.services||'',
@@ -3472,6 +3521,7 @@ async function doQuery() {
         memberName:d.memberName||'',
         signature:d.signature||'',
         dutyType:d.dutyType||'',
+        _t:d._t||null,
       }));
     } catch(e) {
       allRecords = [];
@@ -3534,30 +3584,50 @@ function renderQueryResults(records) {
   document.getElementById('statDays').textContent    = uniqueDays;
   document.getElementById('statsRow').style.display  = 'grid';
 
+  // 在 map 外取得登入者資訊，避免 template literal 巢狀問題
+  const _usrQ = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdminQ = _usrQ.isAdmin||false, _isOfficerQ = _usrQ.isOfficer||false;
+  const _myNameQ = _usrQ.memberName||_usrQ.name||'';
+
   const tbody = document.getElementById('resultBody');
   if (records.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:30px;">查無符合條件的紀錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-light);padding:30px;">查無符合條件的紀錄</td></tr>';
   } else {
     tbody.innerHTML = records.map((r, i) => {
       const seqNum = i + 1;
       const tags = (r.services || '').split('、').filter(Boolean)
-        .map(s => `<span class="tag">${s}</span>`).join('');
-      const timeStr = r.timeOut && r.timeBack ? `${r.timeOut} — ${r.timeBack}` : (r.timeOut || '');
+        .map(s => '<span class="tag">'+s+'</span>').join('');
+      const timeStr = r.timeOut && r.timeBack ? r.timeOut+' — '+r.timeBack : (r.timeOut || '');
       const sigCell = r.signature
-        ? `<img data-sig="${i}" style="height:40px;cursor:pointer;border:1px solid var(--border);border-radius:3px;" title="點擊放大">`
+        ? '<img data-sig="'+i+'" style="height:40px;cursor:pointer;border:1px solid var(--border);border-radius:3px;" title="點擊放大">'
         : '—';
-      return `<tr>
-        <td style="text-align:center;color:var(--text-light);font-size:0.8rem;">${seqNum}</td>
-        <td style="white-space:nowrap;">${r.date || ''}</td>
-        <td style="white-space:nowrap;">${timeStr}</td>
-        <td style="white-space:nowrap;">${r.district || ''}</td>
-        <td style="min-width:10em;">${r.address || ''}</td>
-        <td style="white-space:nowrap;">${r.caseType || '—'}</td>
-        <td>${tags}</td>
-        <td style="white-space:nowrap;">${r.memberName || ''}</td>
-        <td>${r.note || ''}</td>
-        <td>${sigCell}</td>
-      </tr>`;
+      const isOwnerQ = r.memberName === _myNameQ;
+      const recTimeQ = r._t ? (r._t.seconds||0)*1000 : (r.date ? new Date(r.date).getTime() : 0);
+      const within24Q = recTimeQ && (Date.now()-recTimeQ < 86400000);
+      let actionCell = '';
+      if (!_isAdminQ && !_isOfficerQ) {
+        if (isOwnerQ && within24Q) {
+          actionCell = '<button onclick="openOutingEdit('+i+')" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:var(--text-mid);white-space:nowrap;">✏️ 編輯</button>';
+        } else if (isOwnerQ) {
+          const _idQ = (r.id||'').replace(/'/g,'&#39;');
+          const _dtQ = (r.date||'').replace(/'/g,'&#39;');
+          const _nmQ = (r.memberName||'').replace(/'/g,'&#39;');
+          actionCell = '<button onclick="openCorrectionModal(&quot;outing&quot;,&quot;'+_idQ+'&quot;,&quot;'+_dtQ+'&quot;,&quot;'+_nmQ+'&quot;)" style="background:none;border:1px solid #9ec5fe;border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:#084298;white-space:nowrap;">📝 申請修正</button>';
+        }
+      }
+      return '<tr>' +
+        '<td style="text-align:center;color:var(--text-light);font-size:0.8rem;">'+seqNum+'</td>' +
+        '<td style="white-space:nowrap;">'+(r.date||'')+'</td>' +
+        '<td style="white-space:nowrap;">'+timeStr+'</td>' +
+        '<td style="white-space:nowrap;">'+(r.district||'')+'</td>' +
+        '<td style="min-width:10em;">'+(r.address||'')+'</td>' +
+        '<td style="white-space:nowrap;">'+(r.caseType||'—')+'</td>' +
+        '<td>'+tags+'</td>' +
+        '<td style="white-space:nowrap;">'+(r.memberName||'')+'</td>' +
+        '<td>'+(r.note||'')+'</td>' +
+        '<td>'+sigCell+'</td>' +
+        '<td>'+actionCell+'</td>' +
+        '</tr>';
     }).join('');
 
     tbody.querySelectorAll('img[data-sig]').forEach(img => {
@@ -4096,6 +4166,7 @@ async function doAttQuery() {
   try {
     const docs = await fbList(COL_ATTEND, 'date', 'asc');
     aqAllRecords = docs.map(d => ({
+      id:          d.id||'',
       date:        d.date||'',
       dutyType:    d.dutyType||'協勤',
       title:       d.title||'',
@@ -4107,6 +4178,7 @@ async function doAttQuery() {
       service:     d.service||0,
       checkinSig:  d.checkinSig||'',
       checkoutSig: d.checkoutSig||'',
+      _t:          d._t||null,
     }));
   } catch(e) {
     alert('無法取得資料：' + e.message);
@@ -4156,8 +4228,10 @@ function renderAttQueryResults() {
   if (aqFiltered.length === 0) {
     tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--text-light);padding:30px;">查無紀錄</td></tr>';
   } else {
+    const _usrAq = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    const _isAdminAq = _usrAq.isAdmin||false, _isOfficerAq = _usrAq.isOfficer||false;
+    const _myNameAq = _usrAq.memberName||_usrAq.name||'';
     tbody.innerHTML = aqFiltered.map((r, i) => {
-      // 支援 Firebase 格式和舊 Sheets 格式
       const date  = r.date || fmtAqDate(r['日期'] || '');
       const duty  = r.dutyType || r['類別'] || '';
       const name  = r.memberName || r['姓名'] || '';
@@ -4167,19 +4241,34 @@ function renderAttQueryResults() {
       const hrs   = r.hours  !== undefined ? r.hours  : (r['協勤時數'] !== undefined ? r['協勤時數'] : 0);
       const cnt   = r.count   !== undefined ? r.count   : (r['協勤次數'] !== undefined ? r['協勤次數'] : 0);
       const svc   = r.service !== undefined ? r.service : (r['服務人次'] !== undefined ? r['服務人次'] : 0);
-      return `<tr>
-        <td style="text-align:center;color:var(--text-light);font-size:0.8rem;">${i+1}</td>
-        <td style="white-space:nowrap;">${date}</td>
-        <td style="white-space:nowrap;">${duty}</td>
-        <td style="white-space:nowrap;">${name}</td>
-        <td style="white-space:nowrap;">${title}</td>
-        <td style="white-space:nowrap;">${cin}</td>
-        <td style="white-space:nowrap;">${cout}</td>
-        <td style="text-align:center;">${hrs}</td>
-        <td style="text-align:center;">${cnt}</td>
-        <td style="text-align:center;">${svc}</td>
-        <td><button class="att-member-btn" onclick="openAttEdit(${i})">編輯</button></td>
-      </tr>`;
+      // 操作按鈕
+      const isOwnerAq = name === _myNameAq;
+      const recTimeAq = r._t ? (r._t.seconds||0)*1000 : (date ? new Date(date).getTime() : 0);
+      const within24Aq = recTimeAq && (Date.now()-recTimeAq < 86400000);
+      let aqActionBtn = '';
+      if (_isAdminAq || _isOfficerAq) {
+        aqActionBtn = '<button class="att-member-btn" onclick="openAttEdit('+i+')">✏️ 編輯</button>';
+      } else if (isOwnerAq && within24Aq) {
+        aqActionBtn = '<button class="att-member-btn" onclick="openAttEdit('+i+')">✏️ 編輯</button>';
+      } else if (isOwnerAq) {
+        const _id2 = (r.id||'').replace(/'/g,'&#39;');
+        const _dt2 = date.replace(/'/g,'&#39;');
+        const _nm2 = name.replace(/'/g,'&#39;');
+        aqActionBtn = '<button style="background:none;border:1px solid #9ec5fe;border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:#084298;white-space:nowrap;" onclick="openCorrectionModal(&quot;attendance&quot;,&quot;'+_id2+'&quot;,&quot;'+_dt2+'&quot;,&quot;'+_nm2+'&quot;)">📝 申請修正</button>';
+      }
+      return '<tr>' +
+        '<td style="text-align:center;color:var(--text-light);font-size:0.8rem;">'+(i+1)+'</td>' +
+        '<td style="white-space:nowrap;">'+date+'</td>' +
+        '<td style="white-space:nowrap;">'+duty+'</td>' +
+        '<td style="white-space:nowrap;">'+name+'</td>' +
+        '<td style="white-space:nowrap;">'+title+'</td>' +
+        '<td style="white-space:nowrap;">'+cin+'</td>' +
+        '<td style="white-space:nowrap;">'+cout+'</td>' +
+        '<td style="text-align:center;">'+hrs+'</td>' +
+        '<td style="text-align:center;">'+cnt+'</td>' +
+        '<td style="text-align:center;">'+svc+'</td>' +
+        '<td>'+aqActionBtn+'</td>' +
+        '</tr>';
     }).join('');
   }
   document.getElementById('aqResultCard').style.display = 'block';
@@ -5047,13 +5136,19 @@ async function loadAdminWhitelist(filterUnit) {
       emailDiv.style.cssText = 'font-size:0.75rem;color:var(--text-light);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
       emailDiv.textContent = d.email||'';
       info.appendChild(emailDiv);
+      if (d.phone) {
+        var phoneDiv = document.createElement('div');
+        phoneDiv.style.cssText = 'font-size:0.75rem;color:var(--text-mid);margin-top:1px;';
+        phoneDiv.textContent = '📱 ' + d.phone;
+        info.appendChild(phoneDiv);
+      }
       row.appendChild(info);
 
       var editBtn = document.createElement('button');
       editBtn.style.cssText = 'flex-shrink:0;background:white;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:0.78rem;cursor:pointer;color:var(--text-mid);font-family:\'Noto Sans TC\',sans-serif;min-height:unset;';
       editBtn.textContent = '✏️ 編輯';
       editBtn.onclick = function(){
-        adminEditWl(d.id, d.email||'', d.memberName||'', !!d.isAdmin, d.unit||'', d.role||'member', d.title||'', d.cert||'', d.certExp||'');
+        adminEditWl(d.id, d.email||'', d.memberName||'', !!d.isAdmin, d.unit||'', d.role||'member', d.title||'', d.cert||'', d.certExp||'', d.phone||'');
       };
       row.appendChild(editBtn);
 
@@ -5109,11 +5204,12 @@ async function adminAddWhitelist() {
   } catch(e){alert('新增失敗：'+e.message);}
 }
 
-function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp) {
+function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp,phone) {
   if (!role || role==='member') role = isAdmin ? 'admin' : (role||'member');
   cert    = cert    || '';
   certExp = certExp || '';
   title   = title   || '';
+  phone   = phone   || '';
   var TITLES = ['分隊長','副分隊長','幹事','助理幹事','小隊長','隊員'];
   var titleOpts = '<option value="">請選擇</option>' +
     TITLES.map(function(t){ return '<option value="'+t+'"'+(t===title?' selected':'')+'>'+t+'</option>'; }).join('');
@@ -5134,7 +5230,8 @@ function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp) {
     '<div class="field"><label>職稱</label><select id="aeWlTitle" style="width:100%;">'+titleOpts+'</select></div>'+
     '<div class="field"><label>角色權限</label><select id="aeWlRole" style="width:100%;">'+roleOpts+'</select></div>'+
     '<div class="field"><label>證照等級</label><select id="aeWlCert" style="width:100%;">'+certOpts+'</select></div>'+
-    '<div class="field"><label>證照效期</label><input type="date" id="aeWlCertExp" value="'+certExp+'" style="width:100%;background:white;border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-size:0.92rem;font-family:\'Noto Sans TC\',sans-serif;color:var(--text);min-height:42px;box-sizing:border-box;"></div>';
+    '<div class="field"><label>證照效期</label><input type="date" id="aeWlCertExp" value="'+certExp+'" style="width:100%;background:white;border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-size:0.92rem;font-family:\'Noto Sans TC\',sans-serif;color:var(--text);min-height:42px;box-sizing:border-box;"></div>'+
+    '<div class="field"><label>手機號碼</label><input type="tel" id="aeWlPhone" value="'+phone+'" placeholder="例：0912345678" style="width:100%;background:white;border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-size:0.92rem;font-family:\'Noto Sans TC\',sans-serif;color:var(--text);min-height:42px;box-sizing:border-box;"></div>';
   adminEditSave = async function() {
     var r = document.getElementById('aeWlRole').value || 'member';
     try {
@@ -5146,6 +5243,7 @@ function adminEditWl(id,email,memberName,isAdmin,unit,role,title,cert,certExp) {
         role: r, isAdmin: r==='admin', isOfficer: r==='officer',
         cert:    document.getElementById('aeWlCert').value || '',
         certExp: document.getElementById('aeWlCertExp').value || '',
+        phone:   document.getElementById('aeWlPhone').value.trim() || '',
       });
       document.getElementById('adminEditModal').style.display = 'none';
       const curUnit = document.getElementById('adminWlFilterUnit')?.value || '';
@@ -5576,7 +5674,7 @@ async function initAdminPage() {
 
   await loadUnits();
   populateUnitSelects();
-  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog(),loadAdminCaseTypes(),initScheduleSection()]);
+  await Promise.all([loadAdminUnits(),loadAdminWhitelist(),loadAdminItems(),loadAdminAttendance(),loadAdminOuting(),loadAdminAnnouncements(),loadAdminFeedback(),loadAdminChangelog(),loadAdminCaseTypes(),initScheduleSection(),loadAdminCorrections()]);
 
   // 顯示並定位固定 tab bar
   _positionAdminTabBar();
@@ -5588,8 +5686,8 @@ async function initAdminPage() {
   // IntersectionObserver：滾動時自動高亮對應 tab
   if (_adminTabObserver) _adminTabObserver.disconnect();
   const secIds = isAdminOnly
-    ? ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-schedule','adminSec-changelog','adminSec-loginlog']
-    : ['adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-feedback','adminSec-schedule'];
+    ? ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-correction','adminSec-schedule','adminSec-changelog','adminSec-loginlog']
+    : ['adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-feedback','adminSec-correction','adminSec-schedule'];
   const tabs = document.querySelectorAll('.admin-tab');
   const scroller = document.getElementById('appScroll');
   _adminTabObserver = new IntersectionObserver(entries => {
@@ -7935,6 +8033,148 @@ async function deleteSchedule(id, date) {
     await fbDelete(COL_SCHEDULE, id);
     await loadAdminSchedule();
   } catch(e) { alert('刪除失敗：' + e.message); }
+}
+
+
+
+// ════════════════════════════════════════
+// 修正申請
+// ════════════════════════════════════════
+
+function openCorrectionModal(type, docId, date, memberName) {
+  document.getElementById('corrType').value        = type;
+  document.getElementById('corrDocId').value       = docId;
+  document.getElementById('corrDateDisplay').textContent  = date;
+  document.getElementById('corrNameDisplay').textContent  = memberName;
+  document.getElementById('corrField').value       = '';
+  document.getElementById('corrCorrect').value     = '';
+  document.getElementById('corrReason').value      = '';
+  document.getElementById('correctionModal').style.display = 'flex';
+}
+
+async function submitCorrection() {
+  const type     = document.getElementById('corrType').value;
+  const docId    = document.getElementById('corrDocId').value;
+  const field    = document.getElementById('corrField').value.trim();
+  const correct  = document.getElementById('corrCorrect').value.trim();
+  const reason   = document.getElementById('corrReason').value.trim();
+  const date     = document.getElementById('corrDateDisplay').textContent;
+  const name     = document.getElementById('corrNameDisplay').textContent;
+
+  if (!field)   { alert('請填寫需要修正的項目'); return; }
+  if (!correct) { alert('請填寫正確內容'); return; }
+
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  try {
+    await fbAdd(COL_CORRECTION, {
+      type,       // 'outing' | 'attendance'
+      docId,
+      date,
+      memberName: name,
+      field,
+      correct,
+      reason,
+      status:     'pending',  // pending | approved | rejected
+      submittedBy: usr.memberName || usr.name || '',
+      submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    document.getElementById('correctionModal').style.display = 'none';
+    alert('✅ 申請已送出，承辦人審核後會修改資料。');
+  } catch(e) { alert('送出失敗：' + e.message); }
+}
+
+// ── 協勤紀錄直接編輯（24小時內）──
+function openOutingEdit(i) {
+  const r = filteredRecords[i];
+  if (!r) return;
+  // 直接跳到後台協勤編輯 modal
+  adminEditOut(r.id);
+}
+
+// ── 後台修正申請管理 ──
+async function loadAdminCorrections() {
+  const el = document.getElementById('adminCorrectionList');
+  if (!el) return;
+  el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">載入中...</div>';
+  try {
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    let docs = await fbList(COL_CORRECTION);
+    // 承辦人只看自己分隊
+    if (!usr.isAdmin) {
+      const unitNames = members.filter(m => m.unit === usr.unit).map(m => m.name);
+      docs = docs.filter(d => unitNames.includes(d.memberName));
+    }
+    // 未處理的排前面
+    docs.sort((a,b) => {
+      if (a.status==='pending' && b.status!=='pending') return -1;
+      if (b.status==='pending' && a.status!=='pending') return 1;
+      return 0;
+    });
+
+    if (!docs.length) {
+      el.innerHTML = '<div style="color:var(--text-light);padding:8px 0;">目前沒有修正申請</div>';
+      return;
+    }
+
+    el.innerHTML = '';
+    docs.forEach(d => {
+      const card = document.createElement('div');
+      const isPending = d.status === 'pending';
+      card.style.cssText = 'background:white;border:1px solid '+(isPending?'#9ec5fe':'var(--border)')+';border-radius:8px;padding:14px;margin-bottom:10px;';
+
+      const statusBadge = {
+        pending:  '<span style="background:#cfe2ff;color:#084298;border-radius:10px;padding:2px 8px;font-size:0.7rem;font-weight:600;">待審核</span>',
+        approved: '<span style="background:#d4edda;color:#1a6b35;border-radius:10px;padding:2px 8px;font-size:0.7rem;font-weight:600;">已核准</span>',
+        rejected: '<span style="background:#fde8e8;color:#b94a3a;border-radius:10px;padding:2px 8px;font-size:0.7rem;font-weight:600;">已拒絕</span>',
+      }[d.status] || '';
+
+      const typeLabel = d.type === 'outing' ? '協勤紀錄' : '簽到退紀錄';
+
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+          <span style="font-size:0.78rem;background:var(--warm);border-radius:4px;padding:2px 8px;">${typeLabel}</span>
+          ${statusBadge}
+          <span style="font-size:0.78rem;color:var(--text-light);">${d.date||''}</span>
+          <span style="font-size:0.82rem;font-weight:600;">${d.memberName||''}</span>
+        </div>
+        <div style="font-size:0.82rem;margin-bottom:4px;"><span style="color:var(--text-light);">修正項目：</span>${d.field||''}</div>
+        <div style="font-size:0.82rem;margin-bottom:4px;"><span style="color:var(--text-light);">正確內容：</span><span style="color:var(--red);font-weight:500;">${d.correct||''}</span></div>
+        ${d.reason ? `<div style="font-size:0.78rem;color:var(--text-light);margin-bottom:8px;">原因：${d.reason}</div>` : ''}
+        ${isPending ? `
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button onclick="handleCorrection('${d.id}','${d.docId||''}','${d.type}','approved')"
+            style="flex:1;background:var(--red);color:white;border:none;border-radius:6px;padding:8px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">
+            ✅ 核准並前往修改
+          </button>
+          <button onclick="handleCorrection('${d.id}','${d.docId||''}','${d.type}','rejected')"
+            style="flex:1;background:white;color:#b94a3a;border:1px solid #f5c6c6;border-radius:6px;padding:8px;font-size:0.82rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">
+            ❌ 拒絕
+          </button>
+        </div>` : ''}
+      `;
+      el.appendChild(card);
+    });
+  } catch(e) {
+    el.innerHTML = '<div style="color:#b94a3a;padding:8px 0;">載入失敗：' + e.message + '</div>';
+  }
+}
+
+async function handleCorrection(corrId, docId, type, action) {
+  try {
+    await fbUpdate(COL_CORRECTION, corrId, {
+      status: action,
+      handledAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    if (action === 'approved' && docId) {
+      // 跳到對應編輯介面
+      if (type === 'outing') {
+        adminEditOut(docId);
+      } else {
+        adminEditAtt(docId);
+      }
+    }
+    await loadAdminCorrections();
+  } catch(e) { alert('操作失敗：' + e.message); }
 }
 
 
