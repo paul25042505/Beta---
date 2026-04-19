@@ -590,10 +590,14 @@ tr:hover td { background: #fdfcfb; }
         </button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-        <span style="font-size:0.72rem;color:var(--text-light);white-space:nowrap;">切換分隊（承辦/成員）：</span>
+        <span style="font-size:0.72rem;color:var(--text-light);white-space:nowrap;">分隊：</span>
         <select id="devUnitSel" style="flex:1;font-size:0.78rem;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:white;color:var(--text);">
           <option value="潭子分隊">潭子分隊</option>
         </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+        <span style="font-size:0.72rem;color:var(--text-light);white-space:nowrap;">姓名（成員/承辦）：</span>
+        <input id="devNameInput" type="text" placeholder="例：林弘科" style="flex:1;font-size:0.78rem;padding:5px 8px;border:1px solid var(--border);border-radius:6px;">
       </div>
     </div>
   </div>
@@ -789,6 +793,14 @@ tr:hover td { background: #fdfcfb; }
     <div class="field">
       <label>詳細地址</label>
       <input type="text" id="easyOutingAddress" placeholder="路名、號碼或地標">
+    </div>
+    <div class="field">
+      <label>案件類型 <span class="req">*</span><span style="font-size:0.72rem;color:var(--text-light);margin-left:6px;">依值班台電腦救護派遣系統案件類型填寫</span></label>
+      <div id="easyCaseTypeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:4px;"></div>
+      <div id="easyCaseTypeOtherField" style="display:none;margin-top:8px;">
+        <input type="text" id="easyCaseTypeOther" placeholder="請填寫實際案件類型"
+          style="width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:0.88rem;font-family:'Noto Sans TC',sans-serif;">
+      </div>
     </div>
     <div class="field">
       <label>服務項目（可複選）</label>
@@ -1091,13 +1103,27 @@ tr:hover td { background: #fdfcfb; }
       </div>
 
       <div class="submit-section">
-        <button type="submit" class="btn-submit">送　出　紀　錄</button>
+        <button type="button" class="btn-submit" onclick="
+          var _ct = document.querySelector('#caseTypeGrid input[type=radio]:checked');
+          if (_ct && _ct.value === '__other__') {
+            var _ov = document.getElementById('caseTypeOther');
+            if (!_ov || !_ov.value.trim()) {
+              alert('選擇「其他」時必須填寫實際案件類型，否則無法送出');
+              _ov && _ov.focus();
+              return;
+            }
+          }
+          submitOutingForm();
+        ">送　出　紀　錄</button>
       </div>
       <div class="success-msg" id="successMsg">
         <div class="success-icon">✓</div>
         <h3>紀錄已成功送出</h3>
         <p>感謝您的服務，協勤資料已記錄完成。</p>
-        <button type="button" onclick="goToQuery()" style="margin-top:12px;background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看協勤紀錄 →</button>
+        <p style="font-size:0.78rem;color:#856404;background:#fff3cd;border-radius:6px;padding:8px 12px;margin-top:10px;line-height:1.6;">
+          💡 如有填寫錯誤，可至「協勤紀錄查詢」申請修正
+        </p>
+        <button type="button" onclick="goToQuery()" style="margin-top:10px;background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看協勤紀錄 →</button>
       </div>
       <div class="site-footer-placeholder"></div>
     </form>
@@ -1373,7 +1399,10 @@ tr:hover td { background: #fdfcfb; }
         <div class="success-icon">✓</div>
         <h3>簽退完成</h3>
         <p id="attSuccessDetail">紀錄已成功儲存。</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
+        <p style="font-size:0.78rem;color:#856404;background:#fff3cd;border-radius:6px;padding:8px 12px;margin-top:10px;line-height:1.6;">
+          💡 如有填寫錯誤，可至「簽到退記錄查詢」申請修正
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
           <button type="button" onclick="goToAttQuery()" style="background:none;border:1px solid #a9dfbf;border-radius:4px;padding:6px 20px;font-size:0.82rem;color:#1a6b35;cursor:pointer;font-family:'Noto Sans TC',sans-serif;min-height:unset;">查看簽到紀錄 →</button>
         </div>
       </div>
@@ -3340,18 +3369,41 @@ function setAttDuty(type) {
 }
 function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; }
 
-document.getElementById('recordForm')?.addEventListener('submit', function(e) {
-  e.preventDefault();
+function submitOutingForm() {
   const checked = [...document.querySelectorAll('#serviceGrid input:checked')];
   const selectedCaseType = document.querySelector('#caseTypeGrid input[type="radio"]:checked');
   const caseTypeOtherVal = document.getElementById('caseTypeOther')?.value.trim() || '';
+  const isOther = selectedCaseType?.value === '__other__';
   const caseTypeVal = selectedCaseType
-    ? (selectedCaseType.value === '__other__' ? (caseTypeOtherVal || '其他') : selectedCaseType.value)
+    ? (selectedCaseType.value === '__other__' ? caseTypeOtherVal : selectedCaseType.value)
     : '';
-  if (!caseTypeVal) { alert('請選擇案件類型'); return; }
+  const _date     = document.getElementById('date').value;
+  const _timeOut  = document.getElementById('timeOut').value;
+  const _timeBack = document.getElementById('timeBack').value;
+  const _district = document.getElementById('district').value;
+  const _address  = document.getElementById('address').value.trim();
+  const _unit     = document.getElementById('formUnitSel').value;
+  const _member   = document.getElementById('memberSelect').value;
+
+  if (!_date)     { alert('請選擇協勤日期'); return; }
+  if (!_timeOut)  { alert('請填入出發時間'); return; }
+  if (!_timeBack) { alert('請填入返勤時間'); return; }
+  if (!_district) { alert('請選擇行政區'); return; }
+  if (!_address)  { alert('請填入詳細地址'); return; }
+  if (!selectedCaseType) { alert('請選擇案件類型'); return; }
+  if (selectedCaseType.value === '__other__') {
+    const otherInput = document.getElementById('caseTypeOther');
+    const otherFilled = (otherInput?.value || '').trim();
+    if (!otherFilled) {
+      alert('選擇「其他」時必須在下方填寫實際案件類型，否則無法送出');
+      otherInput?.focus();
+      return;
+    }
+  }
   if (checked.length === 0) { alert('請至少選擇一項服務內容'); return; }
-  if (!document.getElementById('memberSelect').value) { alert('請選擇協勤義消姓名'); return; }
-  if (!hasSig) { alert('請完成義消簽名'); return; }
+  if (!_unit)     { alert('請選擇分隊別'); return; }
+  if (!_member)   { alert('請選擇協勤義消姓名'); return; }
+  if (!hasSig)    { alert('請完成義消簽名'); return; }
 
   const data = {
     action:     'outing',
@@ -3386,7 +3438,7 @@ document.getElementById('recordForm')?.addEventListener('submit', function(e) {
   })
   .catch(() => alert('送出失敗，請檢查網路連線後再試。'))
   .finally(() => { btn.textContent = '送　出　紀　錄'; btn.disabled = false; });
-});
+}
 
 // 從協勤登錄跳到查詢頁並帶入今日條件
 function goToQuery() {
@@ -3572,6 +3624,12 @@ async function doQuery() {
     return true;
   });
 
+  // 依日期和出發時間排序（最新在上）
+  filteredRecords.sort((a,b) => {
+    const da = (a.date||'') + (a.timeOut||'');
+    const db = (b.date||'') + (b.timeOut||'');
+    return da > db ? 1 : da < db ? -1 : 0;
+  });
   renderQueryResults(filteredRecords);
   if (btn) { btn.textContent = '查　詢'; btn.disabled = false; }
 }
@@ -3605,15 +3663,17 @@ function renderQueryResults(records) {
       const recTimeQ = r._t ? (r._t.seconds||0)*1000 : (r.date ? new Date(r.date).getTime() : 0);
       const within24Q = recTimeQ && (Date.now()-recTimeQ < 86400000);
       let actionCell = '';
-      if (!_isAdminQ && !_isOfficerQ) {
-        if (isOwnerQ && within24Q) {
-          actionCell = '<button onclick="openOutingEdit('+i+')" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:var(--text-mid);white-space:nowrap;">✏️ 編輯</button>';
-        } else if (isOwnerQ) {
-          const _idQ = (r.id||'').replace(/'/g,'&#39;');
-          const _dtQ = (r.date||'').replace(/'/g,'&#39;');
-          const _nmQ = (r.memberName||'').replace(/'/g,'&#39;');
-          actionCell = '<button onclick="openCorrectionModal(&quot;outing&quot;,&quot;'+_idQ+'&quot;,&quot;'+_dtQ+'&quot;,&quot;'+_nmQ+'&quot;)" style="background:none;border:1px solid #9ec5fe;border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:#084298;white-space:nowrap;">📝 申請修正</button>';
-        }
+      if (_isAdminQ || _isOfficerQ) {
+        // 管理員/承辦人：直接編輯
+        const _idQ2 = r.id||'';
+        actionCell = '<button onclick="adminEditOut(&quot;'+_idQ2+'&quot;)" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:var(--text-mid);white-space:nowrap;">✏️ 編輯</button>';
+      } else if (isOwnerQ && within24Q) {
+        actionCell = '<button onclick="openOutingEdit('+i+')" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:var(--text-mid);white-space:nowrap;">✏️ 編輯</button>';
+      } else if (isOwnerQ) {
+        const _idQ = (r.id||'').replace(/'/g,'&#39;');
+        const _dtQ = (r.date||'').replace(/'/g,'&#39;');
+        const _nmQ = (r.memberName||'').replace(/'/g,'&#39;');
+        actionCell = '<button onclick="openCorrectionModal(&quot;outing&quot;,&quot;'+_idQ+'&quot;,&quot;'+_dtQ+'&quot;,&quot;'+_nmQ+'&quot;)" style="background:none;border:1px solid #9ec5fe;border-radius:4px;padding:3px 8px;font-size:0.72rem;cursor:pointer;color:#084298;white-space:nowrap;">📝 申請修正</button>';
       }
       return '<tr>' +
         '<td style="text-align:center;color:var(--text-light);font-size:0.8rem;">'+seqNum+'</td>' +
@@ -4209,6 +4269,12 @@ async function doAttQuery() {
     if (unitMemberNames && !unitMemberNames.has(nm)) return false;
     if (member && nm !== member) return false;
     return true;
+  });
+  // 依日期和簽到時間由舊到新排序
+  aqFiltered.sort((a,b) => {
+    const da = (a.date||'') + (a.checkinTime||'');
+    const db = (b.date||'') + (b.checkinTime||'');
+    return da > db ? 1 : da < db ? -1 : 0;
   });
   renderAttQueryResults();
   btn.textContent = '查　詢'; btn.disabled = false;
@@ -5349,6 +5415,12 @@ async function loadAdminAttendance() {
       docs=docs.filter(d=>unitNames.has(d.memberName||''));
     }
     if(member)docs=docs.filter(d=>(d.memberName||'')===member);
+    // 由舊到新：日期 + 簽到時間
+    docs.sort((a,b)=>{
+      const ka=(a.date||'')+(a.checkinTime||'');
+      const kb=(b.date||'')+(b.checkinTime||'');
+      return ka>kb?1:ka<kb?-1:0;
+    });
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">查無資料</div>';return;}
 
     const wrap = document.createElement('div');
@@ -5438,6 +5510,12 @@ async function loadAdminOuting() {
       docs=docs.filter(d=>unitNames.has(d.memberName||''));
     }
     if(member)docs=docs.filter(d=>(d.memberName||'')===member);
+    // 由舊到新：日期 + 出發時間
+    docs.sort((a,b)=>{
+      const ka=(a.date||'')+(a.timeOut||'');
+      const kb=(b.date||'')+(b.timeOut||'');
+      return ka>kb?1:ka<kb?-1:0;
+    });
     if(!docs.length){el.innerHTML='<div style="color:var(--text-light);padding:16px;">查無資料</div>';return;}
 
     const wrap = document.createElement('div');
@@ -5559,7 +5637,7 @@ function adminNavTo(sectionId) {
   }
   adminScrollTo(sectionId);
   document.querySelectorAll('.admin-subnav-btn').forEach(b => b.classList.remove('active-subnav'));
-  const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-changelog'];
+  const secIds = ['adminSec-units','adminSec-wl','adminSec-att','adminSec-outing','adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback','adminSec-correction','adminSec-schedule','adminSec-changelog','adminSec-loginlog'];
   const idx = secIds.indexOf(sectionId);
   const btns = document.querySelectorAll('.admin-subnav-btn');
   if (btns[idx]) btns[idx].classList.add('active-subnav');
@@ -5601,19 +5679,15 @@ function adminScrollTo(sectionId) {
     clearTimeout(window._adminScrollTimer);
     window._adminScrollTimer = setTimeout(() => { window._adminScrolling = false; }, 800);
   }
-  // 立即高亮對應 tab（不等 observer）
-  const allSecIds = [
-    'adminSec-units','adminSec-wl','adminSec-att','adminSec-outing',
-    'adminSec-casetypes','adminSec-items','adminSec-announce','adminSec-feedback',
-    'adminSec-schedule','adminSec-changelog','adminSec-loginlog'
-  ];
-  const idx = allSecIds.indexOf(sectionId);
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-  const tabs = document.querySelectorAll('.admin-tab');
-  if (tabs[idx]) tabs[idx].classList.add('active');
-  document.querySelectorAll('.admin-subnav-btn').forEach(b => b.classList.remove('active-subnav'));
-  const subBtns = document.querySelectorAll('.admin-subnav-btn');
-  if (subBtns[idx]) subBtns[idx].classList.add('active-subnav');
+  // 立即高亮對應 tab（用 onclick 屬性比對，不依賴 index）
+  document.querySelectorAll('.admin-tab').forEach(t => {
+    t.classList.remove('active');
+    if ((t.getAttribute('onclick')||'').includes(sectionId)) t.classList.add('active');
+  });
+  document.querySelectorAll('.admin-subnav-btn').forEach(b => {
+    b.classList.remove('active-subnav');
+    if ((b.getAttribute('onclick')||'').includes(sectionId)) b.classList.add('active-subnav');
+  });
 }
 
 var _adminTabObserver = null;
@@ -5694,13 +5768,16 @@ async function initAdminPage() {
     if (window._adminScrolling) return; // 手動點擊捲動中，暫停 observer
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const idx = secIds.indexOf(entry.target.id);
-        if (idx >= 0) {
-          tabs.forEach(t => t.classList.remove('active'));
-          if (tabs[idx]) tabs[idx].classList.add('active');
-          document.querySelectorAll('.admin-subnav-btn').forEach(b => b.classList.remove('active-subnav'));
-          const subBtns = document.querySelectorAll('.admin-subnav-btn');
-          if (subBtns[idx]) subBtns[idx].classList.add('active-subnav');
+        const sid = entry.target.id;
+        if (secIds.includes(sid)) {
+          tabs.forEach(t => {
+            t.classList.remove('active');
+            if ((t.getAttribute('onclick')||'').includes(sid)) t.classList.add('active');
+          });
+          document.querySelectorAll('.admin-subnav-btn').forEach(b => {
+            b.classList.remove('active-subnav');
+            if ((b.getAttribute('onclick')||'').includes(sid)) b.classList.add('active-subnav');
+          });
         }
       }
     });
@@ -6821,10 +6898,11 @@ function updateDutyStyle() {
 
 function devLoginAs(role) {
   var selUnit = (document.getElementById('devUnitSel') || {}).value || '潭子分隊';
+  var devName = (document.getElementById('devNameInput')?.value || '').trim();
   var profiles = {
     admin:   { email: 'paul25042505@gmail.com', name: '林伯霖（測試）', role: 'admin',   isAdmin: true,  isOfficer: false, unit: '潭子分隊' },
-    officer: { email: 'officer@dev.test',       name: '承辦人（測試）', role: 'officer', isAdmin: false, isOfficer: true,  unit: selUnit },
-    member:  { email: 'member@dev.test',         name: '隊員（測試）',  role: 'member',  isAdmin: false, isOfficer: false, unit: selUnit },
+    officer: { email: 'officer@dev.test',       name: devName || '承辦人（測試）', role: 'officer', isAdmin: false, isOfficer: true,  unit: selUnit },
+    member:  { email: 'member@dev.test',         name: devName || '隊員（測試）',  role: 'member',  isAdmin: false, isOfficer: false, unit: selUnit },
   };
   var p = profiles[role] || profiles.member;
   sessionStorage.setItem('rescue_user', JSON.stringify({
@@ -7211,10 +7289,25 @@ async function easyDoOuting() {
   const memberName = document.getElementById('easyOutingMemberSel').value;
   const selected   = [...document.querySelectorAll('#easyServiceGrid .easy-service-btn.selected')];
 
+  const easyCTSelected = document.querySelector('#easyCaseTypeGrid input[type="radio"]:checked');
+  const easyCTOtherVal = document.getElementById('easyCaseTypeOther')?.value.trim() || '';
+  const easyCTVal = easyCTSelected
+    ? (easyCTSelected.value === '__other__' ? easyCTOtherVal : easyCTSelected.value)
+    : '';
+
   if (!date)        { alert('請選擇協勤日期'); return; }
   if (!timeOut)     { alert('請填入出發時間'); return; }
+  if (!timeBack)    { alert('請填入返隊時間'); return; }
   if (!district)    { alert('請選擇行政區'); return; }
   if (!address)     { alert('請填入詳細地址'); return; }
+  if (!easyCTSelected) { alert('請選擇案件類型'); return; }
+  if (easyCTSelected.value === '__other__') {
+    if (!easyCTOtherVal) {
+      alert('選擇「其他」時必須填寫實際案件類型，否則無法送出');
+      document.getElementById('easyCaseTypeOther')?.focus();
+      return;
+    }
+  }
   if (selected.length === 0) { alert('請至少選擇一項服務項目'); return; }
   if (!memberName)  { alert('請選擇義消成員'); return; }
   if (!_easyOutingHasSig) { alert('請完成義消簽名'); return; }
@@ -7226,9 +7319,9 @@ async function easyDoOuting() {
   if (btn) { btn.textContent = '送出中...'; btn.disabled = true; }
 
   try {
-    await fbAdd(COL_OUTING, { date, timeOut, timeBack: timeBack||timeOut, district, address, services, note: '', memberName, signature });
+    await fbAdd(COL_OUTING, { date, caseType: easyCTVal, timeOut, timeBack: timeBack||timeOut, district, address, services, note: '', memberName, signature });
     fetch(BASE_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'outing', date, timeOut, timeBack: timeBack||timeOut, district, address, services, note: '', memberName, signature }) }).catch(() => {});
+      body: JSON.stringify({ action: 'outing', date, caseType: easyCTVal, timeOut, timeBack: timeBack||timeOut, district, address, services, note: '', memberName, signature }) }).catch(() => {});
     alert('✅ 協勤紀錄送出成功！');
     easyBack();
   } catch(e) {
