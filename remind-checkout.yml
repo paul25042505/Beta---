@@ -1,0 +1,32 @@
+name: 簽退提醒通知
+
+on:
+  schedule:
+    # 每天台灣時間 22:00（UTC 14:00）執行
+    - cron: '0 14 * * *'
+  workflow_dispatch: # 允許手動觸發測試
+
+jobs:
+  remind-checkout:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install web-push firebase-admin nodemailer
+
+      - name: 執行簽退提醒腳本
+        env:
+          VAPID_PUBLIC_KEY: "BLt-Ma7FVRAYTqD9G8nAoE76gpu0fuYO9tSP_u9qgBzYteCx5tXYbwWna0cGZJJgqXx2sUTRXmLpi4z5spU4vRE"
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+        run: node .github/scripts/remind-checkout.js

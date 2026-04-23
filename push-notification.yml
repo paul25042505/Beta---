@@ -2,9 +2,14 @@ name: 定訓前一天推播通知
 
 on:
   schedule:
-    # 每天台灣時間晚上 8 點執行（UTC+8，所以 UTC 12:00）
-    - cron: '0 12 * * *'
-  workflow_dispatch: # 允許手動觸發測試
+    # 每小時執行一次（配合自訂推播時間）
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      force_hour:
+        description: '強制測試：指定台灣時間幾點（留空=使用當前時間）'
+        required: false
+        default: ''
 
 jobs:
   send-notification:
@@ -17,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies
         run: npm install web-push firebase-admin
@@ -27,4 +32,5 @@ jobs:
           VAPID_PUBLIC_KEY: "BLt-Ma7FVRAYTqD9G8nAoE76gpu0fuYO9tSP_u9qgBzYteCx5tXYbwWna0cGZJJgqXx2sUTRXmLpi4z5spU4vRE"
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FORCE_HOUR: ${{ github.event.inputs.force_hour }}
         run: node .github/scripts/send-push.js

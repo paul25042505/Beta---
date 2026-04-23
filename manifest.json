@@ -1,7 +1,7 @@
 {
   "name": "救護義消系統",
   "short_name": "救護義消",
-  "description": "臺中市政府消防局潭子分隊救護義消參與急救出勤紀錄系統",
+  "description": "臺中市義勇消防總隊鳳凰救護大隊潭子分隊救護義消參與急救出勤紀錄系統",
   "start_url": "/Emergency-Volunteer-System/",
   "scope": "/Emergency-Volunteer-System/",
   "display": "standalone",
