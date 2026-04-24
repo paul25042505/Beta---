@@ -5721,7 +5721,6 @@ function adminScrollTo(sectionId) {
 
   const scroller = document.getElementById('appScroll');
   const bar      = document.getElementById('adminTabBar');
-<<<<<<< HEAD
 
   if (scroller) {
     const barH      = bar ? bar.getBoundingClientRect().height : 44;
@@ -5729,21 +5728,6 @@ function adminScrollTo(sectionId) {
     const scrollerTop = scroller.getBoundingClientRect().top;
     // 目標：section 頂部對齊 tab bar 正下方，再留 8px 間距
     const target = scroller.scrollTop + elTop - scrollerTop - barH - 8;
-=======
-  const header   = document.querySelector('.header');
-
-  // 用實際量測的高度，每次呼叫都重新取得（手機換行時高度會變）
-  const headerH = header ? header.getBoundingClientRect().height : 56;
-  const barH    = bar    ? bar.getBoundingClientRect().height    : 44;
-  const offset  = headerH + barH + 8;
-
-  if (scroller) {
-    const elTop  = el.getBoundingClientRect().top;
-    const scrollTop = scroller.scrollTop;
-    // appScroll 頂部距 viewport 頂部的距離
-    const scrollerTop = scroller.getBoundingClientRect().top;
-    const target = scrollTop + elTop - scrollerTop - barH - 8;
->>>>>>> ff4e2cf1614dcb1b22a0269cbc41591307364e37
 
     window._adminScrolling = true;
     scroller.scrollTo({ top: target, behavior: 'smooth' });
@@ -5751,11 +5735,7 @@ function adminScrollTo(sectionId) {
     window._adminScrollTimer = setTimeout(() => { window._adminScrolling = false; }, 1000);
   }
 
-<<<<<<< HEAD
   // 立即高亮
-=======
-  // 立即高亮（用 onclick 屬性比對，不靠 index）
->>>>>>> ff4e2cf1614dcb1b22a0269cbc41591307364e37
   document.querySelectorAll('.admin-tab').forEach(t => {
     t.classList.remove('active');
     if ((t.getAttribute('onclick')||'').includes(sectionId)) t.classList.add('active');
@@ -6963,14 +6943,14 @@ function updateDutyStyle() {
 // 開發者快速登入（僅 localhost）
 // ════════════════════════════════════════
 (function() {
-  // localhost、127.0.0.1、或直接開啟本機檔案（file://）都顯示開發者登入
   var isLocalDev = location.hostname === 'localhost'
     || location.hostname === '127.0.0.1'
     || location.protocol === 'file:';
   if (isLocalDev) {
     var area = document.getElementById('devLoginArea');
     if (area) area.style.display = '';
-    devLoadUnits();
+    // 先用預設分隊，非同步載入不影響顯示
+    try { devLoadUnits(); } catch(e) {}
   }
 })();
 
@@ -8355,7 +8335,6 @@ async function handleCorrection(corrId, docId, type, action) {
 }
 
 
-<<<<<<< HEAD
 
 // ── 測試推播（直接從瀏覽器呼叫 Anthropic API 不可行，改用直接推播訂閱）
 async function sendTestPush() {
@@ -8506,8 +8485,6 @@ async function loadNotifyHoursSettings() {
 }
 
 
-=======
->>>>>>> ff4e2cf1614dcb1b22a0269cbc41591307364e37
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
   const el = document.getElementById('adminWlList');
