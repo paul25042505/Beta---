@@ -434,6 +434,30 @@ tr:hover td { background: #fdfcfb; }
   .stat-num { font-size: 1.4rem; }
 }
 
+
+/* ── 備勤排班手機版 ── */
+.duty-view-tab {
+  flex:1; padding:11px 4px; border:none; background:white;
+  color:var(--text-light); font-size:0.78rem; font-weight:600;
+  cursor:pointer; font-family:'Noto Sans TC',sans-serif;
+  border-bottom:2.5px solid transparent; transition:color .15s,border-color .15s;
+}
+.duty-view-tab-active { color:var(--red); border-bottom-color:var(--red); }
+.duty-day-card { display:flex; background:white; border-bottom:1px solid var(--border); }
+.duty-day-num { width:56px; min-width:56px; padding:14px 0 14px 14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; }
+.duty-day-num .d-num { font-size:2rem; font-weight:700; line-height:1; }
+.duty-day-num .d-week { font-size:0.7rem; margin-top:2px; }
+.duty-day-body { flex:1; padding:12px 14px 12px 8px; min-width:0; }
+.duty-person-card { background:var(--red-faint); border:1px solid #f5c6c0; border-radius:10px; padding:10px 12px; margin-bottom:8px; display:flex; align-items:flex-start; gap:10px; }
+.duty-person-avatar { width:36px; height:36px; border-radius:50%; background:var(--red); color:white; font-size:0.85rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.duty-slot-tag { display:inline-block; font-size:0.72rem; padding:3px 8px; border-radius:20px; margin:2px; font-weight:500; }
+.duty-slots-day { background:white; border-bottom:1px solid var(--border); }
+.duty-slots-day-header { display:flex; align-items:center; justify-content:space-between; padding:11px 16px; cursor:pointer; }
+.duty-slots-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:0 16px 12px; }
+.duty-slot-cell { border-radius:8px; padding:6px 4px; text-align:center; font-size:0.7rem; line-height:1.4; cursor:pointer; }
+.duty-slot-cell .slot-hour { font-weight:700; font-size:0.78rem; }
+.duty-slot-cell .slot-name { font-size:0.62rem; margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.duty-slot-cell .slot-left { font-size:0.62rem; margin-top:1px; }
 /* ── Duty Toggle ── */
 .duty-toggle { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; }
 .duty-btn {
@@ -518,6 +542,30 @@ tr:hover td { background: #fdfcfb; }
   font-size: 0.82rem; color: var(--text-light); letter-spacing: 0.04em;
 }
 #loginSpinner.show { display: block; }
+/* ── iOS Toggle Switch ── */
+.ios-toggle-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 0;
+}
+.ios-toggle-wrap label { font-size: 0.88rem; color: var(--text); flex: 1; cursor: pointer; }
+.ios-toggle {
+  position: relative; width: 51px; height: 31px; flex-shrink: 0; flex-grow: 0;
+}
+.ios-toggle input { opacity: 0; width: 0; height: 0; }
+.ios-toggle-slider {
+  position: absolute; inset: 0; background: #ddd; border-radius: 31px;
+  cursor: pointer; transition: background 0.25s;
+}
+.ios-toggle-slider::before {
+  content: ''; position: absolute;
+  width: 27px; height: 27px; left: 2px; top: 2px;
+  background: white; border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  transition: transform 0.25s;
+}
+.ios-toggle input:checked + .ios-toggle-slider { background: #34c759; }
+.ios-toggle input:checked + .ios-toggle-slider::before { transform: translateX(20px); }
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- Firebase SDK -->
@@ -625,6 +673,7 @@ tr:hover td { background: #fdfcfb; }
     <button id="nav-report" onclick="navTo('reportPage')"><span class="icon">📑</span>報表匯出</button>
     <button id="nav-stats" onclick="navTo('statsPage')"><span class="icon">📈</span>協勤統計</button>
     <button id="nav-feedback" onclick="navTo('feedbackPage')"><span class="icon">💬</span>意見回饋</button>
+    <button id="nav-duty" onclick="navTo('dutyPage')"><span class="icon">📅</span>備勤排班</button>
     <button id="nav-meeting" onclick="navTo('meetingPage')"><span class="icon">📒</span>定訓與公告</button>
     <button id="nav-changelog" onclick="navTo('changelogPage')"><span class="icon">📝</span>版本修改紀錄</button>
     <button id="nav-admin" onclick="navTo('adminPage')" style="display:none;border-top:1px solid rgba(255,255,255,0.15);margin-top:8px;padding-top:12px;"><span class="icon">⚙️</span>管理員後台</button>
@@ -647,7 +696,7 @@ tr:hover td { background: #fdfcfb; }
 </div>
 
 <!-- ══════ SHARED HEADER ══════ -->
-<div class="header">
+<div class="header" onclick="scrollToPageTop(event)" style="cursor:pointer;">
   <div class="header-deco"></div>
   <div class="header-deco2"></div>
   <div class="header-cross">✚</div>
@@ -947,6 +996,11 @@ tr:hover td { background: #fdfcfb; }
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">意見回饋</div>
           <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">建議與問題回報</div>
         </button>
+        <button onclick="navTo('dutyPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
+          <div style="font-size:1.6rem;margin-bottom:8px;">📅</div>
+          <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">備勤排班</div>
+          <div style="font-size:0.7rem;color:var(--text-light);margin-top:4px;">備勤時段排班</div>
+        </button>
         <button onclick="navTo('meetingPage')" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:20px 16px;cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:unset;" onmouseover="this.style.borderColor='var(--red)';this.style.background='var(--red-faint)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--white)'">
           <div style="font-size:1.6rem;margin-bottom:8px;">📒</div>
           <div style="font-family:'Noto Serif TC',serif;font-size:0.85rem;font-weight:600;color:var(--text);letter-spacing:0.04em;">定訓與公告</div>
@@ -1128,6 +1182,13 @@ tr:hover td { background: #fdfcfb; }
 <!-- ══════ PAGE 2：成員管理 ══════ -->
 <div class="page" id="membersPage">
   <div class="query-wrap">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">👥</div>
+        <div class="section-title">成員管理</div>
+        <div class="section-line"></div>
+      </div>
+    </div>
     <!-- 分隊篩選 -->
     <div class="filter-card" style="padding:16px 20px;">
       <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:8px;letter-spacing:0.04em;">分隊別</label>
@@ -1826,6 +1887,13 @@ tr:hover td { background: #fdfcfb; }
 <!-- ══════ PAGE：意見回饋 ══════ -->
 <div class="page" id="feedbackPage">
   <div class="query-wrap">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">💬</div>
+        <div class="section-title">意見回饋</div>
+        <div class="section-line"></div>
+      </div>
+    </div>
 
     <!-- 分隊選單 -->
     <div class="filter-card" style="padding:16px 20px;margin-bottom:16px;">
@@ -2146,16 +2214,7 @@ tr:hover td { background: #fdfcfb; }
               <option value="">請選擇分隊</option>
             </select>
           </div>
-          <div class="field">
-            <label>推播時間</label>
-            <select id="scheduleNotifyTime" style="width:100%;">
-              <option value="18">下午 6:00</option>
-              <option value="19">下午 7:00</option>
-              <option value="20" selected>下午 8:00</option>
-              <option value="21">下午 9:00</option>
-              <option value="22">下午 10:00</option>
-            </select>
-          </div>
+
           <div class="field" style="grid-column:1/-1;">
             <label>主題／備註</label>
             <input type="text" id="scheduleTopic" placeholder="例：CPR 複訓、指導醫師出席">
@@ -2247,6 +2306,36 @@ tr:hover td { background: #fdfcfb; }
 </div>
 
 <!-- 管理員編輯 Modal -->
+<!-- ── 定訓行事曆編輯 Modal ── -->
+<div id="scheduleEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:350;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:white;border-radius:8px;padding:24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:auto;">
+    <h3 style="font-family:'Noto Serif TC',serif;font-size:1rem;margin-bottom:16px;color:var(--text);">編輯定訓排程</h3>
+    <input type="hidden" id="schedEditId">
+    <div class="field">
+      <label>定訓日期 <span class="req">*</span></label>
+      <input type="date" id="schedEditDate" style="width:100%;">
+    </div>
+    <div class="field">
+      <label>分隊 <span class="req">*</span></label>
+      <select id="schedEditUnit" style="width:100%;"></select>
+    </div>
+    <div class="field">
+      <label>主題／備註</label>
+      <input type="text" id="schedEditTopic" placeholder="例：CPR 複訓" style="width:100%;">
+    </div>
+    <div class="field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:400;">
+        <input type="checkbox" id="schedEditNotify" style="accent-color:var(--red);">
+        推播提醒
+      </label>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button onclick="saveScheduleEdit()" class="btn-search" style="flex:1;">儲存</button>
+      <button onclick="closeScheduleEdit()" class="btn-reset">取消</button>
+    </div>
+  </div>
+</div>
+
 <div id="adminEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:350;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
   <div style="background:white;border-radius:10px;padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:auto;">
     <div style="font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:16px;" id="adminEditTitle">編輯資料</div>
@@ -2393,12 +2482,17 @@ tr:hover td { background: #fdfcfb; }
         <div class="card-divider"></div>
         <!-- 推播通知開關 -->
         <div class="field">
-          <label>推播通知</label>
-          <div style="font-size:0.82rem;color:var(--text-mid);margin-bottom:10px;line-height:1.6;">開啟後可接收定訓提醒、簽退提醒等通知</div>
-          <button onclick="showNotifPrompt()" style="width:100%;background:white;color:var(--red);border:1.5px solid var(--red);border-radius:8px;padding:11px;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">
-            🔔 開啟推播通知
-          </button>
-          <div id="notifStatusMsg" style="font-size:0.78rem;margin-top:8px;text-align:center;"></div>
+          <div class="ios-toggle-wrap">
+            <div>
+              <div style="font-size:0.88rem;font-weight:500;color:var(--text);">推播通知</div>
+              <div style="font-size:0.78rem;color:var(--text-light);margin-top:2px;line-height:1.5;">開啟後可接收定訓提醒、簽退提醒等通知</div>
+            </div>
+            <label class="ios-toggle" style="margin-left:16px;width:51px;min-width:51px;max-width:51px;height:31px;display:block;">
+              <input type="checkbox" id="notifToggle" onchange="onNotifToggleChange(this.checked)">
+              <span class="ios-toggle-slider"></span>
+            </label>
+          </div>
+          <div id="notifStatusMsg" style="font-size:0.75rem;margin-top:8px;color:var(--text-light);"></div>
         </div>
         <div class="card-divider"></div>
         <!-- 自訂推播時間 -->
@@ -2424,9 +2518,119 @@ tr:hover td { background: #fdfcfb; }
   </div>
 </div>
 
+<!-- ══════ PAGE：備勤排班 ══════ -->
+<div class="page" id="dutyPage">
+  <div style="padding:0;max-width:100%;">
+
+    <!-- ── 視圖切換 Tab ── -->
+    <div id="dutyTabBar" style="display:flex;border-bottom:2px solid var(--border);background:white;position:sticky;top:0;z-index:10;">
+      <button onclick="dutyView('month')" id="dutyTab-month" class="duty-view-tab duty-view-tab-active">📅 月視圖</button>
+      <button onclick="dutyView('list')"  id="dutyTab-list"  class="duty-view-tab">📋 班表明細</button>
+    </div>
+
+    <!-- ── 月份導覽 ── -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:white;border-bottom:1px solid var(--border);">
+      <button onclick="dutyMonthNav(-1)" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;font-size:1.1rem;cursor:pointer;color:var(--text-mid);">‹</button>
+      <div id="dutyMonthLabel" style="font-size:0.95rem;font-weight:700;color:var(--text);"></div>
+      <button onclick="dutyMonthNav(1)"  style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;font-size:1.1rem;cursor:pointer;color:var(--text-mid);">›</button>
+    </div>
+
+    <!-- ── 月視圖 ── -->
+    <div id="dutyMonthView" style="padding:12px 16px;">
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:4px;">
+        <div style="text-align:center;font-size:0.68rem;color:#c0392b;font-weight:600;padding:4px 0;">日</div>
+        <div style="text-align:center;font-size:0.68rem;color:var(--text-light);padding:4px 0;">一</div>
+        <div style="text-align:center;font-size:0.68rem;color:var(--text-light);padding:4px 0;">二</div>
+        <div style="text-align:center;font-size:0.68rem;color:var(--text-light);padding:4px 0;">三</div>
+        <div style="text-align:center;font-size:0.68rem;color:var(--text-light);padding:4px 0;">四</div>
+        <div style="text-align:center;font-size:0.68rem;color:var(--text-light);padding:4px 0;">五</div>
+        <div style="text-align:center;font-size:0.68rem;color:#3498db;padding:4px 0;">六</div>
+      </div>
+      <div id="dutyCalGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;font-size:0.7rem;color:var(--text-light);">
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:#c0392b;"></div>額滿</div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:#e67e22;"></div>部分已排</div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--border);"></div>未排班</div>
+        <div style="display:flex;align-items:center;gap:4px;">🔴 假日</div>
+      </div>
+    </div>
+
+    <!-- ── 清單視圖 ── -->
+    <div id="dutyListView" style="display:none;">
+      <div id="dutyListContent"></div>
+    </div>
+
+    <div class="site-footer-placeholder"></div>
+  </div>
+</div>
+
+<!-- ── 備勤快速新增 Modal（每日＋按鈕觸發） ── -->
+<!-- ── 備勤快速新增 Modal ── -->
+<div id="dutyQuickAddModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:white;border-radius:8px;padding:24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:auto;">
+    <h3 style="font-family:'Noto Serif TC',serif;font-size:1rem;margin-bottom:4px;color:var(--text);">新增備勤</h3>
+    <div id="dutyQuickAddDate" style="font-size:0.82rem;color:var(--text-mid);margin-bottom:16px;"></div>
+    <div class="field">
+      <label>分隊別 <span class="req">*</span></label>
+      <select id="qaUnit" style="width:100%;" onchange="filterQAMembers()"><option value="">請選擇分隊別</option></select>
+    </div>
+    <div class="field">
+      <label>義消姓名 <span class="req">*</span></label>
+      <select id="qaMember" style="width:100%;"><option value="">— 請先選擇分隊別 —</option></select>
+    </div>
+    <div class="row-2">
+      <div class="field"><label>開始時間 <span class="req">*</span></label><select id="qaStart" style="width:100%;"></select></div>
+      <div class="field"><label>結束時間 <span class="req">*</span></label><select id="qaEnd" style="width:100%;"></select></div>
+    </div>
+    <div id="qaCapHint" style="display:none;margin-bottom:10px;padding:9px 12px;border-radius:6px;font-size:0.8rem;"></div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button onclick="submitQuickAdd()" class="btn-search" style="flex:1;">新增備勤</button>
+      <button onclick="closeQuickAdd()" class="btn-reset">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 備勤編輯 Modal ── -->
+<div id="dutyEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:white;border-radius:8px;padding:24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:auto;">
+    <h3 style="font-family:'Noto Serif TC',serif;font-size:1rem;margin-bottom:4px;color:var(--text);">編輯備勤</h3>
+    <input type="hidden" id="editDutyId">
+    <div id="editDutyInfo" style="font-size:0.82rem;color:var(--text-mid);margin-bottom:16px;"></div>
+    <div class="row-2">
+      <div class="field"><label>開始時間 <span class="req">*</span></label><select id="editDutyStart" style="width:100%;"></select></div>
+      <div class="field"><label>結束時間 <span class="req">*</span></label><select id="editDutyEnd" style="width:100%;"></select></div>
+    </div>
+    <div id="editCapHint" style="display:none;margin-bottom:10px;padding:9px 12px;border-radius:6px;font-size:0.8rem;"></div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button onclick="submitDutyEdit()" class="btn-search" style="flex:1;">儲存</button>
+      <button onclick="deleteDutyFromEdit()" style="flex:1;background:none;border:1px solid #f5c6c6;color:#b94a3a;border-radius:8px;padding:11px;font-size:0.88rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;">刪除</button>
+    </div>
+    <div style="margin-top:8px;">
+      <button onclick="closeDutyEdit()" class="btn-reset" style="width:100%;">取消</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 <!-- ══════ PAGE：定訓與公告 ══════ -->
 <div class="page" id="meetingPage">
   <div class="form-wrap">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">📒</div>
+        <div class="section-title">定訓與公告</div>
+        <div class="section-line"></div>
+      </div>
+    </div>
 
     <!-- 新增按鈕（承辦人/管理員才顯示） -->
     <div id="meetingAddWrap" style="display:none;margin-bottom:20px;">
@@ -3066,7 +3270,27 @@ function buildTimeOptions(selId, selectedVal) {
 // ════════════════════════════════════════
 // Navigation
 // ════════════════════════════════════════
+
+// 點擊頂部 header 回到頁面最上方（模仿 iOS 點狀態列行為）
+function scrollToPageTop(e) {
+  if (e.target.closest('button, a, input, select')) return;
+  const scroller = document.getElementById('appScroll');
+  if (scroller) scroller.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 動態取得 header 高度，修正 appScroll padding 和所有 sticky 元素
+function syncHeaderHeight() {
+  requestAnimationFrame(() => {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    const h = Math.round(header.getBoundingClientRect().height);
+    const scroller = document.getElementById('appScroll');
+    if (scroller) scroller.style.paddingTop = h + 'px';
+  });
+}
+
 function navTo(pageId, fromHistory) {
+  syncHeaderHeight();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
   document.querySelectorAll('.drawer nav button').forEach(btn => btn.classList.remove('active-nav'));
@@ -3090,7 +3314,8 @@ function navTo(pageId, fromHistory) {
     reportPage:     ['報表匯出', 'Reports', 'nav-report'],
     attQueryPage:   ['簽到/退記錄查詢', 'Attendance Log', 'nav-attquery'],
     itemsPage:      ['物品領用', 'Item Pickup', 'nav-items'],
-    meetingPage:    ['定訓與公告', 'Training & Announcements', 'nav-meeting'],
+    dutyPage:       ['備勤排班', 'Duty Schedule', 'nav-duty'],
+  meetingPage:    ['定訓與公告', 'Training & Announcements', 'nav-meeting'],
     changelogPage:  ['版本修改紀錄', 'Version History', 'nav-changelog'],
     feedbackPage:   ['意見回饋', 'Feedback', 'nav-feedback'],
     adminPage:      ['管理員後台', 'Admin Panel', 'nav-admin'],
@@ -3121,6 +3346,7 @@ function navTo(pageId, fromHistory) {
   else if (pageId === 'profilePage')   loadProfilePage();
   else if (pageId === 'meetingPage')   loadMeetingPage();
   else if (pageId === 'changelogPage') loadChangelog();
+  else if (pageId === 'dutyPage')      initDutyPage();
 
   // 進入後台時展開子導覽，離開時收起；tab bar 顯示/隱藏由 initAdminPage 控制
   const adminSubNav = document.getElementById('adminSubNav');
@@ -5103,6 +5329,10 @@ async function saveEditItem() {
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   initFootersWithVersion();
+  // header 高度同步（處理各裝置不同高度）
+  syncHeaderHeight();
+  window.addEventListener('resize', syncHeaderHeight);
+  window.addEventListener('load', () => { syncHeaderHeight(); });
 
   // ── 上一頁／下一頁監聽 ──
   window.addEventListener('popstate', (e) => {
@@ -7962,6 +8192,8 @@ async function loadProfilePage() {
     certAlertEl.style.display = 'none';
   }
 
+  // 初始化推播通知 toggle 狀態
+  initNotifToggle();
   // 初始化推播時間設定
   loadNotifyHoursSettings();
 
@@ -8092,6 +8324,7 @@ async function checkCertExpiry() {
 // 定訓行事曆（後台）
 // ════════════════════════════════════════
 const COL_SCHEDULE = 'trainingSchedule';
+var COL_DUTY = 'dutySchedule';
 
 async function initScheduleSection() {
   // 填分隊選單
@@ -8117,7 +8350,6 @@ async function loadAdminSchedule() {
   try {
     const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
     let docs = await fbList(COL_SCHEDULE, 'date', 'asc');
-    // 承辦人只看自己分隊
     if (!usr.isAdmin) docs = docs.filter(d => d.unit === usr.unit);
 
     if (!docs.length) {
@@ -8150,6 +8382,13 @@ async function loadAdminSchedule() {
       notifyEl.textContent = d.notify !== false ? `🔔 ${notifyHour}:00` : '🔕';
       notifyEl.title = d.notify !== false ? `推播時間：${notifyHour}:00` : '不推播';
 
+      // 編輯按鈕
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '編輯';
+      editBtn.style.cssText = 'background:#eaf2ff;border:none;border-radius:4px;padding:3px 10px;font-size:0.75rem;color:#1a3a6b;cursor:pointer;font-family:"Noto Sans TC",sans-serif;white-space:nowrap;';
+      editBtn.onclick = () => openScheduleEdit(d);
+
+      // 刪除按鈕
       const delBtn = document.createElement('button');
       delBtn.textContent = '刪除';
       delBtn.style.cssText = 'background:none;border:1px solid #f5c6c6;border-radius:4px;padding:3px 10px;font-size:0.75rem;color:#b94a3a;cursor:pointer;font-family:"Noto Sans TC",sans-serif;white-space:nowrap;';
@@ -8159,6 +8398,7 @@ async function loadAdminSchedule() {
       row.appendChild(unitEl);
       row.appendChild(topicEl);
       row.appendChild(notifyEl);
+      row.appendChild(editBtn);
       row.appendChild(delBtn);
       el.appendChild(row);
     });
@@ -8167,18 +8407,55 @@ async function loadAdminSchedule() {
   }
 }
 
-async function addSchedule() {
-  const date       = document.getElementById('scheduleDate').value;
-  const unit       = document.getElementById('scheduleUnit').value;
-  const topic      = document.getElementById('scheduleTopic').value.trim();
-  const notify     = document.getElementById('scheduleNotify').checked;
-  const notifyTime = parseInt(document.getElementById('scheduleNotifyTime')?.value || '20');
+function openScheduleEdit(doc) {
+  document.getElementById('schedEditId').value    = doc.id;
+  document.getElementById('schedEditDate').value  = doc.date || '';
+  document.getElementById('schedEditTopic').value = doc.topic || '';
+  document.getElementById('schedEditNotify').checked = doc.notify !== false;
+
+  // 填分隊選單
+  const sel = document.getElementById('schedEditUnit');
+  sel.innerHTML = _unitsList.map(u => `<option value="${u}" ${u===doc.unit?'selected':''}>${u}</option>`).join('');
+  if (!_unitsList.includes(doc.unit) && doc.unit) {
+    sel.innerHTML = `<option value="${doc.unit}" selected>${doc.unit}</option>` + sel.innerHTML;
+  }
+
+  document.getElementById('scheduleEditModal').style.display = 'flex';
+}
+
+function closeScheduleEdit() {
+  document.getElementById('scheduleEditModal').style.display = 'none';
+}
+
+async function saveScheduleEdit() {
+  const id    = document.getElementById('schedEditId').value;
+  const date  = document.getElementById('schedEditDate').value;
+  const unit  = document.getElementById('schedEditUnit').value;
+  const topic = document.getElementById('schedEditTopic').value.trim();
+  const notify= document.getElementById('schedEditNotify').checked;
 
   if (!date) { alert('請選擇定訓日期'); return; }
   if (!unit) { alert('請選擇分隊'); return; }
 
   try {
-    await fbAdd(COL_SCHEDULE, { date, unit, topic, notify, notifyTime });
+    await fbUpdate(COL_SCHEDULE, id, { date, unit, topic, notify });
+    closeScheduleEdit();
+    await loadAdminSchedule();
+  } catch(e) { alert('儲存失敗：' + e.message); }
+}
+
+async function addSchedule() {
+  const date       = document.getElementById('scheduleDate').value;
+  const unit       = document.getElementById('scheduleUnit').value;
+  const topic      = document.getElementById('scheduleTopic').value.trim();
+  const notify     = document.getElementById('scheduleNotify').checked;
+
+
+  if (!date) { alert('請選擇定訓日期'); return; }
+  if (!unit) { alert('請選擇分隊'); return; }
+
+  try {
+    await fbAdd(COL_SCHEDULE, { date, unit, topic, notify });
     document.getElementById('scheduleDate').value  = '';
     document.getElementById('scheduleTopic').value = '';
     await loadAdminSchedule();
@@ -8387,12 +8664,40 @@ async function sendTestPush() {
 // ════════════════════════════════════════
 
 const NOTIFY_HOUR_OPTIONS = [
-  { value: 6,  label: '下午 6:00' },
-  { value: 7,  label: '下午 7:00' },
-  { value: 8,  label: '下午 8:00' },
-  { value: 9,  label: '下午 9:00' },
-  { value: 10, label: '下午 10:00' },
-  { value: 11, label: '下午 11:00' },
+  { value: 8,  label: '前一天 08:00' },
+  { value: 9,  label: '前一天 09:00' },
+  { value: 10, label: '前一天 10:00' },
+  { value: 11, label: '前一天 11:00' },
+  { value: 12, label: '前一天 12:00' },
+  { value: 13, label: '前一天 13:00' },
+  { value: 14, label: '前一天 14:00' },
+  { value: 15, label: '前一天 15:00' },
+  { value: 16, label: '前一天 16:00' },
+  { value: 17, label: '前一天 17:00' },
+  { value: 18, label: '前一天 18:00' },
+  { value: 19, label: '前一天 19:00' },
+  { value: 20, label: '前一天 20:00' },
+  { value: 21, label: '前一天 21:00' },
+  { value: 22, label: '前一天 22:00' },
+  { value: 23, label: '前一天 23:00' },
+  { value: 0,  label: '當天 00:00' },
+  { value: 1,  label: '當天 01:00' },
+  { value: 2,  label: '當天 02:00' },
+  { value: 3,  label: '當天 03:00' },
+  { value: 4,  label: '當天 04:00' },
+  { value: 5,  label: '當天 05:00' },
+  { value: 6,  label: '當天 06:00' },
+  { value: 7,  label: '當天 07:00' },
+  { value: 24, label: '當天 08:00' },
+  { value: 25, label: '當天 09:00' },
+  { value: 26, label: '當天 10:00' },
+  { value: 27, label: '當天 11:00' },
+  { value: 28, label: '當天 12:00' },
+  { value: 29, label: '當天 13:00' },
+  { value: 30, label: '當天 14:00' },
+  { value: 31, label: '當天 15:00' },
+  { value: 32, label: '當天 16:00' },
+  { value: 33, label: '當天 17:00' },
 ];
 
 function renderNotifyHourRows(hours) {
@@ -8484,6 +8789,717 @@ async function loadNotifyHoursSettings() {
   }
 }
 
+
+
+// ── 推播通知 Toggle ──
+function onNotifToggleChange(checked) {
+  if (checked) {
+    subscribePush();
+  } else {
+    unsubscribePush();
+  }
+}
+
+async function unsubscribePush() {
+  const toggle   = document.getElementById('notifToggle');
+  const statusEl = document.getElementById('notifStatusMsg');
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) await sub.unsubscribe();
+    localStorage.removeItem('pushSubscribed');
+    // 從 Firestore 移除訂閱
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    const myName = usr.memberName || usr.name || '';
+    if (myName) {
+      await ensureFirebase();
+      const snap = await _fbDB.collection('pushSubscriptions').where('memberName','==',myName).get();
+      await Promise.all(snap.docs.map(d => d.ref.delete()));
+    }
+    if (statusEl) { statusEl.textContent = '已關閉推播通知'; }
+  } catch(e) {
+    if (toggle) toggle.checked = true; // 失敗還原
+    if (statusEl) { statusEl.textContent = '關閉失敗：' + e.message; }
+  }
+}
+
+// 初始化 toggle 狀態
+function initNotifToggle() {
+  const toggle = document.getElementById('notifToggle');
+  if (!toggle) return;
+  const isSubscribed = !!localStorage.getItem('pushSubscribed');
+  toggle.checked = isSubscribed;
+  const statusEl = document.getElementById('notifStatusMsg');
+  if (statusEl) {
+    statusEl.textContent = isSubscribed ? '✅ 已開啟推播通知' : '';
+  }
+}
+
+
+
+// ════════════════════════════════════════
+// 備勤排班：假日與時段容量規則
+// ════════════════════════════════════════
+
+// 台灣國定假日（固定日期）
+const TW_FIXED_HOLIDAYS = ['01-01','02-28','04-04','04-05','05-01','06-10','09-03','10-10'];
+
+// 農曆假日（2025~2026）
+const TW_LUNAR_HOLIDAYS = [
+  '2025-01-27','2025-01-28','2025-01-29','2025-01-30','2025-01-31','2025-02-01','2025-02-02',
+  '2025-04-03','2025-04-04','2025-05-30','2025-05-31','2025-06-01','2025-09-06','2025-09-07',
+  '2026-02-14','2026-02-15','2026-02-16','2026-02-17','2026-02-18','2026-02-19','2026-02-20',
+  '2026-04-03','2026-04-04','2026-06-19','2026-06-20','2026-06-21','2026-09-24','2026-09-25',
+];
+
+function isDutyHoliday(dateStr) {
+  const d = new Date(dateStr);
+  const dow = d.getDay();
+  if (dow === 0 || dow === 6) return true;
+  if (TW_FIXED_HOLIDAYS.includes(dateStr.slice(5))) return true;
+  if (TW_LUNAR_HOLIDAYS.includes(dateStr)) return true;
+  return false;
+}
+
+// 每月定訓日（每月第幾週第幾天 → 暫以固定日期方式：每月20日為定訓，18:00-22:00封鎖）
+// 判斷是否為定訓時段：每月20日 18:00-22:00
+// 定訓資料快取（從後台 trainingSchedule 載入）
+// 格式：{ '2026-05-20': '急救複訓', '2026-06-15': '消防訓練', ... }
+let _trainingDates = {};
+
+async function loadTrainingDates() {
+  try {
+    const docs = await fbList(COL_SCHEDULE, 'date', 'asc');
+    _trainingDates = {};
+    docs.forEach(d => {
+      if (d.date) _trainingDates[d.date] = d.topic || '定訓';
+    });
+  } catch(e) {
+    console.warn('loadTrainingDates 失敗：', e.message);
+  }
+}
+
+// 判斷是否為定訓封鎖時段（從後台設定的日期，封鎖 18:00-22:00）
+function isDutyTrainingBlock(dateStr, slotHour) {
+  return (dateStr in _trainingDates) && slotHour >= 18 && slotHour < 22;
+}
+
+// 取得定訓備註（顯示後台設定的主題）
+function getDutyTrainingNote(dateStr) {
+  return _trainingDates[dateStr] || '';
+}
+
+// 判斷日期是否在可填寫範圍：
+// 本月1日~當月最後一日 22:00：可填本月
+// 每月20日 00:00 起：額外開放次月班表
+// 若今日 < 當月20日：僅本月可填
+function isDutyDateAllowed(dateStr) {
+  const now   = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const target= new Date(dateStr + 'T00:00:00');
+  const curY  = now.getFullYear();
+  const curM  = now.getMonth();
+
+  // 本月範圍：本月1日 ~ 本月最後一日
+  const thisMonthStart = new Date(curY, curM, 1);
+  const thisMonthEnd   = new Date(curY, curM+1, 0); // 本月最後一日
+
+  // 次月範圍（20日後才開放）：次月1日 ~ 次月最後一日
+  const nextMonthStart = new Date(curY, curM+1, 1);
+  const nextMonthEnd   = new Date(curY, curM+2, 0);
+  const openNextMonth  = today.getDate() >= 20; // 每月20日起開放
+
+  if (target >= thisMonthStart && target <= thisMonthEnd) return true;
+  if (openNextMonth && target >= nextMonthStart && target <= nextMonthEnd) return true;
+  return false;
+}
+
+// 某時段最大容量：假日 08~20 或每日 15~20 可排 2 人，其餘 1 人
+// 定訓時段（每月20日 18-22）容量為 0（封鎖）
+function getDutySlotCapacity(dateStr, slotHour) {
+  if (isDutyTrainingBlock(dateStr, slotHour)) return 0; // 定訓封鎖
+  if (isDutyHoliday(dateStr) && slotHour >= 8 && slotHour < 20) return 2;
+  if (slotHour >= 15 && slotHour < 20) return 2;
+  return 1;
+}
+
+// 某時段已排人數
+function getDutySlotCount(dateStr, slotHour) {
+  return _dutyDocs.filter(doc => {
+    if (doc.date !== dateStr) return false;
+    const s = parseInt((doc.start||'0').split(':')[0]);
+    const e = parseInt((doc.end||'0').split(':')[0]);
+    return slotHour >= s && slotHour < e;
+  }).length;
+}
+
+// ════════════════════════════════════════
+// 備勤排班
+// ════════════════════════════════════════
+
+let _dutyYear  = new Date().getFullYear();
+let _dutyMonth = new Date().getMonth();
+let _dutyView  = 'month';
+let _dutyDocs  = [];
+
+async function initDutyPage() {
+  syncHeaderHeight();
+  const startSel = document.getElementById('dutyStart');
+  const endSel   = document.getElementById('dutyEnd');
+  if (startSel && !startSel.options.length) {
+    for (let h = 6; h <= 22; h++) {
+      const hStr = String(h).padStart(2,'0') + ':00';
+      startSel.add(new Option(hStr, hStr));
+    }
+    for (let h = 7; h <= 22; h++) {
+      const hStr = String(h).padStart(2,'0') + ':00';
+      endSel.add(new Option(hStr, hStr));
+    }
+    startSel.value = '08:00';
+    endSel.value   = '20:00';
+  }
+
+  const today = new Date().toLocaleDateString('sv');
+  const dateSel = document.getElementById('dutyDate');
+  if (dateSel && !dateSel.value) dateSel.value = today;
+
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin  = usr.isAdmin || false;
+  const _userUnit = usr.unit || '';
+  await Promise.all([loadMembers(), loadUnits(), loadTrainingDates()]);
+  const unitSel = document.getElementById('dutyUnitFilter');
+  if (unitSel) {
+    if (_isAdmin) {
+      unitSel.innerHTML = '<option value="">請選擇分隊別</option>' +
+        _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+      unitSel.disabled = false;
+    } else {
+      unitSel.innerHTML = '<option value="' + _userUnit + '">' + _userUnit + '</option>';
+      unitSel.disabled = true;
+    }
+    const memberSel = document.getElementById('dutyMember');
+    if (memberSel) memberSel.innerHTML = '<option value="">— 請先選擇分隊別 —</option>';
+    if (_userUnit) { unitSel.value = _userUnit; filterDutyMembers(); }
+  }
+
+  // 需求4：根據今日決定顯示哪個月份（20日起預設次月）
+  const now = new Date();
+  _dutyYear  = now.getFullYear();
+  _dutyMonth = now.getMonth();
+  if (now.getDate() >= 20) {
+    _dutyMonth++;
+    if (_dutyMonth > 11) { _dutyMonth = 0; _dutyYear++; }
+  }
+  await loadDutyData();
+  onDutyTimeChange();
+}
+function onDutyDateChange() { onDutyTimeChange(); }
+
+function onDutyTimeChange() {
+  const dateStr = document.getElementById('dutyDate')?.value || '';
+  const start   = document.getElementById('dutyStart')?.value || '';
+  const end     = document.getElementById('dutyEnd')?.value || '';
+  const hint    = document.getElementById('dutyCapacityHint');
+  if (!hint) return;
+  if (!dateStr || !start || !end || start >= end) { hint.style.display='none'; return; }
+
+  const startHH    = parseInt(start.split(':')[0]);
+  const endHH      = parseInt(end.split(':')[0]);
+  const isHoliday  = isDutyHoliday(dateStr);
+
+  const slots = [];
+  for (let h = startHH; h < endHH; h++) {
+    const cap   = getDutySlotCapacity(dateStr, h);
+    const count = getDutySlotCount(dateStr, h);
+    slots.push({ h, cap, count, full: count >= cap });
+  }
+
+  const fullSlots = slots.filter(s => s.full);
+  const maxCap    = Math.max(...slots.map(s => s.cap));
+
+  let msg, color, bg;
+  if (fullSlots.length === slots.length) {
+    msg = '⚠️ 此時段所有小時格均已額滿，無法新增';
+    color = '#7b2d00'; bg = '#fff3e0';
+  } else if (fullSlots.length > 0) {
+    const hrs = fullSlots.map(s => String(s.h).padStart(2,'0')+':00').join('、');
+    msg = '⚠️ 注意：' + hrs + ' 已額滿（其餘時段可新增）';
+    color = '#7b2d00'; bg = '#fff3e0';
+  } else {
+    msg = '✅ 可新增' + (isHoliday?' （假日）':'') + '，最多可排 ' + maxCap + ' 人／時段';
+    color = '#1a6b35'; bg = '#eafaf1';
+  }
+  hint.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;border-radius:6px;font-size:0.82rem;color:' + color + ';background:' + bg + ';';
+  hint.textContent = msg;
+}
+
+function filterDutyMembers() {
+  const unit = document.getElementById('dutyUnitFilter')?.value || '';
+  const sel  = document.getElementById('dutyMember');
+  if (!sel) return;
+  if (!unit) { sel.innerHTML = '<option value="">— 請先選擇分隊別 —</option>'; return; }
+  // 需求2：只顯示潭子分隊的義消成員
+  const DUTY_TARGET_UNIT = '潭子分隊';
+  const filtered = members.filter(m => (m.unit||'') === unit && (m.unit||'') === DUTY_TARGET_UNIT);
+  if (filtered.length === 0) {
+    sel.innerHTML = '<option value="">此分隊無可排班成員</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">— 請選擇義消成員 —</option>' +
+    filtered.map(m => '<option value="' + m.name + '">' + m.name + (m.title?'（'+m.title+'）':'') + '</option>').join('');
+}
+
+async function loadDutyData() {
+  try {
+    await loadTrainingDates(); // 每次載入時同步最新定訓日期
+    const docs = await fbList(COL_DUTY);
+    _dutyDocs = docs;
+    renderDutyView();
+  } catch(e) { console.warn('loadDutyData 失敗：', e.message); }
+}
+
+function dutyMonthNav(delta) {
+  _dutyMonth += delta;
+  if (_dutyMonth > 11) { _dutyMonth = 0;  _dutyYear++; }
+  if (_dutyMonth < 0)  { _dutyMonth = 11; _dutyYear--; }
+  renderDutyView();
+}
+
+function toggleDutyForm() {
+  const body  = document.getElementById('dutyFormBody');
+  const arrow = document.getElementById('dutyFormArrow');
+  if (!body) return;
+  const open = body.style.display === 'none' || body.style.display === '';
+  body.style.display = open ? 'block' : 'none';
+  if (arrow) arrow.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+function dutyView(v) {
+  _dutyView = v;
+  ['month','list'].forEach(t => {
+    const btn = document.getElementById('dutyTab-'+t);
+    if (!btn) return;
+    if (v===t) btn.classList.add('duty-view-tab-active');
+    else        btn.classList.remove('duty-view-tab-active');
+  });
+  renderDutyView();
+}
+
+function renderDutyView() {
+  const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('dutyMonthLabel').textContent = _dutyYear + ' 年 ' + monthNames[_dutyMonth];
+  document.getElementById('dutyMonthView').style.display = _dutyView==='month' ? '' : 'none';
+  document.getElementById('dutyListView').style.display  = _dutyView==='list'  ? '' : 'none';
+  if (_dutyView==='month') renderDutyCalendar();
+  else if (_dutyView==='list') renderDutyList();
+}
+
+function renderDutyCalendar() {
+  const grid = document.getElementById('dutyCalGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const today       = new Date().toLocaleDateString('sv');
+  const firstDay    = new Date(_dutyYear, _dutyMonth, 1).getDay();
+  const daysInMonth = new Date(_dutyYear, _dutyMonth+1, 0).getDate();
+  const HOURS       = Array.from({length:16}, (_,i) => i+6);
+
+  for (let i = 0; i < firstDay; i++)
+    grid.appendChild(Object.assign(document.createElement('div'), {style:'min-height:60px;'}));
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr    = _dutyYear + '-' + String(_dutyMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const isToday    = dateStr === today;
+    const isHoliday  = isDutyHoliday(dateStr);
+    const isAllowed  = isDutyDateAllowed(dateStr);
+    const isTraining = HOURS.some(h => isDutyTrainingBlock(dateStr, h));
+
+    let totalCap = 0, totalFilled = 0;
+    HOURS.forEach(h => { totalCap += getDutySlotCapacity(dateStr,h); totalFilled += getDutySlotCount(dateStr,h); });
+    const totalLeft = totalCap - totalFilled;
+    const isFull = totalLeft <= 0;
+    const pct    = totalCap > 0 ? totalFilled/totalCap : 0;
+
+    const tagBg = isFull ? '#c0392b' : pct > 0 ? '#e67e22' : '#aaa';
+    const borderColor = isToday ? 'var(--red)' : isFull ? '#c0392b' : 'var(--border)';
+    const cellBg = !isAllowed ? '#f5f5f5' : isToday ? 'var(--red-faint)' : isHoliday ? '#fef9f0' : 'white';
+
+    const cell = document.createElement('div');
+    cell.style.cssText = 'min-height:64px;border:1.5px solid ' + borderColor + ';border-radius:6px;padding:4px;cursor:' + (isAllowed?'pointer':'default') + ';background:' + cellBg + ';position:relative;display:flex;flex-direction:column;align-items:center;opacity:' + (isAllowed?'1':'0.45') + ';';
+    if (isAllowed) cell.onclick = () => { dutyView('list'); setTimeout(()=>scrollToDutyDate(dateStr),100); };
+
+    const num = document.createElement('div');
+    num.style.cssText = 'font-size:0.78rem;font-weight:' + (isToday?'700':'500') + ';color:' + (isToday?'var(--red)':isHoliday?'#c0392b':'var(--text-mid)') + ';margin-bottom:2px;';
+    num.textContent = d;
+    cell.appendChild(num);
+
+    if (isAllowed) {
+      const tag = document.createElement('div');
+      tag.style.cssText = 'font-size:0.58rem;background:' + tagBg + ';color:white;border-radius:3px;padding:1px 3px;font-weight:600;';
+      tag.textContent = totalLeft + '/' + totalCap;
+      cell.appendChild(tag);
+    }
+
+    // 定訓標示（顯示後台設定的主題）
+    if (isTraining) {
+      const topic = getDutyTrainingNote(dateStr);
+      const tr = document.createElement('div');
+      tr.style.cssText = 'font-size:0.5rem;background:#8e44ad;color:white;border-radius:3px;padding:1px 3px;margin-top:1px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+      tr.textContent = topic || '定訓';
+      tr.title = topic || '定訓';
+      cell.appendChild(tr);
+    }
+
+    if (isHoliday && !isToday) {
+      const dot = document.createElement('div');
+      dot.style.cssText = 'width:4px;height:4px;border-radius:50%;background:#c0392b;margin-top:2px;';
+      cell.appendChild(dot);
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+function renderDutyList() {
+  const el = document.getElementById('dutyListContent');
+  if (!el) return;
+  const daysInMonth = new Date(_dutyYear, _dutyMonth+1, 0).getDate();
+  const today       = new Date().toLocaleDateString('sv');
+  const HOURS       = Array.from({length:16}, (_,i) => i+6);
+  let html = '';
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr   = _dutyYear + '-' + String(_dutyMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const dayDocs   = _dutyDocs.filter(doc => doc.date===dateStr).sort((a,b)=>(a.start||'')>(b.start||'')?1:-1);
+    const isToday   = dateStr === today;
+    const isHoliday = isDutyHoliday(dateStr);
+    const dow       = new Date(dateStr).getDay();
+    const weekDay   = ['日','一','二','三','四','五','六'][dow];
+    const numColor  = isToday ? 'var(--red)' : isHoliday ? '#c0392b' : (dow===0?'#c0392b':dow===6?'#2980b9':'var(--text)');
+    const weekColor = isToday ? 'var(--red)' : isHoliday ? '#e74c3c' : 'var(--text-light)';
+
+    html += '<div class="duty-day-card" id="duty-day-' + dateStr + '">';
+
+    // 左側日期
+    html += '<div class="duty-day-num" style="' + (isToday?'background:var(--red-faint);':'') + '">';
+    html += '<div class="d-num" style="color:' + numColor + ';">' + d + '</div>';
+    html += '<div class="d-week" style="color:' + weekColor + ';">' + weekDay + '</div>';
+    if (isToday) html += '<div style="width:5px;height:5px;border-radius:50%;background:var(--red);margin-top:4px;"></div>';
+    html += '</div>';
+
+    // 右側內容
+    html += '<div class="duty-day-body">';
+
+    // 日期標題 + 新增按鈕
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+    html += '<div style="font-size:0.75rem;color:var(--text-light);">' + dateStr;
+    if (isHoliday) html += ' <span style="background:#fdebd0;color:#c0392b;border-radius:4px;padding:1px 6px;font-size:0.68rem;font-weight:600;">假日</span>';
+    html += '</div>';
+    html += !isDutyDateAllowed(dateStr) ? '<span style="font-size:0.7rem;color:#aaa;padding:3px 8px;">未開放</span>' : '<button onclick="openQuickAdd(&quot;' + dateStr + '&quot;)" style="background:var(--red);color:white;border:none;border-radius:6px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;">＋ 新增</button>';
+    html += '</div>';
+
+    // 人員卡
+    if (dayDocs.length === 0) {
+      html += '<div style="font-size:0.78rem;color:var(--text-light);padding:4px 0 8px;">— 尚無備勤 —</div>';
+    } else {
+      dayDocs.forEach(doc => {
+        const usr     = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+        const myName  = usr.memberName || usr.name || '';
+        const canEdit = doc.memberName===myName || usr.isAdmin || usr.isOfficer;
+        html += '<div class="duty-person-card">';
+        html += '<div class="duty-person-avatar">' + (doc.memberName||'?').slice(0,1) + '</div>';
+        html += '<div style="flex:1;min-width:0;">';
+        html += '<div style="font-size:0.88rem;font-weight:700;color:var(--text);">' + (doc.memberName||'') + '</div>';
+        html += '<div style="font-size:0.75rem;color:var(--text-mid);margin-top:2px;">勤務時段：' + (doc.start||'') + ' - ' + (doc.end||'') + '</div>';
+        html += '</div>';
+        if (canEdit) {
+          html += '<div style="display:flex;gap:4px;flex-shrink:0;">';
+          html += '<button onclick="openDutyEdit(&quot;' + doc.id + '&quot;,&quot;' + dateStr + '&quot;,&quot;' + (doc.memberName||'') + '&quot;,&quot;' + (doc.start||'') + '&quot;,&quot;' + (doc.end||'') + '&quot;)" style="background:#eaf2ff;border:none;border-radius:6px;padding:5px 8px;font-size:0.72rem;color:#1a3a6b;cursor:pointer;">✏️</button>';
+          html += '<button onclick="deleteDuty(&quot;' + doc.id + '&quot;)" style="background:#fff0f0;border:none;border-radius:6px;padding:5px 8px;font-size:0.72rem;color:#c0392b;cursor:pointer;">✕</button>';
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+    }
+
+    // 說明列（每日只在第一次渲染時顯示，放在格子上方）
+    html += '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;font-size:0.64rem;color:var(--text-light);margin-bottom:5px;">';
+    html += '<span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:#fadbd8;border:1px solid #f5b7b1;display:inline-block;"></span>額滿</span>';
+    html += '<span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:#fdebd0;border:1px solid #fad7a0;display:inline-block;"></span>部分已排</span>';
+    html += '<span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:#d5f5e3;border:1px solid #a9dfbf;display:inline-block;"></span>雙人時段</span>';
+    html += '<span style="display:flex;align-items:center;gap:2px;"><span style="width:8px;height:8px;border-radius:2px;background:#eaf2ff;border:1px solid #aad4f5;display:inline-block;"></span>一般時段</span>';
+    html += '</div>';
+
+    // 時段 cells：4欄 grid
+    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:4px;">';
+    HOURS.forEach(h => {
+      const cap   = getDutySlotCapacity(dateStr, h);
+      const count = getDutySlotCount(dateStr, h);
+      const left  = cap - count;
+      const full  = left <= 0;
+      const names = _dutyDocs.filter(doc => {
+        if (doc.date !== dateStr) return false;
+        const s = parseInt((doc.start||'0').split(':')[0]);
+        const e = parseInt((doc.end||'0').split(':')[0]);
+        return h >= s && h < e;
+      }).map(doc => doc.memberName||'');
+
+      let cellBg, cellColor, nameBg;
+      const isTrainingSlot = isDutyTrainingBlock(dateStr, h);
+      if (isTrainingSlot)   { cellBg='#f3e5f5'; cellColor='#6a1b9a'; nameBg='#8e44ad'; }
+      else if (full)        { cellBg='#fadbd8'; cellColor='#922b21'; nameBg='#c0392b'; }
+      else if (count>0)     { cellBg='#fdebd0'; cellColor='#784212'; nameBg='#e67e22'; }
+      else if (cap===2)     { cellBg='#d5f5e3'; cellColor='#1a6b35'; nameBg='#27ae60'; }
+      else                  { cellBg='#eaf2ff'; cellColor='#1a3a6b'; nameBg='#2980b9'; }
+
+      html += '<div style="background:' + cellBg + ';color:' + cellColor + ';border-radius:8px;padding:6px 4px;text-align:center;line-height:1.5;min-height:60px;">';
+      html += '<div style="font-weight:700;font-size:0.75rem;">' + String(h).padStart(2,'0') + ':00</div>';
+      if (isTrainingSlot) {
+        const topic = getDutyTrainingNote(dateStr);
+        html += '<div style="font-size:0.58rem;background:#8e44ad;color:white;border-radius:4px;padding:1px 4px;margin-top:2px;">' + (topic||'定訓') + '</div>';
+        html += '<div style="font-size:0.55rem;margin-top:2px;opacity:0.7;">封鎖</div>';
+      } else {
+        if (names.length > 0) {
+          names.forEach(n => {
+            html += '<div style="display:inline-block;background:' + nameBg + ';color:white;border-radius:4px;padding:1px 4px;font-size:0.58rem;margin-top:2px;word-break:break-all;line-height:1.4;max-width:100%;">' + n + '</div>';
+          });
+        }
+        html += '<div style="font-size:0.58rem;margin-top:3px;opacity:0.75;">' + (full?'額滿':'餘'+left) + '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div></div>'; // duty-day-body + duty-day-card
+  }
+  el.innerHTML = html;
+}
+
+function scrollToDutyDate(dateStr) {
+  const el = document.getElementById('duty-day-' + dateStr);
+  if (!el) return;
+  const scroller = document.getElementById('appScroll');
+  if (!scroller) { el.scrollIntoView({ behavior:'smooth', block:'start' }); return; }
+  // 補償 header + tabBar + 月份導覽 的高度
+  const header = document.querySelector('.header');
+  const tabBar = document.getElementById('dutyTabBar');
+  const monthNav = tabBar ? tabBar.nextElementSibling : null;
+  const offset = (header ? header.getBoundingClientRect().height : 56)
+               + (tabBar ? tabBar.getBoundingClientRect().height : 44)
+               + (monthNav ? monthNav.getBoundingClientRect().height : 56)
+               + 8;
+  const elTop = el.getBoundingClientRect().top;
+  const scrollerTop = scroller.getBoundingClientRect().top;
+  scroller.scrollBy({ top: elTop - scrollerTop - offset, behavior: 'smooth' });
+}
+
+async function addDutySchedule() {
+  const date   = document.getElementById('dutyDate').value;
+  const member = document.getElementById('dutyMember').value;
+  const start  = document.getElementById('dutyStart').value;
+  const end    = document.getElementById('dutyEnd').value;
+
+  if (!date)   { alert('請選擇日期'); return; }
+  if (!isDutyDateAllowed(date)) { alert('⚠️ 此日期不在可填寫範圍內。\n本月班表全月開放；次月班表於當月20日起開放。'); return; }
+  if (!member) { alert('請選擇義消姓名'); return; }
+  if (!start || !end) { alert('請選擇時間'); return; }
+  if (start >= end)   { alert('結束時間必須晚於開始時間'); return; }
+
+  const startHH = parseInt(start.split(':')[0]);
+  const endHH   = parseInt(end.split(':')[0]);
+
+  // 定訓時段檢查
+  const trainingSlots = [];
+  for (let h = startHH; h < endHH; h++) {
+    if (isDutyTrainingBlock(date, h)) trainingSlots.push(String(h).padStart(2,'0') + ':00');
+  }
+  if (trainingSlots.length > 0) {
+    alert('⚠️ 以下時段為定訓時段，無法排班：\n' + trainingSlots.join('、'));
+    return;
+  }
+
+  const fullSlots = [];
+  for (let h = startHH; h < endHH; h++) {
+    if (getDutySlotCount(date, h) >= getDutySlotCapacity(date, h))
+      fullSlots.push(String(h).padStart(2,'00') + ':00');
+  }
+  if (fullSlots.length > 0) {
+    alert('⚠️ 以下時段已額滿，無法新增：\n' + fullSlots.join('、'));
+    return;
+  }
+
+  try {
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    await fbAdd(COL_DUTY, {
+      date, memberName: member, start, end,
+      unit: usr.unit || '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    await loadDutyData();
+    onDutyTimeChange();
+    alert('✅ 備勤時段已新增');
+  } catch(e) { alert('新增失敗：' + e.message); }
+}
+
+async function deleteDuty(id) {
+  if (!confirm('確定刪除這筆備勤？')) return;
+  try {
+    await fbDelete(COL_DUTY, id);
+    await loadDutyData();
+    onDutyTimeChange();
+  } catch(e) { alert('刪除失敗：' + e.message); }
+}
+
+// ── 每日快速新增 ──
+let _qaDate = '';
+
+function _buildTimeOptions(selId, from, to, def) {
+  const sel = document.getElementById(selId);
+  if (!sel) return;
+  sel.innerHTML = '';
+  for (let h = from; h <= to; h++) {
+    const v = String(h).padStart(2,'0') + ':00';
+    sel.add(new Option(v, v));
+  }
+  sel.value = def;
+}
+
+function openQuickAdd(dateStr) {
+  _qaDate = dateStr;
+  document.getElementById('dutyQuickAddDate').textContent = dateStr + '　' + ['日','一','二','三','四','五','六'][new Date(dateStr).getDay()] + (isDutyHoliday(dateStr)?' （假日）':'');
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const _isAdmin = usr.isAdmin || false;
+  const _userUnit = usr.unit || '';
+
+  // 分隊別
+  const unitSel = document.getElementById('qaUnit');
+  if (_isAdmin) {
+    unitSel.innerHTML = '<option value="">請選擇分隊別</option>' +
+      _unitsList.map(u => '<option value="' + u + '">' + u + '</option>').join('');
+    unitSel.disabled = false;
+  } else {
+    unitSel.innerHTML = '<option value="' + _userUnit + '">' + _userUnit + '</option>';
+    unitSel.disabled = true;
+  }
+  if (_userUnit) { unitSel.value = _userUnit; filterQAMembers(); }
+  else { document.getElementById('qaMember').innerHTML = '<option value="">— 請先選擇分隊別 —</option>'; }
+
+  _buildTimeOptions('qaStart', 6, 22, '08:00');
+  _buildTimeOptions('qaEnd',   7, 22, '20:00');
+  document.getElementById('qaCapHint').style.display = 'none';
+
+  const modal = document.getElementById('dutyQuickAddModal');
+  modal.style.display = 'flex';
+  setTimeout(() => modal.querySelector('div').style.transform = 'translateY(0)', 10);
+}
+
+function closeQuickAdd() {
+  document.getElementById('dutyQuickAddModal').style.display = 'none';
+}
+
+function filterQAMembers() {
+  const unit = document.getElementById('qaUnit')?.value || '';
+  const sel  = document.getElementById('qaMember');
+  if (!sel) return;
+  if (!unit) { sel.innerHTML = '<option value="">— 請先選擇分隊別 —</option>'; return; }
+  const DUTY_TARGET_UNIT = '潭子分隊';
+  const filtered = members.filter(m => (m.unit||'') === unit && (m.unit||'') === DUTY_TARGET_UNIT);
+  if (filtered.length === 0) {
+    sel.innerHTML = '<option value="">此分隊無可排班成員</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">— 請選擇義消成員 —</option>' +
+    filtered.map(m => '<option value="' + m.name + '">' + m.name + (m.title?'（'+m.title+'）':'') + '</option>').join('');
+  const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+  const myName = usr.memberName || usr.name || '';
+  if (myName) sel.value = myName;
+}
+
+async function submitQuickAdd() {
+  const member = document.getElementById('qaMember').value;
+  const start  = document.getElementById('qaStart').value;
+  const end    = document.getElementById('qaEnd').value;
+  if (!member) { alert('請選擇義消姓名'); return; }
+  if (!start || !end || start >= end) { alert('請確認時間'); return; }
+  const startHH = parseInt(start.split(':')[0]);
+  const endHH   = parseInt(end.split(':')[0]);
+  const trainingSlots = [];
+  for (let h = startHH; h < endHH; h++) {
+    if (isDutyTrainingBlock(_qaDate, h)) trainingSlots.push(String(h).padStart(2,'0') + ':00');
+  }
+  if (trainingSlots.length > 0) { alert('⚠️ 以下時段為定訓，無法排班：\n' + trainingSlots.join('、')); return; }
+  const fullSlots = [];
+  for (let h = startHH; h < endHH; h++) {
+    if (getDutySlotCount(_qaDate, h) >= getDutySlotCapacity(_qaDate, h))
+      fullSlots.push(String(h).padStart(2,'0') + ':00');
+  }
+  if (fullSlots.length > 0) { alert('⚠️ 以下時段已額滿：\n' + fullSlots.join('、')); return; }
+  try {
+    const usr = JSON.parse(sessionStorage.getItem('rescue_user')||'{}');
+    await fbAdd(COL_DUTY, {
+      date: _qaDate, memberName: member, start, end,
+      unit: usr.unit || '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    closeQuickAdd();
+    await loadDutyData();
+    alert('✅ 備勤時段已新增');
+  } catch(e) { alert('新增失敗：' + e.message); }
+}
+
+// ── 編輯備勤 ──
+let _editDocDate = '';
+
+function openDutyEdit(id, dateStr, memberName, start, end) {
+  _editDocDate = dateStr;
+  document.getElementById('editDutyId').value = id;
+  document.getElementById('editDutyInfo').textContent = dateStr + '　' + memberName;
+  _buildTimeOptions('editDutyStart', 6, 22, start);
+  _buildTimeOptions('editDutyEnd',   7, 22, end);
+  document.getElementById('editCapHint').style.display = 'none';
+  document.getElementById('dutyEditModal').style.display = 'flex';
+}
+
+function closeDutyEdit() {
+  document.getElementById('dutyEditModal').style.display = 'none';
+}
+
+async function submitDutyEdit() {
+  const id    = document.getElementById('editDutyId').value;
+  const start = document.getElementById('editDutyStart').value;
+  const end   = document.getElementById('editDutyEnd').value;
+  if (!start || !end || start >= end) { alert('請確認時間'); return; }
+  const startHH = parseInt(start.split(':')[0]);
+  const endHH   = parseInt(end.split(':')[0]);
+  // 容量檢查（排除自己）
+  const selfDoc = _dutyDocs.find(d => d.id === id);
+  const fullSlots = [];
+  for (let h = startHH; h < endHH; h++) {
+    const countExcludeSelf = _dutyDocs.filter(doc => {
+      if (doc.id === id || doc.date !== _editDocDate) return false;
+      const s = parseInt((doc.start||'0').split(':')[0]);
+      const e = parseInt((doc.end||'0').split(':')[0]);
+      return h >= s && h < e;
+    }).length;
+    if (countExcludeSelf >= getDutySlotCapacity(_editDocDate, h))
+      fullSlots.push(String(h).padStart(2,'0') + ':00');
+  }
+  if (fullSlots.length > 0) { alert('⚠️ 以下時段已額滿：\n' + fullSlots.join('、')); return; }
+  try {
+    await fbUpdate(COL_DUTY, id, { start, end });
+    closeDutyEdit();
+    await loadDutyData();
+    alert('✅ 已更新');
+  } catch(e) { alert('更新失敗：' + e.message); }
+}
+
+async function deleteDutyFromEdit() {
+  const id = document.getElementById('editDutyId').value;
+  if (!confirm('確定刪除這筆備勤？')) return;
+  try {
+    await fbDelete(COL_DUTY, id);
+    closeDutyEdit();
+    await loadDutyData();
+  } catch(e) { alert('刪除失敗：' + e.message); }
+}
 
 function filterAdminWlByUnit() {
   const unit = document.getElementById('adminWlFilterUnit')?.value || '';
@@ -8627,11 +9643,15 @@ async function subscribePush() {
     // 儲存訂閱到 Firestore
     await savePushSubscription(sub);
     localStorage.setItem('pushSubscribed', '1');
+    const toggle = document.getElementById('notifToggle');
+    if (toggle) toggle.checked = true;
     const statusEl = document.getElementById('notifStatusMsg');
-    if (statusEl) { statusEl.style.color='#1a6b35'; statusEl.textContent='✅ 已開啟推播通知'; }
-    alert('✅ 已開啟定訓提醒！定訓前一天晚上會通知你。');
+    if (statusEl) { statusEl.textContent = '✅ 已開啟推播通知'; }
+    alert('✅ 已開啟定訓提醒！');
   } catch(e) {
     console.warn('訂閱失敗：', e);
+    const toggle = document.getElementById('notifToggle');
+    if (toggle) toggle.checked = false;
     alert('訂閱失敗，請確認已安裝到主畫面並允許通知');
   }
 }
